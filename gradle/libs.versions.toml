@@ -1,0 +1,55 @@
+# ------------------------------------------------------------------------------------------------ #
+[versions]
+## --- Plugins and more general stuff --- ##
+jacoco = "0.8.14"
+detekt = "1.23.8"
+
+## --- Build Config and SDK --- ##
+build-sdk-min = "20"
+build-sdk-compile = "36"
+build-tools = "36.1.0"
+
+## JetBrains
+jetbrains-kotlin = "2.3.0"
+jetbrains-coroutines = "1.10.2"
+jetbrains-dokka = "2.1.0"
+
+## AndroidX
+androidx-plugin = "8.13.2"
+
+## Tools
+ktlint = "14.0.1"
+ajalt-mordant = "3.0.2"
+vanniktech-publish = "0.35.0"
+
+# ------------------------------------------------------------------------------------------------ #
+[libraries]
+## JetBrains
+jetbrains-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "jetbrains-coroutines" }
+jetbrains-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "jetbrains-dokka" }
+jetbrains-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "jetbrains-kotlin" }
+jetbrains-multiplatform = { module = "org.jetbrains.kotlin.multiplatform:org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "jetbrains-kotlin" }
+jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "jetbrains-kotlin" }
+
+## Androidx
+androidx-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidx-plugin" }
+androidx-library = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidx-plugin" }
+
+## Tools
+detekt = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
+ktlint = { module = "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin", version.ref = "ktlint" }
+ajalt-mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "ajalt-mordant" }
+vanniktech-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktech-publish" }
+
+# ------------------------------------------------------------------------------------------------ #
+[plugins]
+## JetBrains
+jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "jetbrains-dokka" }
+
+## Tools to make my life easier
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-publish" }
+
+# ------------------------------------------------------------------------------------------------ #
+[bundles]
+
+## Nothing Here Yet!

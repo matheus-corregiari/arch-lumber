@@ -4,7 +4,11 @@
 pluginManagement {
     apply(from = "$rootDir/../gradle/repositories.gradle.kts")
     val repositoryList: RepositoryHandler.() -> Unit by extra
-    repositories(repositoryList)
+    repositories{
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
 }
 
 dependencyResolutionManagement {

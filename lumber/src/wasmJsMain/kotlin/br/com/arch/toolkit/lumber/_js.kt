@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 package br.com.arch.toolkit.lumber
 
 /** Calls `console.log(message)`. */

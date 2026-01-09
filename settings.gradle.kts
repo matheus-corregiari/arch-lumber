@@ -14,5 +14,4 @@ dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
 }
 
-rootProject.name = "Arch Lumber"
 include(":lumber")

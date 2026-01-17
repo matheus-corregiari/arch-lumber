@@ -15,7 +15,7 @@ jetbrains-coroutines = "1.10.2"
 jetbrains-dokka = "2.1.0"
 
 ## AndroidX
-androidx-plugin = "8.13.2"
+androidx-plugin = "9.0.0"
 
 ## Tools
 ktlint = "14.0.1"

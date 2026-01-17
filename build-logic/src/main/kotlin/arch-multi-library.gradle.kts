@@ -1,6 +1,5 @@
 @file:Suppress("UnstableApiUsage", "OPT_IN_USAGE")
 
-import com.android.build.api.dsl.androidLibrary
 import com.android.build.api.variant.impl.capitalizeFirstChar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
@@ -19,6 +18,16 @@ extensions.configure<KotlinMultiplatformExtension> {
         buildToolsVersion = libraries.version("build-tools")
         androidResources { enable = false }
         compilerOptions { jvmTarget.set(projectJavaTarget) }
+        lint {
+            checkReleaseBuilds = true
+            abortOnError = true
+            ignoreWarnings = false
+            absolutePaths = false
+            warningsAsErrors = false
+
+            htmlOutput = File("$rootDir/build/reports/lint/html/${project.name}-lint.html")
+            xmlOutput = File("$rootDir/build/reports/lint/xml/${project.name}-lint.xml")
+        }
     }
     jvm { compilerOptions { jvmTarget.set(projectJavaTarget) } }
     wasmJs {
@@ -30,10 +39,11 @@ extensions.configure<KotlinMultiplatformExtension> {
         binaries.library()
     }
     // iOS Targets
-    val exportName = name.split("-").joinToString(
-        separator = "",
-        transform = String::capitalizeFirstChar
-    )
+    val exportName =
+        name.split("-").joinToString(
+            separator = "",
+            transform = String::capitalizeFirstChar,
+        )
     val exportId = "br.com.arch.toolkit.${project.name}"
     listOf(
         iosArm64(),
@@ -64,5 +74,4 @@ extensions.configure<KotlinMultiplatformExtension> {
         val javaMain by getting
         androidMain { dependsOn(javaMain) }
     }
-
 }

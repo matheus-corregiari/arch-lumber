@@ -8,7 +8,7 @@ updates:
     open-pull-requests-limit: 1
 
   - package-ecosystem: "gradle"
-    directory: "/tools/"
+    directory: "/gradle/"
     schedule:
       interval: "monthly"
     rebase-strategy: "disabled"

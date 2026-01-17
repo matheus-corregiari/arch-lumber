@@ -1,10 +1,8 @@
 @file:Suppress("UnstableApiUsage")
 
-import com.android.build.api.dsl.androidLibrary
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.gitlab.arturbosch.detekt.extensions.DetektExtension
-import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
@@ -29,21 +27,6 @@ extensions.configure<KtlintExtension> {
     filter {
         exclude("**/generated/**")
         exclude("**/build/**")
-    }
-}
-
-extensions.configure<KotlinMultiplatformExtension> {
-    androidLibrary {
-        lint {
-            checkReleaseBuilds = true
-            abortOnError = true
-            ignoreWarnings = false
-            absolutePaths = false
-            warningsAsErrors = false
-
-            htmlOutput = File("${rootDir}/build/reports/lint/html/${project.name}-lint.html")
-            xmlOutput = File("${rootDir}/build/reports/lint/xml/${project.name}-lint.xml")
-        }
     }
 }
 

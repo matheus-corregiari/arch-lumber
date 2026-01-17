@@ -25,5 +25,11 @@ configurations.configureEach {
     resolutionStrategy {
         failOnVersionConflict()
         preferProjectModules()
+        enableDependencyVerification()
+        eachDependency {
+            when (target.group) {
+                "org.jetbrains.kotlin" -> useVersion(embeddedKotlinVersion)
+            }
+        }
     }
 }

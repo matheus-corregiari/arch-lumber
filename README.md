@@ -38,6 +38,7 @@ Multiplatform projects.
     * Android → Logcat
     * Apple → ANSI colored `println` (via [Mordant](https://github.com/ajalt/mordant))
     * JS/WASM → Native `console.*` (browser or Node.js/wasm runtime)
+    * JVM → println
 * **Composable System** — Plant one or many Oaks (`ConsoleOak`, `FileOak`, custom).
 * **Thread-Safe** — Safe for concurrent logging.
 * **Inspired by Timber** — Similar ergonomics, extended for KMP.
@@ -105,7 +106,7 @@ Lumber.uprootAll()
 | Apple     | `DebugTree`    | `println` with ANSI colors via Mordant |
 | JS (IR)   | `DebugTree`    | Native `console.log/info/warn/error`   |
 | WASM (IR) | `DebugTree`    | Native `console.log/info/warn/error`   |
-| JVM       | (fallback)     | Standard `println`                     |
+| JVM       | `DebugTree`    | Standard `println`                     |
 
 Example (WASM, browser):
 
@@ -213,17 +214,17 @@ Android.
 ## 📄 License
 
 This module is released under the **Apache 2.0 License**.
-See [LICENSE](../../../LICENSE.md) for details.
+See [LICENSE](LICENSE) for details.
 
 ---
 
-[link-maven]: https://search.maven.org/artifact/io.github.matheus-corregiari/lumber
+[link-maven]: https://search.maven.org/artifact/io.github.matheus-corregiari/arch-lumber
 
-[link-ci]: https://github.com/matheus-corregiari/arch-toolkit/actions/workflows/generate-tag.yml
+[link-ci]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/generate-tag.yml
 
-[link-license]: ../../../LICENSE.md
+[link-license]: /LICENSE
 
-[link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-toolkit
+[link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
 
 [badge-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
 
@@ -237,10 +238,10 @@ See [LICENSE](../../../LICENSE.md) for details.
 
 [badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/lumber.svg
 
-[badge-ci]: https://github.com/matheus-corregiari/arch-toolkit/actions/workflows/generate-tag.yml/badge.svg
+[badge-ci]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/generate-tag.yml/badge.svg
 
-[badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-toolkit
+[badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-lumber
 
-[badge-coverage]: https://img.shields.io/codecov/c/github/matheus-corregiari/arch-toolkit
+[badge-coverage]: https://img.shields.io/codecov/c/github/matheus-corregiari/arch-lumber
 
 ```

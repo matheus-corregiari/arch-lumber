@@ -18,14 +18,18 @@ internal actual fun defaultTag(): String? {
         .filter { (full, _, _) -> full !in ignore }
         .map { (_, className, method) -> "$className:$method" }
         .firstOrNull()
-        ?.chunked(MAX_TAG_LENGTH)?.first()
+        ?.chunked(MAX_TAG_LENGTH)
+        ?.first()
 }
 
 @OptIn(ExperimentalAtomicApi::class)
-actual class ThreadSafe<T> {
+internal actual class ThreadSafe<T> {
     private val atomic = AtomicReference<T?>(null)
+
     actual fun get(): T? = atomic.load()
+
     actual fun set(data: T?) = atomic.store(data)
+
     actual fun remove() = set(null)
 }
 
@@ -38,7 +42,6 @@ private fun extractData(match: MatchResult): Triple<String, String, String>? {
     return Triple(
         full.value,
         className.value,
-        method.value.camelcase()
+        method.value.camelcase(),
     )
 }
-

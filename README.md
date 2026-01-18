@@ -38,7 +38,7 @@ Multiplatform projects.
     * Android → Logcat
     * Apple → ANSI colored `println` (via [Mordant](https://github.com/ajalt/mordant))
     * JS/WASM → Native `console.*` (browser or Node.js/wasm runtime)
-    * JVM → println
+    * JVM → ANSI colored `println` (via [Mordant](https://github.com/ajalt/mordant))
 * **Composable System** — Plant one or many Oaks (`ConsoleOak`, `FileOak`, custom).
 * **Thread-Safe** — Safe for concurrent logging.
 * **Inspired by Timber** — Similar ergonomics, extended for KMP.
@@ -106,7 +106,7 @@ Lumber.uprootAll()
 | Apple     | `DebugTree`    | `println` with ANSI colors via Mordant |
 | JS (IR)   | `DebugTree`    | Native `console.log/info/warn/error`   |
 | WASM (IR) | `DebugTree`    | Native `console.log/info/warn/error`   |
-| JVM       | `DebugTree`    | Standard `println`                     |
+| JVM       | `DebugTree`    | `println` with ANSI colors via Mordant |
 
 Example (WASM, browser):
 

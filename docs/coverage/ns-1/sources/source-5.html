@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>lumber Coverage Report > _utilKt</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope: lumber<span class="separator">|</span>    <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">br.com.arch.toolkit.lumber</a>
+</div>
+
+<h1>Coverage Summary for Class: _utilKt (br.com.arch.toolkit.lumber)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+<th class="coverageStat 
+">
+  Instruction, %
+</th>
+</tr>
+<tr>
+  <td class="name">_utilKt</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    62,5%
+  </span>
+  <span class="absValue">
+    (15/24)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90,9%
+  </span>
+  <span class="absValue">
+    (20/22)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    78,7%
+  </span>
+  <span class="absValue">
+    (236/300)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package br.com.arch.toolkit.lumber
+&nbsp;
+&nbsp;import kotlinx.coroutines.sync.Mutex
+&nbsp;
+<b class="fc">&nbsp;internal val fqcnIgnore = setOfNotNull(</b>
+<b class="fc">&nbsp;    Lumber::class,</b>
+&nbsp;    Lumber.Level::class,
+&nbsp;    Lumber.OakWood::class,
+&nbsp;    Lumber.Oak::class,
+&nbsp;    DebugTree::class,
+&nbsp;)
+&nbsp;
+&nbsp;internal fun &lt;T&gt; Mutex.synchronized(key: Any, block: () -&gt; T) = try {
+<b class="fc">&nbsp;    runCatching { tryLock(owner = key) }</b>
+<b class="fc">&nbsp;    block()</b>
+&nbsp;} finally {
+<b class="pc">&nbsp;    runCatching { if (isLocked) unlock(owner = key) }</b>
+&nbsp;}
+&nbsp;
+&nbsp;@Suppress(&quot;ReturnCount&quot;)
+&nbsp;internal fun String.format(vararg args: Any?): String {
+&nbsp;    // Ignore in case of no arguments, there is nothing to do
+<b class="fc">&nbsp;    if (args.isEmpty()) return this</b>
+&nbsp;
+&nbsp;    // Find all matches and verify if the number of matches is enough to format properly
+<b class="fc">&nbsp;    val matches = Regex(&quot;%[sd]&quot;).findAll(this).toList()</b>
+<b class="fc">&nbsp;    val match = matches.firstOrNull() ?: return this</b>
+<b class="fc">&nbsp;    if (matches.size &gt; args.size) {</b>
+<b class="fc">&nbsp;        error(&quot;Wrong number of arguments, expected ${matches.size}, actual ${args.size}&quot;)</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Get the argument and format it
+<b class="fc">&nbsp;    val argument = args.firstOrNull()</b>
+<b class="fc">&nbsp;    val formatted = when (match.value) {</b>
+<b class="fc">&nbsp;        &quot;%s&quot; -&gt; argument.toString()</b>
+<b class="pc">&nbsp;        &quot;%d&quot; -&gt; (argument as? Number).toString()</b>
+<b class="nc">&nbsp;        else -&gt; match.value</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    // Replace the match and format the string
+<b class="fc">&nbsp;    val replaced = replaceRange(</b>
+<b class="fc">&nbsp;        range = match.range,</b>
+&nbsp;        replacement = formatted
+&nbsp;    )
+&nbsp;
+&nbsp;    // Recursively format the rest of the string
+<b class="fc">&nbsp;    return replaced.format(args = args.drop(1).toTypedArray())</b>
+&nbsp;}
+&nbsp;
+&nbsp;internal fun String.camelcase(): String {
+<b class="fc">&nbsp;    val parts = trimStart().trimEnd().split(&quot; &quot;, &quot;_&quot;, &quot;-&quot;)</b>
+<b class="pc">&nbsp;    return if (parts.size == 1) {</b>
+<b class="fc">&nbsp;        parts.first()</b>
+&nbsp;    } else {
+<b class="nc">&nbsp;        parts.joinToString(&quot;&quot;) { part -&gt; part.lowercase().replaceFirstChar { it.titlecase() } }</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-01-17 22:27</div>
+</div>
+</body>
+</html>

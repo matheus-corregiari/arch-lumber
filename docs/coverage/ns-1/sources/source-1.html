@@ -1,0 +1,232 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>lumber Coverage Report > DebugTree</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope: lumber<span class="separator">|</span>    <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">br.com.arch.toolkit.lumber</a>
+</div>
+
+<h1>Coverage Summary for Class: DebugTree (br.com.arch.toolkit.lumber)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Branch, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+<th class="coverageStat 
+">
+  Instruction, %
+</th>
+</tr>
+<tr>
+  <td class="name">DebugTree</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87,5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92,3%
+  </span>
+  <span class="absValue">
+    (12/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82,8%
+  </span>
+  <span class="absValue">
+    (77/93)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">DebugTree$WhenMappings</td>
+    <td class="coverageStat"/>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87,5%
+  </span>
+  <span class="absValue">
+    (7/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    92,3%
+  </span>
+  <span class="absValue">
+    (12/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82,8%
+  </span>
+  <span class="absValue">
+    (77/93)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;@file:Suppress(&quot;EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING&quot;)
+&nbsp;
+&nbsp;package br.com.arch.toolkit.lumber
+&nbsp;
+&nbsp;import com.github.ajalt.mordant.rendering.TextColors
+&nbsp;import com.github.ajalt.mordant.rendering.TextStyle
+&nbsp;
+&nbsp;/**
+&nbsp; * # DebugTree (JVM)
+&nbsp; *
+&nbsp; * JVM-specific implementation of [Lumber.Oak] that prints logs to the
+&nbsp; * standard output (`stdout`), with ANSI colors provided by
+&nbsp; * [Mordant](https://github.com/ajalt/mordant).
+&nbsp; *
+&nbsp; * Each [Lumber.Level] is mapped to a distinct color:
+&nbsp; * - [Lumber.Level.Error]   → Bright Red
+&nbsp; * - [Lumber.Level.Warn]    → Bright Yellow
+&nbsp; * - [Lumber.Level.Info]    → Bright Blue
+&nbsp; * - [Lumber.Level.Debug]   → Bright Green
+&nbsp; * - [Lumber.Level.Verbose] → Bright Magenta
+&nbsp; * - [Lumber.Level.Assert]  → Bright Cyan
+&nbsp; *
+&nbsp; * ## Example
+&nbsp; * ```kotlin
+&nbsp; * // Plant the DebugTree for JVM
+&nbsp; * Lumber.plant(DebugTree())
+&nbsp; *
+&nbsp; * Lumber.info(&quot;Application started&quot;)
+&nbsp; * Lumber.debug(&quot;Processing request id=%d&quot;, 42)
+&nbsp; * Lumber.error(Exception(&quot;boom&quot;), &quot;Operation failed&quot;)
+&nbsp; * ```
+&nbsp; *
+&nbsp; * The output will be printed to the terminal with colors applied per log level.
+&nbsp; */
+<b class="fc">&nbsp;actual open class DebugTree : Lumber.Oak() {</b>
+&nbsp;
+&nbsp;    /** Maps [Lumber.Level] to a Mordant [TextStyle] for colored output. */
+&nbsp;    private val Lumber.Level.toStyle: TextStyle
+<b class="fc">&nbsp;        get() = when (this) {</b>
+<b class="fc">&nbsp;            Lumber.Level.Error -&gt; TextColors.brightRed</b>
+<b class="fc">&nbsp;            Lumber.Level.Warn -&gt; TextColors.brightYellow</b>
+<b class="fc">&nbsp;            Lumber.Level.Info -&gt; TextColors.brightBlue</b>
+<b class="fc">&nbsp;            Lumber.Level.Debug -&gt; TextColors.brightGreen</b>
+<b class="fc">&nbsp;            Lumber.Level.Verbose -&gt; TextColors.brightMagenta</b>
+<b class="fc">&nbsp;            Lumber.Level.Assert -&gt; TextColors.brightCyan</b>
+&nbsp;        }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Always returns `true` for JVM.
+&nbsp;     *
+&nbsp;     * Unlike Android, there’s no system filter here.
+&nbsp;     * All log levels are considered loggable.
+&nbsp;     *
+&nbsp;     * @param tag The log tag (ignored in filtering).
+&nbsp;     * @param level The log level.
+&nbsp;     */
+<b class="fc">&nbsp;    actual override fun isLoggable(tag: String?, level: Lumber.Level): Boolean = true</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Prints a log message to the console with a color based on [level].
+&nbsp;     *
+&nbsp;     * @param level The log level (controls formatting and color).
+&nbsp;     * @param tag Optional tag. If non-null, it will be included in the prefix.
+&nbsp;     * @param message The message to log.
+&nbsp;     * @param error Optional throwable. Currently not printed; consider extending if needed.
+&nbsp;     */
+&nbsp;    actual override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
+<b class="pc">&nbsp;        val formattedMessage = if (tag == null) {</b>
+<b class="nc">&nbsp;            &quot;[%s] -&gt; %s&quot;.format(level.name, message)</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            &quot;[%s]-[%s] -&gt; %s&quot;.format(level.name, tag, message)</b>
+&nbsp;        }
+&nbsp;
+&nbsp;        // Apply style to each line separately
+<b class="fc">&nbsp;        println(formattedMessage.lineSequence().map(level.toStyle::invoke).joinToString(&quot;\n&quot;))</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2026-01-17 22:27</div>
+</div>
+</body>
+</html>

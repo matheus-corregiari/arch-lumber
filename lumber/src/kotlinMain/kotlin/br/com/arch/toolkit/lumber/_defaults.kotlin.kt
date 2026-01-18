@@ -8,11 +8,10 @@ import kotlin.concurrent.atomics.ExperimentalAtomicApi
 internal actual const val MAX_LOG_LENGTH: Int = 8000
 internal actual const val MAX_TAG_LENGTH: Int = 25
 
-actual fun defaultTag(): String? = null
+internal actual fun defaultTag(): String? = null
 
 @OptIn(ExperimentalAtomicApi::class)
-actual class ThreadSafe<T> {
-
+internal actual class ThreadSafe<T> {
     private val atomic = AtomicReference<T?>(null)
 
     actual fun get(): T? = atomic.load()

@@ -7,8 +7,11 @@ internal expect val MAX_TAG_LENGTH: Int
 
 internal expect fun defaultTag(): String?
 
-expect class ThreadSafe<T>() {
+internal expect class ThreadSafe<T>() {
     fun get(): T?
+
+    @Suppress("unused")
     fun set(data: T?)
+
     fun remove()
 }

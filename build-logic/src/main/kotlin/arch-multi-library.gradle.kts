@@ -10,14 +10,29 @@ plugins {
 
 extensions.configure<KotlinMultiplatformExtension> {
     compilerOptions { jvmToolchain(projectJavaVersionCode) }
+    withSourcesJar(true)
+    applyDefaultHierarchyTemplate {
+        common {
+            group("java") {
+                withJvm()
+                withAndroidTarget()
+            }
+            group("kotlin") {
+                withJs()
+                withWasmJs()
+            }
+        }
+    }
+
     androidLibrary {
         namespace = "br.com.arch.toolkit.${project.name}"
         testNamespace = "test.$namespace"
-        compileSdk = libraries.version("build-sdk-compile").toInt()
-        minSdk = libraries.version("build-sdk-min").toInt()
-        buildToolsVersion = libraries.version("build-tools")
         androidResources { enable = false }
-        compilerOptions { jvmTarget.set(projectJavaTarget) }
+        withHostTest {
+            enableCoverage = true
+            isIncludeAndroidResources = true
+            isReturnDefaultValues = true
+        }
         lint {
             checkReleaseBuilds = true
             abortOnError = true
@@ -28,8 +43,10 @@ extensions.configure<KotlinMultiplatformExtension> {
             htmlOutput = File("$rootDir/build/reports/lint/html/${project.name}-lint.html")
             xmlOutput = File("$rootDir/build/reports/lint/xml/${project.name}-lint.xml")
         }
+        testCoverage { jacocoVersion = libraries.version("jacoco") }
+        optimization.consumerKeepRules.file("consumer-proguard-rules.pro")
     }
-    jvm { compilerOptions { jvmTarget.set(projectJavaTarget) } }
+    jvm { }
     wasmJs {
         browser { testTask { useKarma { useChromeHeadless() } } }
         binaries.library()
@@ -40,7 +57,7 @@ extensions.configure<KotlinMultiplatformExtension> {
     }
     // iOS Targets
     val exportName =
-        name.split("-").joinToString(
+        project.name.split("-").joinToString(
             separator = "",
             transform = String::capitalizeFirstChar,
         )
@@ -54,19 +71,6 @@ extensions.configure<KotlinMultiplatformExtension> {
             baseName = "${exportName}Kit"
             isStatic = true
             freeCompilerArgs += listOf("-bundle-id", exportId)
-        }
-    }
-
-    applyDefaultHierarchyTemplate {
-        common {
-            group("java") {
-                withJvm()
-                withAndroidTarget()
-            }
-            group("kotlin") {
-                withJs()
-                withWasmJs()
-            }
         }
     }
 

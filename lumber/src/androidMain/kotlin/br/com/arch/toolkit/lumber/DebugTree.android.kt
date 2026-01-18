@@ -8,7 +8,7 @@ import android.util.Log
  * # DebugTree (Android)
  *
  * Android-specific implementation of [Lumber.Oak], delegating logs
- * to the Android [Log] framework.
+ * to the [Android's Log](https://developer.android.com/reference/android/util/Log) framework.
  *
  * This is conceptually similar to Timber's `DebugTree`:
  * it prints all logs to Logcat, mapping [Lumber.Level] to
@@ -23,31 +23,30 @@ import android.util.Log
  * Lumber.error(Exception("Oops"), "Something went wrong")
  * ```
  *
- * @see android.util.Log
  * @see Lumber.Oak
  */
 actual open class DebugTree : Lumber.Oak() {
-
     /**
-     * Determines whether a log at the given [level] should be printed.
+     * Determines whether a log at the given `level` should be printed.
      *
-     * Delegates to [Log.isLoggable], mapping [Lumber.Level] to the
+     * Delegates to `Log.isLoggable`, mapping [Lumber.Level] to the
      * corresponding Android priority:
-     * - [Lumber.Level.Verbose] → [Log.VERBOSE]
-     * - [Lumber.Level.Debug]   → [Log.DEBUG]
-     * - [Lumber.Level.Info]    → [Log.INFO]
-     * - [Lumber.Level.Warn]    → [Log.WARN]
-     * - [Lumber.Level.Error]   → [Log.ERROR]
-     * - [Lumber.Level.Assert]  → [Log.ASSERT]
+     * - [Lumber.Level.Verbose] → `Log.VERBOSE`
+     * - [Lumber.Level.Debug]   → `Log.DEBUG`
+     * - [Lumber.Level.Info]    → `Log.INFO`
+     * - [Lumber.Level.Warn]    → `Log.WARN`
+     * - [Lumber.Level.Error]   → `Log.ERROR`
+     * - [Lumber.Level.Assert]  → `Log.ASSERT`
      *
      * @param tag Optional tag, can be `null` (Android will use `"null"`).
      * @param level The logging level.
      * @return `true` if Android allows logging at this level, `false` otherwise.
      */
-    actual override fun isLoggable(tag: String?, level: Lumber.Level) = Log.isLoggable(
-        /* tag = */
+    actual override fun isLoggable(
+        tag: String?,
+        level: Lumber.Level,
+    ) = Log.isLoggable(
         tag,
-        /* level = */
         when (level) {
             Lumber.Level.Verbose -> Log.VERBOSE
             Lumber.Level.Debug -> Log.DEBUG
@@ -55,26 +54,31 @@ actual open class DebugTree : Lumber.Oak() {
             Lumber.Level.Warn -> Log.WARN
             Lumber.Level.Error -> Log.ERROR
             Lumber.Level.Assert -> Log.ASSERT
-        }
+        },
     )
 
     /**
-     * Prints a log message at the given [level] using Android's [Log].
+     * Prints a log message at the given `level` using Android's `Log`.
      *
      * Maps [Lumber.Level] to the corresponding Android method:
-     * - [Lumber.Level.Verbose] → [Log.v]
-     * - [Lumber.Level.Debug]   → [Log.d]
-     * - [Lumber.Level.Info]    → [Log.i]
-     * - [Lumber.Level.Warn]    → [Log.w]
-     * - [Lumber.Level.Error]   → [Log.e]
-     * - [Lumber.Level.Assert]  → [Log.wtf]
+     * - [Lumber.Level.Verbose] → `Log.v`
+     * - [Lumber.Level.Debug]   → `Log.d`
+     * - [Lumber.Level.Info]    → `Log.i`
+     * - [Lumber.Level.Warn]    → `Log.w`
+     * - [Lumber.Level.Error]   → `Log.e`
+     * - [Lumber.Level.Assert]  → `Log.wtf`
      *
      * @param level The logging level.
      * @param tag Optional tag (may be `null`).
      * @param message The message to log.
      * @param error Optional throwable to log.
      */
-    actual override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
+    actual override fun log(
+        level: Lumber.Level,
+        tag: String?,
+        message: String,
+        error: Throwable?,
+    ) {
         when (level) {
             Lumber.Level.Verbose -> Log.v(tag, message)
             Lumber.Level.Debug -> Log.d(tag, message)

@@ -13,6 +13,7 @@ build-tools = "36.1.0"
 jetbrains-kotlin = "2.3.0"
 jetbrains-coroutines = "1.10.2"
 jetbrains-dokka = "2.1.0"
+jetbrains-kover = "0.9.4"
 
 ## AndroidX
 androidx-plugin = "9.0.0"
@@ -29,6 +30,7 @@ jetbrains-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines
 jetbrains-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "jetbrains-dokka" }
 jetbrains-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "jetbrains-kotlin" }
 jetbrains-multiplatform = { module = "org.jetbrains.kotlin.multiplatform:org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "jetbrains-kotlin" }
+jetbrains-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "jetbrains-kover" }
 jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "jetbrains-kotlin" }
 
 ## Androidx
@@ -43,13 +45,8 @@ vanniktech-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", ve
 
 # ------------------------------------------------------------------------------------------------ #
 [plugins]
-## JetBrains
-jetbrains-dokka = { id = "org.jetbrains.dokka", version.ref = "jetbrains-dokka" }
-
-## Tools to make my life easier
-vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktech-publish" }
+## Nothing Here Yet!
 
 # ------------------------------------------------------------------------------------------------ #
 [bundles]
-
 ## Nothing Here Yet!

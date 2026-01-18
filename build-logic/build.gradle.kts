@@ -14,6 +14,7 @@ dependencies {
     implementation(libs.jetbrains.plugin)
     implementation(libs.jetbrains.multiplatform)
     implementation(libs.jetbrains.dokka)
+    implementation(libs.jetbrains.kover)
     implementation(libs.vanniktech.publish)
 
     // Lint

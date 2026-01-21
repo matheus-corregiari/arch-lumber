@@ -41,6 +41,8 @@ jobs:
           languages: java-kotlin
 
       - name: Build JVM / Android targets
+        env:
+          CODEQL_EXTRACTOR_JAVA_AGENT_DISABLE_KOTLIN: "true"
         run: |
           ./gradlew build -x allTests
 

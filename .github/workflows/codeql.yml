@@ -32,6 +32,34 @@ jobs:
           distribution: temurin
           cache: gradle
 
+      # Setup Gradle because without it, nothing happens
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      # Kotlin compiler
+      - name: Cache Kotlin compiler
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/kotlin
+          key: ${{ runner.os }}-gradle-kotlin-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-kotlin-
+
+      # Cache Konan (Kotlin/Native)
+      - name: Cache Konan
+        uses: actions/cache@v4
+        with:
+          path: ~/.konan
+          key: ${{ runner.os }}-konan-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-konan-
+
+      # Cache npm (for JS/WASM builds)
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package.json') }}
+          restore-keys: ${{ runner.os }}-npm-
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:

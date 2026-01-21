@@ -3,21 +3,14 @@ plugins {
     id("arch-lint")
     id("arch-documentation")
     id("arch-optimize")
+    id("arch-publish")
 }
 
 kotlin {
     androidLibrary {
-        compileSdk =
-            libs.versions.build.sdk.compile
-                .get()
-                .toInt()
-        minSdk =
-            libs.versions.build.sdk.min
-                .get()
-                .toInt()
-        buildToolsVersion =
-            libs.versions.build.tools
-                .get()
+        compileSdk = versionInt { libs.versions.build.sdk.compile }
+        minSdk = versionInt { libs.versions.build.sdk.min }
+        buildToolsVersion = versionString { libs.versions.build.tools }
     }
 
     // Libraries

@@ -37,13 +37,15 @@ package br.com.arch.toolkit.lumber
  * @see jsLogError
  */
 actual open class DebugTree actual constructor() : Lumber.Oak() {
-
     /**
      * Always returns `true` for Wasm/JS.
      *
      * There is no log filtering available here.
      */
-    actual override fun isLoggable(tag: String?, level: Lumber.Level): Boolean = true
+    actual override fun isLoggable(
+        tag: String?,
+        level: Lumber.Level,
+    ): Boolean = true
 
     /**
      * Logs a message to the JS console, mapping [Lumber.Level] to
@@ -59,7 +61,7 @@ actual open class DebugTree actual constructor() : Lumber.Oak() {
         level: Lumber.Level,
         tag: String?,
         message: String,
-        error: Throwable?
+        error: Throwable?,
     ) = when (level) {
         Lumber.Level.Verbose -> jsLog("VERBOSE - [$tag] : $message")
         Lumber.Level.Debug -> jsLog("DEBUG - [$tag] : $message")

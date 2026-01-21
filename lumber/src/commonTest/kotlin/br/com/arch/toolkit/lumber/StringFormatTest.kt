@@ -56,9 +56,10 @@ class StringFormatTest {
 
     @Test
     fun `less arguments than placeholders - should return throw exception`() {
-        val error = assertFails {
-            "normal text with %s, %d and %s arguments".format("one", 2)
-        }
+        val error =
+            assertFails {
+                "normal text with %s, %d and %s arguments".format("one", 2)
+            }
         val expected = "Wrong number of arguments, expected 3, actual 2"
         assertEquals(expected, error.message)
     }

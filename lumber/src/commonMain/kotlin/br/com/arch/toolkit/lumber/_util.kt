@@ -1,16 +1,22 @@
+@file:Suppress("ktlint:standard:filename")
+
 package br.com.arch.toolkit.lumber
 
 import kotlinx.coroutines.sync.Mutex
 
-internal val fqcnIgnore = setOfNotNull(
-    Lumber::class,
-    Lumber.Level::class,
-    Lumber.OakWood::class,
-    Lumber.Oak::class,
-    DebugTree::class,
-)
+internal val fqcnIgnore =
+    setOfNotNull(
+        Lumber::class,
+        Lumber.Level::class,
+        Lumber.OakWood::class,
+        Lumber.Oak::class,
+        DebugTree::class,
+    )
 
-internal fun <T> Mutex.synchronized(key: Any, block: () -> T) = try {
+internal fun <T> Mutex.synchronized(
+    key: Any,
+    block: () -> T,
+) = try {
     runCatching { tryLock(owner = key) }
     block()
 } finally {
@@ -31,17 +37,19 @@ internal fun String.format(vararg args: Any?): String {
 
     // Get the argument and format it
     val argument = args.firstOrNull()
-    val formatted = when (match.value) {
-        "%s" -> argument.toString()
-        "%d" -> (argument as? Number).toString()
-        else -> match.value
-    }
+    val formatted =
+        when (match.value) {
+            "%s" -> argument.toString()
+            "%d" -> (argument as? Number).toString()
+            else -> match.value
+        }
 
     // Replace the match and format the string
-    val replaced = replaceRange(
-        range = match.range,
-        replacement = formatted
-    )
+    val replaced =
+        replaceRange(
+            range = match.range,
+            replacement = formatted,
+        )
 
     // Recursively format the rest of the string
     return replaced.format(args = args.drop(1).toTypedArray())

@@ -34,9 +34,11 @@ package br.com.arch.toolkit.lumber
  * @see Lumber.Oak
  */
 actual open class DebugTree actual constructor() : Lumber.Oak() {
-
     /** Always returns `true`, allowing all logs to be emitted. */
-    actual override fun isLoggable(tag: String?, level: Lumber.Level) = true
+    actual override fun isLoggable(
+        tag: String?,
+        level: Lumber.Level,
+    ) = true
 
     /**
      * Routes the log message to the native JavaScript `console`.
@@ -46,13 +48,17 @@ actual open class DebugTree actual constructor() : Lumber.Oak() {
      * @param message The log message content.
      * @param error An optional [Throwable] attached to the log (currently ignored).
      */
-    actual override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) =
-        when (level) {
-            Lumber.Level.Verbose -> console.log("VERBOSE $tag : $message")
-            Lumber.Level.Debug -> console.log("DEBUG $tag : $message")
-            Lumber.Level.Info -> console.info("INFO $tag : $message")
-            Lumber.Level.Warn -> console.warn("WARNING $tag : $message")
-            Lumber.Level.Error -> console.error("ERROR $tag : $message")
-            Lumber.Level.Assert -> console.error("ASSERT $tag : $message")
-        }
+    actual override fun log(
+        level: Lumber.Level,
+        tag: String?,
+        message: String,
+        error: Throwable?,
+    ) = when (level) {
+        Lumber.Level.Verbose -> console.log("VERBOSE $tag : $message")
+        Lumber.Level.Debug -> console.log("DEBUG $tag : $message")
+        Lumber.Level.Info -> console.info("INFO $tag : $message")
+        Lumber.Level.Warn -> console.warn("WARNING $tag : $message")
+        Lumber.Level.Error -> console.error("ERROR $tag : $message")
+        Lumber.Level.Assert -> console.error("ASSERT $tag : $message")
+    }
 }

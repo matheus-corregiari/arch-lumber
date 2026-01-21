@@ -143,7 +143,7 @@ class Lumber private constructor() {
         Error,
 
         /** Critical failures that should never happen (What a Terrible Failure) */
-        Assert
+        Assert,
     }
 
     /**
@@ -173,7 +173,6 @@ class Lumber private constructor() {
      * @see OakWood for the singleton dispatcher that manages multiple [Oak] instances.
      */
     abstract class Oak {
-
         private val explicitTag = ThreadSafe<String?>()
         private val explicitQuiet = ThreadSafe<Boolean?>()
         private val explicitMaxLogLength = ThreadSafe<Int?>()
@@ -183,10 +182,11 @@ class Lumber private constructor() {
          * Optional one-time tag. Set via [tag], consumed after one use.
          */
         protected open val tag: String?
-            get() = explicitTag
-                .get()
-                .takeIf { it.isNullOrBlank().not() }
-                ?.also { explicitTag.remove() }
+            get() =
+                explicitTag
+                    .get()
+                    .takeIf { it.isNullOrBlank().not() }
+                    ?.also { explicitTag.remove() }
 
         /**
          * Optional one-time quiet flag. Set via [quiet], consumed after one use.
@@ -300,109 +300,151 @@ class Lumber private constructor() {
         }
 
         //region Verbose
+
         /** Log a [Level.Verbose] message. */
-        open fun verbose(message: String, vararg args: Any?) =
-            log(level = Verbose, message = message, args = args)
+        open fun verbose(
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Verbose, message = message, args = args)
 
         /** Log a [Level.Verbose] exception only. */
-        open fun verbose(error: Throwable) =
-            log(level = Verbose, error = error)
+        open fun verbose(error: Throwable) = log(level = Verbose, error = error)
 
         /** Log a [Level.Verbose] exception with message. */
-        open fun verbose(error: Throwable, message: String, vararg args: Any?) =
-            log(level = Verbose, error = error, message = message, args = args)
+        open fun verbose(
+            error: Throwable,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Verbose, error = error, message = message, args = args)
         //endregion
 
         //region Debug
+
         /** Log a [Level.Debug] message. */
-        open fun debug(message: String, vararg args: Any?) =
-            log(level = Debug, message = message, args = args)
+        open fun debug(
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Debug, message = message, args = args)
 
         /** Log a [Level.Debug] exception only. */
-        open fun debug(error: Throwable) =
-            log(level = Debug, error = error)
+        open fun debug(error: Throwable) = log(level = Debug, error = error)
 
         /** Log a [Level.Debug] exception with message. */
-        open fun debug(error: Throwable, message: String, vararg args: Any?) =
-            log(level = Debug, error = error, message = message, args = args)
+        open fun debug(
+            error: Throwable,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Debug, error = error, message = message, args = args)
         //endregion
 
         //region Info
+
         /** Log a [Level.Info] message. */
-        open fun info(message: String, vararg args: Any?) =
-            log(level = Info, message = message, args = args)
+        open fun info(
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Info, message = message, args = args)
 
         /** Log a [Level.Info] exception only. */
-        open fun info(error: Throwable) =
-            log(level = Info, error = error)
+        open fun info(error: Throwable) = log(level = Info, error = error)
 
         /** Log a [Level.Info] exception with message. */
-        open fun info(error: Throwable, message: String, vararg args: Any?) =
-            log(level = Info, error = error, message = message, args = args)
+        open fun info(
+            error: Throwable,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Info, error = error, message = message, args = args)
         //endregion
 
         //region Warn
+
         /** Log a [Level.Warn] message. */
-        open fun warn(message: String, vararg args: Any?) =
-            log(level = Warn, message = message, args = args)
+        open fun warn(
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Warn, message = message, args = args)
 
         /** Log a [Level.Warn] exception only. */
-        open fun warn(error: Throwable) =
-            log(level = Warn, error = error)
+        open fun warn(error: Throwable) = log(level = Warn, error = error)
 
         /** Log a [Level.Warn] exception with message. */
-        open fun warn(error: Throwable, message: String, vararg args: Any?) =
-            log(level = Warn, error = error, message = message, args = args)
+        open fun warn(
+            error: Throwable,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Warn, error = error, message = message, args = args)
         //endregion
 
         //region Error
+
         /** Log a [Level.Error] message. */
-        open fun error(message: String, vararg args: Any?) =
-            log(level = Error, message = message, args = args)
+        open fun error(
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Error, message = message, args = args)
 
         /** Log a [Level.Error] exception only. */
-        open fun error(error: Throwable) =
-            log(level = Error, error = error)
+        open fun error(error: Throwable) = log(level = Error, error = error)
 
         /** Log a [Level.Error] exception with message. */
-        open fun error(error: Throwable, message: String, vararg args: Any?) =
-            log(level = Error, error = error, message = message, args = args)
+        open fun error(
+            error: Throwable,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Error, error = error, message = message, args = args)
         //endregion
 
         //region Assert
+
         /** Log a [Level.Assert] message. */
-        open fun wtf(message: String, vararg args: Any?) =
-            log(level = Assert, message = message, args = args)
+        open fun wtf(
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Assert, message = message, args = args)
 
         /** Log a [Level.Assert] exception only. */
-        open fun wtf(error: Throwable) =
-            log(level = Assert, error = error)
+        open fun wtf(error: Throwable) = log(level = Assert, error = error)
 
         /** Log a [Level.Assert] exception with message. */
-        open fun wtf(error: Throwable, message: String, vararg args: Any?) =
-            log(level = Assert, error = error, message = message, args = args)
+        open fun wtf(
+            error: Throwable,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = Assert, error = error, message = message, args = args)
         //endregion
 
         //region Raw Log
 
         /** Log a message at [level] with optional formatting args. */
-        open fun log(level: Level, message: String, vararg args: Any?) =
-            log(level = level, error = null, message = message, args = args)
+        open fun log(
+            level: Level,
+            message: String,
+            vararg args: Any?,
+        ) = log(level = level, error = null, message = message, args = args)
 
         /** Log an exception only. */
-        open fun log(level: Level, error: Throwable) =
-            log(level = level, error = error, message = null, args = emptyArray())
+        open fun log(
+            level: Level,
+            error: Throwable,
+        ) = log(level = level, error = error, message = null, args = emptyArray())
 
         /** Log exception + optional message with args. */
-        open fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
-            prepareLog(level = level, error = error, message = message, args = args)
+        open fun log(
+            level: Level,
+            error: Throwable?,
+            message: String?,
+            vararg args: Any?,
+        ) = prepareLog(level = level, error = error, message = message, args = args)
         //endregion
 
         /**
          * Determines whether a log at [level] should be written.
          * Override to filter logs (e.g. only >= Warn).
          */
-        protected abstract fun isLoggable(tag: String?, level: Level): Boolean
+        protected abstract fun isLoggable(
+            tag: String?,
+            level: Level,
+        ): Boolean
 
         /**
          * Performs the actual logging.
@@ -412,7 +454,12 @@ class Lumber private constructor() {
          * @param message The formatted message (never null here).
          * @param error Optional exception.
          */
-        protected abstract fun log(level: Level, tag: String?, message: String, error: Throwable?)
+        protected abstract fun log(
+            level: Level,
+            tag: String?,
+            message: String,
+            error: Throwable?,
+        )
 
         private fun prepareLog(
             level: Level,
@@ -475,8 +522,12 @@ class Lumber private constructor() {
          */
         val treeCount: Int get() = trees.size
 
-        override fun log(level: Level, tag: String?, message: String, error: Throwable?): Unit =
-            error(message = "OakWood does not implement direct logging; use its dispatcher instead.")
+        override fun log(
+            level: Level,
+            tag: String?,
+            message: String,
+            error: Throwable?,
+        ): Unit = error(message = "OakWood does not implement direct logging; use its dispatcher instead.")
 
         /**
          * Dispatches the log message to all planted Oaks.
@@ -493,7 +544,12 @@ class Lumber private constructor() {
          * // FileOak: Debug message
          * ```
          */
-        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) {
+        override fun log(
+            level: Level,
+            error: Throwable?,
+            message: String?,
+            vararg args: Any?,
+        ) {
             trees.forEach {
                 it.log(level = level, error = error, message = message, args = args)
             }
@@ -512,7 +568,10 @@ class Lumber private constructor() {
          * Lumber.isLoggable("MyTag", Level.Debug) // returns true
          * ```
          */
-        override fun isLoggable(tag: String?, level: Level): Boolean = true
+        override fun isLoggable(
+            tag: String?,
+            level: Level,
+        ): Boolean = true
 
         /**
          * Sets a one-time tag to be used for the next logging call on all planted Oaks.
@@ -605,7 +664,6 @@ class Lumber private constructor() {
             return this
         }
 
-
         /**
          * Plants new logging trees into the forest.
          * Accepts one or more Oak instances and adds them to the logging system.
@@ -621,7 +679,10 @@ class Lumber private constructor() {
          * Lumber.debug("Message to consoleOak and fileOak")
          * ```
          */
-        fun plant(tree: Oak, vararg trees: Oak) = apply {
+        fun plant(
+            tree: Oak,
+            vararg trees: Oak,
+        ) = apply {
             val allTrees = listOf(tree, *trees)
             allTrees.forEach { require(it !== this) { "Cannot plant Lumber itself." } }
             mutex.synchronized(trees) { this.trees.addAll(allTrees) }
@@ -639,9 +700,10 @@ class Lumber private constructor() {
          * Lumber.uproot(consoleOak) // Removes consoleOak from the forest
          * ```
          */
-        fun uproot(tree: Oak) = apply {
-            mutex.synchronized(trees) { trees.remove(tree) }
-        }
+        fun uproot(tree: Oak) =
+            apply {
+                mutex.synchronized(trees) { trees.remove(tree) }
+            }
 
         /**
          * Clears all planted trees from the forest.
@@ -652,9 +714,10 @@ class Lumber private constructor() {
          * Lumber.debug("Message will not be logged anymore")
          * ```
          */
-        fun uprootAll() = apply {
-            mutex.synchronized(trees) { trees.clear() }
-        }
+        fun uprootAll() =
+            apply {
+                mutex.synchronized(trees) { trees.clear() }
+            }
 
         /**
          * Returns a copy of all planted trees (Oaks).

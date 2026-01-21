@@ -23,7 +23,6 @@ package br.com.arch.toolkit.lumber
  * ```
  */
 expect open class DebugTree() : Lumber.Oak {
-
     /**
      * Determines whether a log message at the specified level should be logged.
      * This function will be implemented differently for each platform.
@@ -32,7 +31,10 @@ expect open class DebugTree() : Lumber.Oak {
      * @param level The logging level.
      * @return Whether the message is loggable at the specified level.
      */
-    override fun isLoggable(tag: String?, level: Lumber.Level): Boolean
+    override fun isLoggable(
+        tag: String?,
+        level: Lumber.Level,
+    ): Boolean
 
     /**
      * Logs a message at the specified level, possibly including an error (Throwable).
@@ -43,5 +45,10 @@ expect open class DebugTree() : Lumber.Oak {
      * @param message The log message.
      * @param error An optional throwable (error) to be logged.
      */
-    override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?)
+    override fun log(
+        level: Lumber.Level,
+        tag: String?,
+        message: String,
+        error: Throwable?,
+    )
 }

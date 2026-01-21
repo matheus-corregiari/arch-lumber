@@ -33,17 +33,17 @@ import com.github.ajalt.mordant.rendering.TextStyle
  * The output will be printed to the terminal with colors applied per log level.
  */
 actual open class DebugTree : Lumber.Oak() {
-
     /** Maps [Lumber.Level] to a Mordant [TextStyle] for colored output. */
     private val Lumber.Level.toStyle: TextStyle
-        get() = when (this) {
-            Lumber.Level.Error -> TextColors.brightRed
-            Lumber.Level.Warn -> TextColors.brightYellow
-            Lumber.Level.Info -> TextColors.brightBlue
-            Lumber.Level.Debug -> TextColors.brightGreen
-            Lumber.Level.Verbose -> TextColors.brightMagenta
-            Lumber.Level.Assert -> TextColors.brightCyan
-        }
+        get() =
+            when (this) {
+                Lumber.Level.Error -> TextColors.brightRed
+                Lumber.Level.Warn -> TextColors.brightYellow
+                Lumber.Level.Info -> TextColors.brightBlue
+                Lumber.Level.Debug -> TextColors.brightGreen
+                Lumber.Level.Verbose -> TextColors.brightMagenta
+                Lumber.Level.Assert -> TextColors.brightCyan
+            }
 
     /**
      * Always returns `true` for JVM.
@@ -54,7 +54,10 @@ actual open class DebugTree : Lumber.Oak() {
      * @param tag The log tag (ignored in filtering).
      * @param level The log level.
      */
-    actual override fun isLoggable(tag: String?, level: Lumber.Level): Boolean = true
+    actual override fun isLoggable(
+        tag: String?,
+        level: Lumber.Level,
+    ): Boolean = true
 
     /**
      * Prints a log message to the console with a color based on [level].
@@ -64,12 +67,18 @@ actual open class DebugTree : Lumber.Oak() {
      * @param message The message to log.
      * @param error Optional throwable. Currently not printed; consider extending if needed.
      */
-    actual override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
-        val formattedMessage = if (tag == null) {
-            "[%s] -> %s".format(level.name, message)
-        } else {
-            "[%s]-[%s] -> %s".format(level.name, tag, message)
-        }
+    actual override fun log(
+        level: Lumber.Level,
+        tag: String?,
+        message: String,
+        error: Throwable?,
+    ) {
+        val formattedMessage =
+            if (tag == null) {
+                "[%s] -> %s".format(level.name, message)
+            } else {
+                "[%s]-[%s] -> %s".format(level.name, tag, message)
+            }
 
         // Apply style to each line separately
         println(formattedMessage.lineSequence().map(level.toStyle::invoke).joinToString("\n"))

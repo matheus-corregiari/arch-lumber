@@ -1,4 +1,4 @@
-@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING", "ktlint:standard:filename")
 
 package br.com.arch.toolkit.lumber
 
@@ -39,9 +39,5 @@ private fun extractData(match: MatchResult): Triple<String, String, String>? {
     val className = group["className"]
     val method = group["method"]
     if (full == null || className == null || method == null) return null
-    return Triple(
-        full.value,
-        className.value,
-        method.value.camelcase(),
-    )
+    return Triple(full.value, className.value, method.value.camelcase())
 }

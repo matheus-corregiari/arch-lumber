@@ -34,7 +34,6 @@ jetbrains-kover = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", versio
 jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "jetbrains-kotlin" }
 
 ## Androidx
-androidx-plugin = { module = "com.android.tools.build:gradle", version.ref = "androidx-plugin" }
 androidx-library = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidx-plugin" }
 
 ## Tools

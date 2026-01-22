@@ -9,7 +9,6 @@ version = "1.0.0"
 
 dependencies {
     compileOnly(gradleApi())
-    implementation(libs.androidx.plugin)
     implementation(libs.androidx.library)
     implementation(libs.jetbrains.plugin)
     implementation(libs.jetbrains.multiplatform)

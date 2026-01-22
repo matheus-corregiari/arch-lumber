@@ -10,12 +10,12 @@ package br.com.arch.toolkit.lumber
  * for better readability in terminal environments.
  *
  * Each [Lumber.Level] is mapped to a distinct color style:
- * - [Lumber.Level.Error]   → Bright Red
- * - [Lumber.Level.Warn]    → Bright Yellow
- * - [Lumber.Level.Info]    → Bright Blue
- * - [Lumber.Level.Debug]   → Bright Green
- * - [Lumber.Level.Verbose] → Bright Magenta
- * - [Lumber.Level.Assert]  → Bright Cyan
+ * - [Lumber.Level.Error]   → Red
+ * - [Lumber.Level.Warn]    → Yellow
+ * - [Lumber.Level.Info]    → Blue
+ * - [Lumber.Level.Debug]   → Green
+ * - [Lumber.Level.Verbose] → Gray
+ * - [Lumber.Level.Assert]  → Cyan
  *
  * The [isLoggable] method always returns `true`, ensuring all logs
  * are emitted without filtering.

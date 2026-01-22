@@ -2,14 +2,11 @@
 
 package br.com.arch.toolkit.lumber
 
-import com.github.ajalt.mordant.rendering.TextColors
-import com.github.ajalt.mordant.rendering.TextStyle
-
 /**
  * # DebugTree (Apple - Darwin)
  *
- * This tree prints log messages to the standard output (`println`) with
- * ANSI colors applied using the [Mordant](https://github.com/ajalt/mordant) library
+ * This tree prints log messages to the standard output (`println`)
+ * with ANSI colors applied to each log [ColoredLog].
  * for better readability in terminal environments.
  *
  * Each [Lumber.Level] is mapped to a distinct color style:
@@ -40,16 +37,16 @@ import com.github.ajalt.mordant.rendering.TextStyle
  * @see Lumber.Oak
  */
 actual open class DebugTree : Lumber.Oak() {
-    /** Maps a [Lumber.Level] to a terminal [TextStyle] using Mordant colors. */
-    private val Lumber.Level.toStyle: TextStyle
+    /** Maps [Lumber.Level] to a [ColoredLog] for colored output. */
+    private val Lumber.Level.toStyle: ColoredLog
         get() =
             when (this) {
-                Lumber.Level.Error -> TextColors.brightRed
-                Lumber.Level.Warn -> TextColors.brightYellow
-                Lumber.Level.Info -> TextColors.brightBlue
-                Lumber.Level.Debug -> TextColors.brightGreen
-                Lumber.Level.Verbose -> TextColors.brightMagenta
-                Lumber.Level.Assert -> TextColors.brightCyan
+                Lumber.Level.Error -> ColoredLog.Red
+                Lumber.Level.Warn -> ColoredLog.Yellow
+                Lumber.Level.Info -> ColoredLog.Blue
+                Lumber.Level.Debug -> ColoredLog.Green
+                Lumber.Level.Verbose -> ColoredLog.Gray
+                Lumber.Level.Assert -> ColoredLog.Cyan
             }
 
     /** Always returns `true`, allowing all logs to be emitted. */

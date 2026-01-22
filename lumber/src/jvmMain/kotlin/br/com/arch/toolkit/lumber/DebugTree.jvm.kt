@@ -2,23 +2,19 @@
 
 package br.com.arch.toolkit.lumber
 
-import com.github.ajalt.mordant.rendering.TextColors
-import com.github.ajalt.mordant.rendering.TextStyle
-
 /**
  * # DebugTree (JVM)
  *
  * JVM-specific implementation of [Lumber.Oak] that prints logs to the
- * standard output (`stdout`), with ANSI colors provided by
- * [Mordant](https://github.com/ajalt/mordant).
+ * standard output (`stdout`), with ANSI colors applied to each log [ColoredLog].
  *
  * Each [Lumber.Level] is mapped to a distinct color:
- * - [Lumber.Level.Error]   → Bright Red
- * - [Lumber.Level.Warn]    → Bright Yellow
- * - [Lumber.Level.Info]    → Bright Blue
- * - [Lumber.Level.Debug]   → Bright Green
- * - [Lumber.Level.Verbose] → Bright Magenta
- * - [Lumber.Level.Assert]  → Bright Cyan
+ * - [Lumber.Level.Error]   → Red
+ * - [Lumber.Level.Warn]    → Yellow
+ * - [Lumber.Level.Info]    → Blue
+ * - [Lumber.Level.Debug]   → Green
+ * - [Lumber.Level.Verbose] → Gray
+ * - [Lumber.Level.Assert]  → Cyan
  *
  * ## Example
  * ```kotlin
@@ -33,16 +29,16 @@ import com.github.ajalt.mordant.rendering.TextStyle
  * The output will be printed to the terminal with colors applied per log level.
  */
 actual open class DebugTree : Lumber.Oak() {
-    /** Maps [Lumber.Level] to a Mordant [TextStyle] for colored output. */
-    private val Lumber.Level.toStyle: TextStyle
+    /** Maps [Lumber.Level] to a [ColoredLog] for colored output. */
+    private val Lumber.Level.toStyle: ColoredLog
         get() =
             when (this) {
-                Lumber.Level.Error -> TextColors.brightRed
-                Lumber.Level.Warn -> TextColors.brightYellow
-                Lumber.Level.Info -> TextColors.brightBlue
-                Lumber.Level.Debug -> TextColors.brightGreen
-                Lumber.Level.Verbose -> TextColors.brightMagenta
-                Lumber.Level.Assert -> TextColors.brightCyan
+                Lumber.Level.Error -> ColoredLog.Red
+                Lumber.Level.Warn -> ColoredLog.Yellow
+                Lumber.Level.Info -> ColoredLog.Blue
+                Lumber.Level.Debug -> ColoredLog.Green
+                Lumber.Level.Verbose -> ColoredLog.Gray
+                Lumber.Level.Assert -> ColoredLog.Cyan
             }
 
     /**

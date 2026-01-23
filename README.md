@@ -1,12 +1,12 @@
 # 🌲 Lumber – A Lightweight Logging Library for Kotlin Multiplatform
 
-
-![Android][badge-android] ![Apple][badge-apple] ![JVM][badge-jvm] ![JS][badge-js] ![WASM][badge-wasm]  
-![Lint][badge-lint]
-[![Maven Central][badge-maven]][link-maven]  
-[![CI Status][badge-ci]][link-ci]  
-[![LICENSE][badge-license]][link-license]  
-[![COVERAGE][badge-coverage]][link-coverage]
+---
+[![Maven Central][badge-maven]][link-maven][![LICENSE][badge-license]][link-license]
+---
+![Android][badge-android] ![Apple][badge-apple] ![JVM][badge-jvm] ![JS][badge-js] ![WASM][badge-wasm]
+---
+![Lint][badge-lint]![Test][badge-test]![Coverage][badge-coverage]
+---
 
 A flexible, type-safe, and multiplatform logging library inspired
 by [Timber](https://github.com/JakeWharton/timber).  
@@ -226,8 +226,6 @@ See [LICENSE](LICENSE) for details.
 
 [link-license]: /LICENSE
 
-[link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
-
 [badge-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
 
 [badge-apple]: http://img.shields.io/badge/-apple-000000.svg?style=flat
@@ -238,14 +236,14 @@ See [LICENSE](LICENSE) for details.
 
 [badge-jvm]: http://img.shields.io/badge/-jvm-DB413D.svg?style=flat
 
-[badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/lumber.svg
-
-[badge-ci]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/generate-tag.yml/badge.svg
+[badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/arch-lumber.svg
 
 [badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-lumber
 
-[badge-coverage]: https://img.shields.io/codecov/c/github/matheus-corregiari/arch-lumber
+[badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
 
 [badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml
+
+[badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/coverage.yml
 
 ```

@@ -2,20 +2,19 @@
 
 #### Version
 
-[![Maven Central][badge-maven]][link-maven] ● [![LICENSE][badge-license]][link-license]
+[![Maven Central][badge-maven]][link-maven] · [![LICENSE][badge-license]][link-license]
 
 ---
 
 #### Platforms
 
-![Android][badge-android] ● ![Apple][badge-apple] ● ![JVM][badge-jvm] ● ![JS][badge-js]
-● ![WASM][badge-wasm]
+![Android][badge-android] · ![Apple][badge-apple] · ![JVM][badge-jvm] · ![JS][badge-js] · ![WASM][badge-wasm]
 
 ---
 
 #### Quality
 
-![Lint][badge-lint] ● ![Test][badge-test] ● ![Coverage][badge-coverage]
+![Lint][badge-lint] · ![Test][badge-test] · ![Coverage][badge-coverage]
 
 ---
 

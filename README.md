@@ -1,17 +1,30 @@
 # 🌲 Lumber – A Lightweight Logging Library for Kotlin Multiplatform
 
+#### Version
+
+[![Maven Central][badge-maven]][link-maven] ● [![LICENSE][badge-license]][link-license]
+
 ---
-[![Maven Central][badge-maven]][link-maven][![LICENSE][badge-license]][link-license]
+
+#### Platforms
+
+![Android][badge-android] ● ![Apple][badge-apple] ● ![JVM][badge-jvm] ● ![JS][badge-js]
+● ![WASM][badge-wasm]
+
 ---
-![Android][badge-android] ![Apple][badge-apple] ![JVM][badge-jvm] ![JS][badge-js] ![WASM][badge-wasm]
----
-![Lint][badge-lint]![Test][badge-test]![Coverage][badge-coverage]
+
+#### Quality
+
+![Lint][badge-lint] ● ![Test][badge-test] ● ![Coverage][badge-coverage]
+
 ---
 
 A flexible, type-safe, and multiplatform logging library inspired
 by [Timber](https://github.com/JakeWharton/timber).  
 Lumber brings a **simple API**, **prebuilt DebugTrees**, and **extensibility** for your Kotlin
 Multiplatform projects.
+
+Too see more, take a look at the [documentation](/docs/api/lumber/markdown/index.md).
 
 ---
 
@@ -142,39 +155,6 @@ Plant it like this:
 ```kotlin
 Lumber.plant(ConsoleOak(), FileOak())
 Lumber.debug("Logged to console and file")
-```
-
----
-
-## 🔄 Comparison with Timber
-
-| Feature                 | Timber (Android-only) | Lumber (Multiplatform)                               |
-|-------------------------|-----------------------|------------------------------------------------------|
-| **Targets**             | Android only          | Android, Apple (Darwin), JS (IR), **WASM (IR)**, JVM |
-| **Prebuilt DebugTree**  | Logcat                | Logcat, ANSI-colored println, JS/WASM console        |
-| **Custom Trees**        | ✅ Supported           | ✅ Supported (`Oak`)                                  |
-| **Thread-Safe**         | ✅                     | ✅                                                    |
-| **API Style**           | `Timber.d("msg")`     | `Lumber.debug("msg")`                                |
-| **Multiplatform Ready** | ❌                     | ✅                                                    |
-| **Quiet Mode**          | ❌                     | ✅ `Lumber.quiet(true)`                               |
-| **Tag Override**        | ✅                     | ✅ `Lumber.tag("MyTag").debug("msg")`                 |
-
-### Side-by-Side Example
-
-**Timber (Android-only):**
-
-```kotlin
-Timber.plant(Timber.DebugTree())
-Timber.d("Debug message")
-Timber.e(Throwable("Boom"), "Error occurred")
-```
-
-**Lumber (KMP):**
-
-```kotlin
-Lumber.plant(DebugTree())
-Lumber.debug("Debug message")
-Lumber.error(Throwable("Boom"), "Error occurred")
 ```
 
 ---

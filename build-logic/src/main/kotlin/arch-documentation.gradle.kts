@@ -1,8 +1,5 @@
-import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
-import kotlinx.kover.gradle.plugin.dsl.tasks.KoverReport
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.dokka.gradle.DokkaExtension
-import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 
 plugins {
     id("org.jetbrains.dokka")
@@ -30,20 +27,4 @@ extensions.configure(DokkaExtension::class) {
         enableJdkDocumentationLink.set(true)
         enableKotlinStdLibDocumentationLink.set(true)
     }
-}
-
-extensions.configure(KoverProjectExtension::class) {
-    reports {
-        total {
-            xml { xmlFile.set(file("$rootDir/docs/coverage/${project.name}/coverage.xml")) }
-            binary { file.set(file("$rootDir/docs/coverage/${project.name}/coverage.bin")) }
-            html { onCheck.set(false) }
-        }
-    }
-}
-
-val updateDocs by tasks.registering {
-    group = "documentation"
-    dependsOn(tasks.withType(DokkaGenerateTask::class))
-    dependsOn(tasks.withType(KoverReport::class))
 }

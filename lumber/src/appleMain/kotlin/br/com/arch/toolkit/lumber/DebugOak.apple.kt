@@ -3,9 +3,9 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugTree (Apple - Darwin)
+ * # DebugOak (Apple - Darwin)
  *
- * This tree prints log messages to the standard output (`println`)
+ * This oak prints log messages to the standard output (`println`)
  * with ANSI colors applied to each log [ColoredLog].
  * for better readability in terminal environments.
  *
@@ -22,7 +22,7 @@ package br.com.arch.toolkit.lumber
  *
  * ### Example usage:
  * ```kotlin
- * Lumber.plant(DebugTree())
+ * Lumber.plant(DebugOak())
  * Lumber.i("Startup", "Application initialized")
  * ```
  *
@@ -31,12 +31,12 @@ package br.com.arch.toolkit.lumber
  * [Info]-[Startup] -> Application initialized
  * ```
  *
- * @constructor Creates a debug tree that logs with colored output
+ * @constructor Creates a debug oak that logs with colored output
  * for Apple/Darwin targets.
  * @see Lumber
  * @see Lumber.Oak
  */
-actual open class DebugTree : Lumber.Oak() {
+actual open class DebugOak : Lumber.Oak() {
     /** Maps [Lumber.Level] to a [ColoredLog] for colored output. */
     private val Lumber.Level.toStyle: ColoredLog
         get() =

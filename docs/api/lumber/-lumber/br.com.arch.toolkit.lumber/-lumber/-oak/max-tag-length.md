@@ -3,9 +3,9 @@
 # maxTagLength
 
 [common]\
-open fun [maxTagLength](max-tag-length.md)(maxTagLength: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](index.md)
+open fun [maxTagLength](max-tag-length.md)(length: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](index.md)
 
-Sets a one-time max log length to be used for the next logging call on this specific [Oak](index.md). When enabled, some loggers might skip logging the message based on their implementation. The quiet flag is temporary and only affects the immediate next log message.
+Sets a one-time max tag length to be used for the next logging call on this specific [Oak](index.md). When enabled, some loggers might skip logging the message based on their implementation. The quiet flag is temporary and only affects the immediate next log message.
 
 The flag is stored using a ThreadSafe to ensure it is only applied for the current thread and is cleared automatically after the log call.
 
@@ -27,4 +27,4 @@ common
 
 | | |
 |---|---|
-| quiet | True to enable quiet mode for the next log call; false otherwise. |
+| length | The maximum length of the tag message. |

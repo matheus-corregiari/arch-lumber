@@ -3,7 +3,7 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugTree (JVM)
+ * # DebugOak (JVM)
  *
  * JVM-specific implementation of [Lumber.Oak] that prints logs to the
  * standard output (`stdout`), with ANSI colors applied to each log [ColoredLog].
@@ -18,8 +18,8 @@ package br.com.arch.toolkit.lumber
  *
  * ## Example
  * ```kotlin
- * // Plant the DebugTree for JVM
- * Lumber.plant(DebugTree())
+ * // Plant the DebugOak for JVM
+ * Lumber.plant(DebugOak())
  *
  * Lumber.info("Application started")
  * Lumber.debug("Processing request id=%d", 42)
@@ -28,7 +28,7 @@ package br.com.arch.toolkit.lumber
  *
  * The output will be printed to the terminal with colors applied per log level.
  */
-actual open class DebugTree : Lumber.Oak() {
+actual open class DebugOak : Lumber.Oak() {
     /** Maps [Lumber.Level] to a [ColoredLog] for colored output. */
     private val Lumber.Level.toStyle: ColoredLog
         get() =

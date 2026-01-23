@@ -20,10 +20,13 @@
 
 A flexible, type-safe, and multiplatform logging library inspired
 by [Timber](https://github.com/JakeWharton/timber).  
-Lumber brings a **simple API**, **prebuilt DebugTrees**, and **extensibility** for your Kotlin
+Lumber brings a **simple API**, **prebuilt DebugOaks**, and **extensibility** for your Kotlin
 Multiplatform projects.
 
-Too see more, take a look at the [documentation](/docs/api/lumber/markdown/index.md).
+Too see more, take a look at the [documentation](/docs/api/lumber/index.md).
+
+> Special thanks to Jake Wharton for the inspiration and making Timber the go-to logging library for
+> Android.
 
 ---
 
@@ -32,12 +35,11 @@ Too see more, take a look at the [documentation](/docs/api/lumber/markdown/index
 * [Features](#-features)
 * [Installation](#-installation)
 * [Usage](#-usage)
-    * [1. Plant a DebugTree](#1-plant-a-debugtree)
+    * [1. Plant a DebugOak](#1-plant-a-DebugOak)
     * [2. Log messages](#2-log-messages)
     * [3. Manage Oaks](#3-manage-oaks)
-* [Prebuilt DebugTrees](#-prebuilt-debugtrees)
+* [Prebuilt DebugOaks](#-prebuilt-oaks)
 * [Custom Oaks](#-custom-oaks)
-* [Comparison with Timber](#-comparison-with-timber)
 * [API Reference](#-api-reference)
 * [License](#-license)
 
@@ -45,17 +47,17 @@ Too see more, take a look at the [documentation](/docs/api/lumber/markdown/index
 
 ## 🏷️ Features
 
-* **Kotlin Multiplatform Ready** — Runs on Android, Apple (Darwin/iOS/macOS), Kotlin/JS (IR), *
-  *Kotlin/WASM (IR)**, and JVM.
+* **Kotlin Multiplatform Ready**
 * **Multiple Log Levels** — `Verbose`, `Debug`, `Info`, `Warn`, `Error`, `Assert`.
-* **Prebuilt DebugTrees** — Drop-in defaults per target:
+* **Prebuilt DebugOaks** — Drop-in defaults per target:
     * Android → Logcat
-    * Apple → ANSI colored `println` (via [Mordant](https://github.com/ajalt/mordant))
+    * Apple → ANSI colored `println`
     * JS/WASM → Native `console.*` (browser or Node.js/wasm runtime)
-    * JVM → ANSI colored `println` (via [Mordant](https://github.com/ajalt/mordant))
+    * JVM → ANSI colored `println`
 * **Composable System** — Plant one or many Oaks (`ConsoleOak`, `FileOak`, custom).
 * **Thread-Safe** — Safe for concurrent logging.
-* **Inspired by Timber** — Similar ergonomics, extended for KMP.
+* **Inspired by [Timber](https://github.com/JakeWharton/timber)** — Similar ergonomics, extended for
+  KMP.
 
 ---
 
@@ -64,8 +66,16 @@ Too see more, take a look at the [documentation](/docs/api/lumber/markdown/index
 Add Lumber to your Gradle build:
 
 ```kotlin
+// Kotlin DSL
 dependencies {
-    implementation("io.github.matheus-corregiari:arch-lumber:1.0.0")
+    implementation("io.github.matheus-corregiari:arch-lumber:<latest-version>")
+}
+````
+
+```groovy
+// Groovy
+dependencies {
+    implementation 'io.github.matheus-corregiari:arch-lumber:<latest-version>'
 }
 ````
 
@@ -73,17 +83,10 @@ dependencies {
 
 ## 💡 Usage
 
-### 1. Plant a DebugTree
+### 1. Plant a DebugOak
 
 ```kotlin
-// Android → Logcat
-Lumber.plant(DebugTree())
-
-// Apple → ANSI-colored println
-Lumber.plant(DebugTree())
-
-// JS/WASM → console.log / console.info / console.warn / console.error
-Lumber.plant(DebugTree())
+Lumber.plant(DebugOak())
 ```
 
 ### 2. Log messages
@@ -112,28 +115,15 @@ Lumber.uprootAll()
 
 ---
 
-## 🌲 Prebuilt DebugTrees
+## 🌲 Prebuilt Oaks
 
-| Target    | Implementation | Backend                                |
-|-----------|----------------|----------------------------------------|
-| Android   | `DebugTree`    | `android.util.Log` (Logcat)            |
-| Apple     | `DebugTree`    | `println` with ANSI colors via Mordant |
-| JS (IR)   | `DebugTree`    | Native `console.log/info/warn/error`   |
-| WASM (IR) | `DebugTree`    | Native `console.log/info/warn/error`   |
-| JVM       | `DebugTree`    | `println` with ANSI colors via Mordant |
-
-Example (WASM, browser):
-
-```kotlin
-Lumber.plant(DebugTree())
-Lumber.debug("Running in WebAssembly")
-```
-
-Browser console output:
-
-```
-DEBUG null : Running in WebAssembly
-```
+| Target    | Implementation | Backend                              |
+|-----------|----------------|--------------------------------------|
+| Android   | `DebugOak`     | `android.util.Log` (Logcat)          |
+| Apple     | `DebugOak`     | `println` with ANSI colors           |
+| JS (IR)   | `DebugOak`     | Native `console.log/info/warn/error` |
+| WASM (IR) | `DebugOak`     | Native `console.log/info/warn/error` |
+| JVM       | `DebugOak`     | `println` with ANSI colors           |
 
 ---
 
@@ -162,13 +152,15 @@ Lumber.debug("Logged to console and file")
 
 ### `Lumber` – static API
 
-| Method                    | Description                       |
-|---------------------------|-----------------------------------|
-| `plant(vararg oaks: Oak)` | Add logging trees                 |
-| `uproot(oak: Oak)`        | Remove a specific oak             |
-| `uprootAll()`             | Remove all oaks                   |
-| `tag(tag: String)`        | Set a custom tag for the next log |
-| `quiet(enabled: Boolean)` | Enable/disable quiet mode         |
+| Method                      | Description                                |
+|-----------------------------|--------------------------------------------|
+| `plant(vararg oaks: Oak)`   | Add logging oaks                           |
+| `uproot(oak: Oak)`          | Remove a specific oak                      |
+| `uprootAll()`               | Remove all oaks                            |
+| `tag(tag: String)`          | Set a custom tag for the next log          |
+| `quiet(enabled: Boolean)`   | Enable/disable quiet mode for the next log |
+| `maxLogLength(length: Int)` | Set a custom log length for the next log   |
+| `maxTagLength(length: Int)` | Set a custom tag length for the next log   |
 
 ### `Lumber.Level`
 
@@ -180,15 +172,6 @@ Lumber.debug("Logged to console and file")
 | Warn    | Warnings, potential issues       |
 | Error   | Errors and exceptions            |
 | Assert  | Critical failures (WTF)          |
-
----
-
-## 🙏 Honorable Mention
-
-Lumber exists because the excellent [Timber](https://github.com/JakeWharton/timber) does not support
-Kotlin Multiplatform.
-Special thanks to Jake Wharton for the inspiration and making Timber the go-to logging library for
-Android.
 
 ---
 

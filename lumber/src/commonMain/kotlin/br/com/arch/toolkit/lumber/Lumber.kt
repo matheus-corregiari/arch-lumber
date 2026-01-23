@@ -9,8 +9,6 @@ import br.com.arch.toolkit.lumber.Lumber.Level.Info
 import br.com.arch.toolkit.lumber.Lumber.Level.Verbose
 import br.com.arch.toolkit.lumber.Lumber.Level.Warn
 import br.com.arch.toolkit.lumber.Lumber.OakWood.forest
-import br.com.arch.toolkit.lumber.Lumber.OakWood.maxLogLength
-import br.com.arch.toolkit.lumber.Lumber.OakWood.maxTagLength
 import br.com.arch.toolkit.lumber.Lumber.OakWood.plant
 import br.com.arch.toolkit.lumber.Lumber.OakWood.quiet
 import br.com.arch.toolkit.lumber.Lumber.OakWood.tag
@@ -24,7 +22,7 @@ import kotlinx.coroutines.sync.Mutex
  * Lumber is a modern, Kotlin Multiplatform (KMP) logging library inspired by
  * [Timber by Jake Wharton](https://github.com/JakeWharton/timber).
  *
- * Unlike Timber (JVM/Android only), Lumber works across multiple targets:
+ * Lumber works across multiple targets:
  * - **JVM** (desktop, backend)
  * - **Android**
  * - **Kotlin/Native** (iOS, Linux, Windows)
@@ -33,7 +31,7 @@ import kotlinx.coroutines.sync.Mutex
  * ## Key Features
  * - Idiomatic Kotlin API with extension-friendly design.
  * - Multiple log levels ([Level.Verbose], [Level.Debug], [Level.Info], [Level.Warn], [Level.Error], [Level.Assert]).
- * - Delegation to multiple logging trees ([Oak]) via the [OakWood] singleton.
+ * - Delegation to multiple logging oaks ([Oak]) via the [OakWood] singleton.
  * - One-time [tag] and [quiet] controls for flexible output.
  * - Automatic message splitting if longer than [MAX_LOG_LENGTH].
  * - Simple string formatting (`%s`, `%d`), independent of platform.
@@ -149,7 +147,7 @@ class Lumber private constructor() {
     /**
      * # Oak - Abstract Logging Tree
      *
-     * Base class for logging destinations ("trees").
+     * Base class for logging destinations ("oaks").
      * Extend [Oak] to implement your own logging strategy:
      * - console printing,
      * - file logging,
@@ -258,7 +256,7 @@ class Lumber private constructor() {
          * The flag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
          * and is cleared automatically after the log call.
          *
-         * @param maxLogLength The maximum length of the log message.
+         * @param length The maximum length of the log message.
          * @return The [Oak] instance for method chaining.
          *
          * ## Example:
@@ -269,21 +267,21 @@ class Lumber private constructor() {
          * Debug: [Tag #1] age
          * ```
          */
-        open fun maxLogLength(maxLogLength: Int): Oak {
-            require(maxLogLength > 0) { "maxLogLength must be positive" }
-            explicitMaxLogLength.set(maxLogLength)
+        open fun maxLogLength(length: Int): Oak {
+            require(length > 0) { "length must be positive" }
+            explicitMaxLogLength.set(length)
             return this
         }
 
         /**
-         * Sets a one-time max log length to be used for the next logging call on this specific [Oak].
+         * Sets a one-time max tag length to be used for the next logging call on this specific [Oak].
          * When enabled, some loggers might skip logging the message based on their implementation.
          * The quiet flag is temporary and only affects the immediate next log message.
          *
          * The flag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
          * and is cleared automatically after the log call.
          *
-         * @param quiet True to enable quiet mode for the next log call; false otherwise.
+         * @param length The maximum length of the tag message.
          * @return The [Oak] instance for method chaining.
          *
          * ## Example:
@@ -293,9 +291,9 @@ class Lumber private constructor() {
          * Debug: [Lon] Debug message
          * ```
          */
-        open fun maxTagLength(maxTagLength: Int): Oak {
-            require(maxTagLength > 0) { "maxTagLength must be positive" }
-            explicitMaxTagLength.set(maxTagLength)
+        open fun maxTagLength(length: Int): Oak {
+            require(length > 0) { "length must be positive" }
+            explicitMaxTagLength.set(length)
             return this
         }
 
@@ -495,12 +493,12 @@ class Lumber private constructor() {
     /**
      * # OakWood - Forest Manager
      *
-     * Singleton dispatcher that holds and manages multiple [Oak] trees.
+     * Singleton dispatcher that holds and manages multiple [Oak] oaks.
      * All calls to [Lumber] are delegated here.
      *
      * - Call [plant] to add one or more [Oak] instances.
-     * - Call [uproot] or [uprootAll] to remove trees.
-     * - Call [forest] to inspect planted trees.
+     * - Call [uproot] or [uprootAll] to remove oaks.
+     * - Call [forest] to inspect planted oaks.
      *
      * ## Example
      * ```kotlin
@@ -619,7 +617,7 @@ class Lumber private constructor() {
          * This method propagates the max log length to every individual Oak managed by OakWood.
          * The flag is stored using a thread-local to ensure thread safety and is cleared after the log call.
          *
-         * @param maxLogLength The maximum length of the log message for all Oaks.
+         * @param length The maximum length of the log message for all Oaks.
          * @return The OakWood instance for method chaining.
          *
          * ## Example:
@@ -634,9 +632,9 @@ class Lumber private constructor() {
          * // Debug: [Tag #1] age
          * ```
          */
-        override fun maxLogLength(maxLogLength: Int): Oak {
+        override fun maxLogLength(length: Int): Oak {
             // Propagate the maxTagLength to all Oaks.
-            trees.forEach { it.maxLogLength(maxLogLength) }
+            trees.forEach { it.maxLogLength(length) }
             return this
         }
 
@@ -645,7 +643,7 @@ class Lumber private constructor() {
          * This method propagates the max tag length to every individual Oak managed by OakWood.
          * The flag is stored using a thread-local to ensure thread safety and is cleared after the log call.
          *
-         * @param maxTagLength The maximum length of the tag for all Oaks.
+         * @param length The maximum length of the tag for all Oaks.
          * @return The OakWood instance for method chaining.
          *
          * ## Example:
@@ -658,9 +656,9 @@ class Lumber private constructor() {
          * // Debug: [Lon] Debug message
          * ```
          */
-        override fun maxTagLength(maxTagLength: Int): Oak {
+        override fun maxTagLength(length: Int): Oak {
             // Propagate the maxTagLength to all Oaks.
-            trees.forEach { it.maxTagLength(maxTagLength) }
+            trees.forEach { it.maxTagLength(length) }
             return this
         }
 

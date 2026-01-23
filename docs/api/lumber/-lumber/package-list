@@ -1,8 +1,8 @@
 $dokka.format:gfm-v1
 $dokka.linkExtension:md
 $dokka.location:br.com.arch.toolkit.lumber////PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/index.md
-$dokka.location:br.com.arch.toolkit.lumber/DebugTree///PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-tree/index.md
-$dokka.location:br.com.arch.toolkit.lumber/DebugTree/DebugTree/#/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-tree/-debug-tree.md
+$dokka.location:br.com.arch.toolkit.lumber/DebugOak///PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-oak/index.md
+$dokka.location:br.com.arch.toolkit.lumber/DebugOak/DebugOak/#/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-oak/-debug-oak.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Level.Assert///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-lumber/br.com.arch.toolkit.lumber/-lumber/-level/-assert/index.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Level.Debug///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-lumber/br.com.arch.toolkit.lumber/-lumber/-level/-debug/index.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Level.Error///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-lumber/br.com.arch.toolkit.lumber/-lumber/-level/-error/index.md

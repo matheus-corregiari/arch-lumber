@@ -3,9 +3,9 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugTree (Kotlin/JS)
+ * # DebugOak (Kotlin/JS)
  *
- * This tree routes log messages to the native JavaScript `console`,
+ * This oak routes log messages to the native JavaScript `console`,
  * using different methods depending on the provided log [Lumber.Level].
  *
  * - [Lumber.Level.Verbose] → `console.log`
@@ -20,7 +20,7 @@ package br.com.arch.toolkit.lumber
  *
  * ### Example usage:
  * ```kotlin
- * Lumber.plant(DebugTree())
+ * Lumber.plant(DebugOak())
  * Lumber.d("Init", "Application successfully loaded")
  * ```
  *
@@ -29,11 +29,11 @@ package br.com.arch.toolkit.lumber
  * DEBUG Init : Application successfully loaded
  * ```
  *
- * @constructor Creates a debug tree that logs into the JavaScript console.
+ * @constructor Creates a debug oak that logs into the JavaScript console.
  * @see Lumber
  * @see Lumber.Oak
  */
-actual open class DebugTree actual constructor() : Lumber.Oak() {
+actual open class DebugOak actual constructor() : Lumber.Oak() {
     /** Always returns `true`, allowing all logs to be emitted. */
     actual override fun isLoggable(
         tag: String?,

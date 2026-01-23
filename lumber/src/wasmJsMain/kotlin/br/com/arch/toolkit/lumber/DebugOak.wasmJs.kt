@@ -3,7 +3,7 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugTree (Wasm/JS)
+ * # DebugOak (Wasm/JS)
  *
  * JavaScript/Wasm-specific implementation of [Lumber.Oak].
  * Logs are written directly to the browser (or Node.js) console
@@ -19,7 +19,7 @@ package br.com.arch.toolkit.lumber
  *
  * ## Example
  * ```kotlin
- * Lumber.plant(DebugTree())
+ * Lumber.plant(DebugOak())
  *
  * Lumber.info("Hello from Wasm")
  * Lumber.error(Exception("oops"), "Something went wrong")
@@ -36,7 +36,7 @@ package br.com.arch.toolkit.lumber
  * @see jsLogWarn
  * @see jsLogError
  */
-actual open class DebugTree actual constructor() : Lumber.Oak() {
+actual open class DebugOak actual constructor() : Lumber.Oak() {
     /**
      * Always returns `true` for Wasm/JS.
      *

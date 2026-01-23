@@ -3,7 +3,7 @@
 # maxLogLength
 
 [common]\
-open fun [maxLogLength](max-log-length.md)(maxLogLength: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](index.md)
+open fun [maxLogLength](max-log-length.md)(length: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](index.md)
 
 Sets a one-time max log length to be used for the next logging call on this specific [Oak](index.md). When enabled, some loggers might skip logging the message based on their implementation. The quiet flag is temporary and only affects the immediate next log message.
 
@@ -28,4 +28,4 @@ common
 
 | | |
 |---|---|
-| maxLogLength | The maximum length of the log message. |
+| length | The maximum length of the log message. |

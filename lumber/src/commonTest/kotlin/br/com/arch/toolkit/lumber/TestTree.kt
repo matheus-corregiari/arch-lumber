@@ -5,7 +5,7 @@ import kotlin.test.assertEquals
 
 class TestTree(
     private val falseForLevel: Level? = null,
-) : DebugTree() {
+) : DebugOak() {
     val history = mutableListOf<Data>()
 
     override fun isLoggable(

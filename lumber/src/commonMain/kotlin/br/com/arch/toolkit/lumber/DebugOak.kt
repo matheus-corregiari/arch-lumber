@@ -3,9 +3,9 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugTree - Platform-specific Debug Logging Tree
+ * # DebugOak - Platform-specific Debug Logging Tree
  *
- * This is the common interface for the DebugTree implementation. It handles the log level and message formatting,
+ * This is the common interface for the DebugOak implementation. It handles the log level and message formatting,
  * but the actual logging behavior will differ depending on the platform (JVM, Android, and others).
  *
  * ## Targets:
@@ -15,14 +15,14 @@ package br.com.arch.toolkit.lumber
  *
  * ## Example (JVM Implementation):
  * ```kotlin
- * class MyDebugTree : DebugTree() {
+ * class MyDebugOak : DebugOak() {
  *     override fun log(level: Level, tag: String?, message: String, error: Throwable?) {
  *         // Platform-specific logging implementation (JVM using SLF4J)
  *     }
  * }
  * ```
  */
-expect open class DebugTree() : Lumber.Oak {
+expect open class DebugOak() : Lumber.Oak {
     /**
      * Determines whether a log message at the specified level should be logged.
      * This function will be implemented differently for each platform.

@@ -10,7 +10,7 @@ internal val fqcnIgnore =
         Lumber.Level::class,
         Lumber.OakWood::class,
         Lumber.Oak::class,
-        DebugTree::class,
+        DebugOak::class,
     )
 
 internal fun <T> Mutex.synchronized(

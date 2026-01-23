@@ -9,7 +9,7 @@ class [Lumber](index.md)
 
 Lumber is a modern, Kotlin Multiplatform (KMP) logging library inspired by [Timber by Jake Wharton](https://github.com/JakeWharton/timber).
 
-Unlike Timber (JVM/Android only), Lumber works across multiple targets:
+Lumber works across multiple targets:
 
 - 
    **JVM** (desktop, backend)
@@ -27,7 +27,7 @@ Unlike Timber (JVM/Android only), Lumber works across multiple targets:
 - 
    Multiple log levels ([Level.Verbose](-level/-verbose/index.md), [Level.Debug](-level/-debug/index.md), [Level.Info](-level/-info/index.md), [Level.Warn](-level/-warn/index.md), [Level.Error](-level/-error/index.md), [Level.Assert](-level/-assert/index.md)).
 - 
-   Delegation to multiple logging trees ([Oak](-oak/index.md)) via the [OakWood](-oak-wood/index.md) singleton.
+   Delegation to multiple logging oaks ([Oak](-oak/index.md)) via the [OakWood](-oak-wood/index.md) singleton.
 - 
    One-time [tag](-oak-wood/tag.md) and [quiet](-oak-wood/quiet.md) controls for flexible output.
 - 
@@ -81,5 +81,5 @@ Matheus Corregiari
 | Name | Summary |
 |---|---|
 | [Level](-level/index.md) | [common]<br>enum [Level](-level/index.md) : [Enum](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-enum/index.html)&lt;[Lumber.Level](-level/index.md)&gt; <br>Defines the severity level of a log message. |
-| [Oak](-oak/index.md) | [common]<br>abstract class [Oak](-oak/index.md)<br>Base class for logging destinations (&quot;trees&quot;). Extend [Oak](-oak/index.md) to implement your own logging strategy: |
-| [OakWood](-oak-wood/index.md) | [common]<br>object [OakWood](-oak-wood/index.md) : [Lumber.Oak](-oak/index.md)<br>Singleton dispatcher that holds and manages multiple [Oak](-oak/index.md) trees. All calls to [Lumber](index.md) are delegated here. |
+| [Oak](-oak/index.md) | [common]<br>abstract class [Oak](-oak/index.md)<br>Base class for logging destinations (&quot;oaks&quot;). Extend [Oak](-oak/index.md) to implement your own logging strategy: |
+| [OakWood](-oak-wood/index.md) | [common]<br>object [OakWood](-oak-wood/index.md) : [Lumber.Oak](-oak/index.md)<br>Singleton dispatcher that holds and manages multiple [Oak](-oak/index.md) oaks. All calls to [Lumber](index.md) are delegated here. |

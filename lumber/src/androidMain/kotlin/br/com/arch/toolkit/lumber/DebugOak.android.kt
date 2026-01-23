@@ -5,19 +5,19 @@ package br.com.arch.toolkit.lumber
 import android.util.Log
 
 /**
- * # DebugTree (Android)
+ * # DebugOak (Android)
  *
  * Android-specific implementation of [Lumber.Oak], delegating logs
  * to the [Android's Log](https://developer.android.com/reference/android/util/Log) framework.
  *
- * This is conceptually similar to Timber's `DebugTree`:
+ * This is conceptually similar to Timber's `DebugOak`:
  * it prints all logs to Logcat, mapping [Lumber.Level] to
  * the corresponding Android priority.
  *
  * ## Example
  * ```kotlin
- * // Plant the DebugTree for Android
- * Lumber.plant(DebugTree())
+ * // Plant the DebugOak for Android
+ * Lumber.plant(DebugOak())
  *
  * Lumber.debug("Debug message with id=%d", 42)
  * Lumber.error(Exception("Oops"), "Something went wrong")
@@ -25,7 +25,7 @@ import android.util.Log
  *
  * @see Lumber.Oak
  */
-actual open class DebugTree : Lumber.Oak() {
+actual open class DebugOak : Lumber.Oak() {
     /**
      * Determines whether a log at the given `level` should be printed.
      *

@@ -240,10 +240,10 @@ See [LICENSE](LICENSE) for details.
 
 [badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-lumber
 
-[badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
+[badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber/branch/master/graph/badge.svg?token=P977R4GMUO
 
-[badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml
+[badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml/badge.svg
 
-[badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/coverage.yml
+[badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/coverage.yml/badge.svg
 
 ```

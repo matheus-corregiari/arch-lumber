@@ -1,9 +1,8 @@
-import kotlinx.kover.gradle.plugin.dsl.tasks.KoverHtmlReport
+import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import kotlinx.kover.gradle.plugin.dsl.tasks.KoverReport
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.dokka.gradle.DokkaExtension
-import org.jetbrains.dokka.gradle.tasks.DokkaBaseTask
-import org.jetbrains.dokka.gradle.tasks.DokkaGeneratePublicationTask
+import org.jetbrains.dokka.gradle.tasks.DokkaGenerateTask
 
 plugins {
     id("org.jetbrains.dokka")
@@ -14,52 +13,37 @@ extensions.configure(JacocoPluginExtension::class) {
     toolVersion = libraries.version("jacoco")
 }
 
+project.plugins.apply(DokkaMarkdownPlugin::class.java)
 extensions.configure(DokkaExtension::class) {
     moduleName.set(project.name.capitalized())
     moduleVersion.set(project.versionName)
-    dokkaSourceSets {
-        configureEach {
-            reportUndocumented.set(true)
-            skipDeprecated.set(true)
-            skipEmptyPackages.set(true)
-            jdkVersion.set(projectJavaVersionCode)
+    basePublicationsDirectory.set(file("$rootDir/docs/api/${project.name}"))
+    dokkaPublications.getByName("html").enabled.set(false)
+    dokkaPublications.getByName("markdown").outputDirectory = basePublicationsDirectory
 
-            externalDocumentationLinks.register("androidRef") {
-                url("https://developer.android.com/reference/")
-                packageListUrl.set(rootProject.file("/tools/android-package-list").toURI())
-            }
+    dokkaSourceSets.configureEach {
+        reportUndocumented.set(true)
+        skipDeprecated.set(true)
+        skipEmptyPackages.set(true)
+        jdkVersion.set(projectJavaVersionCode)
+        enableAndroidDocumentationLink.set(true)
+        enableJdkDocumentationLink.set(true)
+        enableKotlinStdLibDocumentationLink.set(true)
+    }
+}
+
+extensions.configure(KoverProjectExtension::class) {
+    reports {
+        total {
+            xml { xmlFile.set(file("$rootDir/docs/coverage/${project.name}/coverage.xml")) }
+            binary { file.set(file("$rootDir/docs/coverage/${project.name}/coverage.bin")) }
+            html { onCheck.set(false) }
         }
-    }
-}
-
-tasks.withType(DokkaBaseTask::class) { group = "documentation" }
-tasks.withType(DokkaGeneratePublicationTask::class) {
-    doLast {
-        val reportDir = outputDirectory.asFile.get()
-        val targetDir = File("$rootDir/docs", "api")
-
-        if (targetDir.exists()) targetDir.deleteRecursively()
-        targetDir.mkdirs()
-
-        reportDir.copyRecursively(targetDir, overwrite = true)
-    }
-}
-
-tasks.withType(KoverReport::class) { group = "documentation" }
-tasks.withType(KoverHtmlReport::class) {
-    doLast {
-        val reportDir = reportDir.get().asFile
-        val targetDir = File("$rootDir/docs", "coverage")
-
-        if (targetDir.exists()) targetDir.deleteRecursively()
-        targetDir.mkdirs()
-
-        reportDir.copyRecursively(targetDir, overwrite = true)
     }
 }
 
 val updateDocs by tasks.registering {
     group = "documentation"
-    dependsOn(tasks.withType(DokkaGeneratePublicationTask::class))
-    dependsOn(tasks.withType(KoverHtmlReport::class))
+    dependsOn(tasks.withType(DokkaGenerateTask::class))
+    dependsOn(tasks.withType(KoverReport::class))
 }

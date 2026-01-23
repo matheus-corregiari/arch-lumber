@@ -1,0 +1,28 @@
+name: Lint
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: ./.github/actions/setup-gradle
+
+      - name: Run Detekt
+        run: ./gradlew detekt
+
+      - name: Run KtLint
+        run: ./gradlew ktlintCheck

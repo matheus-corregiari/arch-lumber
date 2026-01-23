@@ -1,0 +1,53 @@
+//[Lumber](../../../../index.md)/[br.com.arch.toolkit.lumber](../../index.md)/[Lumber](../index.md)/[OakWood](index.md)
+
+# OakWood
+
+[common]\
+object [OakWood](index.md) : [Lumber.Oak](../-oak/index.md)
+
+# OakWood - Forest Manager
+
+Singleton dispatcher that holds and manages multiple [Oak](../-oak/index.md) trees. All calls to [Lumber](../index.md) are delegated here.
+
+- 
+   Call [plant](plant.md) to add one or more [Oak](../-oak/index.md) instances.
+- 
+   Call [uproot](uproot.md) or [uprootAll](uproot-all.md) to remove trees.
+- 
+   Call [forest](forest.md) to inspect planted trees.
+
+## Example
+
+```kotlin
+val console = ConsoleOak()
+val remote = RemoteOak()
+Lumber.plant(console, remote)
+
+Lumber.warn("Something happened") // logged to both trees
+```
+
+## Properties
+
+| Name | Summary |
+|---|---|
+| [treeCount](tree-count.md) | [common]<br>val [treeCount](tree-count.md): [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)<br>The number of currently planted Oak trees. |
+
+## Functions
+
+| Name | Summary |
+|---|---|
+| [debug](../-oak/debug.md) | [common]<br>open fun [debug](../-oak/debug.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log a [Level.Debug](../-level/-debug/index.md) exception only.<br>[common]<br>open fun [debug](../-oak/debug.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Debug](../-level/-debug/index.md) message.<br>[common]<br>open fun [debug](../-oak/debug.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Debug](../-level/-debug/index.md) exception with message. |
+| [error](../-oak/error.md) | [common]<br>open fun [error](../-oak/error.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log a [Level.Error](../-level/-error/index.md) exception only.<br>[common]<br>open fun [error](../-oak/error.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Error](../-level/-error/index.md) message.<br>[common]<br>open fun [error](../-oak/error.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Error](../-level/-error/index.md) exception with message. |
+| [forest](forest.md) | [common]<br>fun [forest](forest.md)(): [List](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/-list/index.html)&lt;[Lumber.Oak](../-oak/index.md)&gt;<br>Returns a copy of all planted trees (Oaks). This can be useful for iterating or debugging. |
+| [info](../-oak/info.md) | [common]<br>open fun [info](../-oak/info.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log a [Level.Info](../-level/-info/index.md) exception only.<br>[common]<br>open fun [info](../-oak/info.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Info](../-level/-info/index.md) message.<br>[common]<br>open fun [info](../-oak/info.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Info](../-level/-info/index.md) exception with message. |
+| [log](../-oak/log.md) | [common]<br>open fun [log](../-oak/log.md)(level: [Lumber.Level](../-level/index.md), error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log an exception only.<br>[common]<br>open fun [log](../-oak/log.md)(level: [Lumber.Level](../-level/index.md), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a message at [level](../-oak/log.md) with optional formatting args.<br>[common]<br>open override fun [log](log.md)(level: [Lumber.Level](../-level/index.md), error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html)?, message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)?, vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Dispatches the log message to all planted Oaks. |
+| [maxLogLength](max-log-length.md) | [common]<br>open override fun [maxLogLength](max-log-length.md)(maxLogLength: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](../-oak/index.md)<br>Sets a one-time max log length to be used for the next logging call on all planted Oaks. This method propagates the max log length to every individual Oak managed by OakWood. The flag is stored using a thread-local to ensure thread safety and is cleared after the log call. |
+| [maxTagLength](max-tag-length.md) | [common]<br>open override fun [maxTagLength](max-tag-length.md)(maxTagLength: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](../-oak/index.md)<br>Sets a one-time max tag length to be used for the next logging call on all planted Oaks. This method propagates the max tag length to every individual Oak managed by OakWood. The flag is stored using a thread-local to ensure thread safety and is cleared after the log call. |
+| [plant](plant.md) | [common]<br>fun [plant](plant.md)(tree: [Lumber.Oak](../-oak/index.md), vararg trees: [Lumber.Oak](../-oak/index.md)): [Lumber.OakWood](index.md)<br>Plants new logging trees into the forest. Accepts one or more Oak instances and adds them to the logging system. |
+| [quiet](quiet.md) | [common]<br>open override fun [quiet](quiet.md)(quiet: [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)): [Lumber.Oak](../-oak/index.md)<br>Sets a one-time quiet flag to be used for the next logging call on all planted Oaks. This method propagates the quiet flag to every individual Oak managed by OakWood. The flag is stored using a thread-local to ensure thread safety and is cleared after the log call. |
+| [tag](tag.md) | [common]<br>open override fun [tag](tag.md)(tag: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)): [Lumber.Oak](../-oak/index.md)<br>Sets a one-time tag to be used for the next logging call on all planted Oaks. This method propagates the tag to every individual Oak managed by OakWood. The tag is stored in each Oak using a thread-local to ensure thread safety and is cleared after the log call. |
+| [uproot](uproot.md) | [common]<br>fun [uproot](uproot.md)(tree: [Lumber.Oak](../-oak/index.md)): [Lumber.OakWood](index.md)<br>Uproots a specific logging tree. |
+| [uprootAll](uproot-all.md) | [common]<br>fun [uprootAll](uproot-all.md)(): [Lumber.OakWood](index.md)<br>Clears all planted trees from the forest. |
+| [verbose](../-oak/verbose.md) | [common]<br>open fun [verbose](../-oak/verbose.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log a [Level.Verbose](../-level/-verbose/index.md) exception only.<br>[common]<br>open fun [verbose](../-oak/verbose.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Verbose](../-level/-verbose/index.md) message.<br>[common]<br>open fun [verbose](../-oak/verbose.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Verbose](../-level/-verbose/index.md) exception with message. |
+| [warn](../-oak/warn.md) | [common]<br>open fun [warn](../-oak/warn.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log a [Level.Warn](../-level/-warn/index.md) exception only.<br>[common]<br>open fun [warn](../-oak/warn.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Warn](../-level/-warn/index.md) message.<br>[common]<br>open fun [warn](../-oak/warn.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Warn](../-level/-warn/index.md) exception with message. |
+| [wtf](../-oak/wtf.md) | [common]<br>open fun [wtf](../-oak/wtf.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))<br>Log a [Level.Assert](../-level/-assert/index.md) exception only.<br>[common]<br>open fun [wtf](../-oak/wtf.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Assert](../-level/-assert/index.md) message.<br>[common]<br>open fun [wtf](../-oak/wtf.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)<br>Log a [Level.Assert](../-level/-assert/index.md) exception with message. |

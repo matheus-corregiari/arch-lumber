@@ -24,6 +24,6 @@ kotlin {
 dokka.dokkaSourceSets.configureEach {
     sourceLink {
         localDirectory.set(projectDir.resolve("src"))
-        remoteUrl("https://github.com/matheus-corregiari/arch-lumber/tree/master/lumber/src")
+        remoteUrl("${env("POM_URL")}/tree/master/lumber/src")
     }
 }

@@ -1,6 +1,8 @@
 # 🌲 Lumber – A Lightweight Logging Library for Kotlin Multiplatform
 
+
 ![Android][badge-android] ![Apple][badge-apple] ![JVM][badge-jvm] ![JS][badge-js] ![WASM][badge-wasm]  
+![Lint][badge-lint]
 [![Maven Central][badge-maven]][link-maven]  
 [![CI Status][badge-ci]][link-ci]  
 [![LICENSE][badge-license]][link-license]  
@@ -243,5 +245,7 @@ See [LICENSE](LICENSE) for details.
 [badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-lumber
 
 [badge-coverage]: https://img.shields.io/codecov/c/github/matheus-corregiari/arch-lumber
+
+[badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml
 
 ```

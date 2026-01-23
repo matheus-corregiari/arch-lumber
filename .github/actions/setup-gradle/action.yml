@@ -4,10 +4,6 @@ runs:
   using: "composite"
   steps:
 
-    # Checkout Code
-    - name: Checkout
-      uses: actions/checkout@v6
-
     # Setup JDK 21 to build properly
     - name: set up JDK 21
       uses: actions/setup-java@v5

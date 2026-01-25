@@ -5,7 +5,7 @@
 [common]\
 open override fun [tag](tag.md)(tag: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)): [Lumber.Oak](../-oak/index.md)
 
-Sets a one-time tag to be used for the next logging call on all planted Oaks. This method propagates the tag to every individual Oak managed by OakWood. The tag is stored in each Oak using a thread-local to ensure thread safety and is cleared after the log call.
+Sets a one-time tag to be used for the next logging call on all planted Oaks. This method propagates the tag to every individual Oak managed by OakWood.
 
 #### Return
 

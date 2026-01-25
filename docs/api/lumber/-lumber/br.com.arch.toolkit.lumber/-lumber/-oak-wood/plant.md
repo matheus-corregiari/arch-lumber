@@ -13,6 +13,7 @@ common
 
 | | |
 |---|---|
+| tree | Oak instance to be added to the forest. |
 | trees | An array of Oak instances to be added to the forest. |
 
 #### Throws

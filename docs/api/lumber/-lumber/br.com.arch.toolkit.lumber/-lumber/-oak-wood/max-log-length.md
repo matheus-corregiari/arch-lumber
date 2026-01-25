@@ -5,7 +5,7 @@
 [common]\
 open override fun [maxLogLength](max-log-length.md)(length: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](../-oak/index.md)
 
-Sets a one-time max log length to be used for the next logging call on all planted Oaks. This method propagates the max log length to every individual Oak managed by OakWood. The flag is stored using a thread-local to ensure thread safety and is cleared after the log call.
+Sets a one-time max log line length to be used for the next logging call on all planted Oaks. This method propagates the max log length to every individual Oak managed by OakWood.
 
 #### Return
 
@@ -30,4 +30,4 @@ common
 
 | | |
 |---|---|
-| length | The maximum length of the log message for all Oaks. |
+| length | Maximum number of characters per emitted log entry. Must be > 0. |

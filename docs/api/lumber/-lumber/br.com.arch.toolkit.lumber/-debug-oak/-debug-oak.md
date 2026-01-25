@@ -15,7 +15,7 @@ actual constructor()
 [apple]\
 constructor()
 
-Creates a debug oak that logs with colored output for Apple/Darwin targets.
+Creates a debug tree that logs with colored output for Apple/Darwin targets.
 
 [js]\
 actual constructor()

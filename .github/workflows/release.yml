@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      # 1.1.1
+      - "[0-9].[0-9].[0-9]"
+      # 1.1.10
+      - "[0-9].[0-9].[1-9][0-9]"
+      # 1.10.1
+      - "[0-9].[1-9][0-9].[0-9]"
+      # 1.10.10
+      - "[0-9].[1-9][0-9].[1-9][0-9]"
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  assemble_deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup-gradle
+
+      - name: Version Name
+        uses: ./.github/actions/version-name
+        with:
+          # Sonatype Credentials
+          ossrh_username: ${{ secrets.OSSRH_USERNAME }}
+          ossrh_password: ${{ secrets.OSSRH_PASSWORD }}
+          mavencentral_username: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          mavencentral_password: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
+          # Github Credentials
+          github_actor: ${{ github.actor }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          # Sign Credentials
+          sign_keyid: ${{ secrets.SIGN_KEYID }}
+          sign_password: ${{ secrets.SIGN_PASSWORD }}
+          sign_filename: ${{ secrets.SIGN_FILENAME }}
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Publish to GitHub Packages
+        run: ./gradlew publishAllPublicationsToGithubRepository
+
+      - name: Publish to Maven Central
+        run: ./gradlew publishAndReleaseToMavenCentral

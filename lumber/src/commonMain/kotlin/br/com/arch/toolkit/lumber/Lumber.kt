@@ -14,7 +14,8 @@ import br.com.arch.toolkit.lumber.Lumber.OakWood.quiet
 import br.com.arch.toolkit.lumber.Lumber.OakWood.tag
 import br.com.arch.toolkit.lumber.Lumber.OakWood.uproot
 import br.com.arch.toolkit.lumber.Lumber.OakWood.uprootAll
-import kotlinx.coroutines.sync.Mutex
+import kotlinx.atomicfu.atomic
+import kotlinx.atomicfu.update
 
 /**
  * # Lumber - A Lightweight Logging Library for Kotlin Multiplatform
@@ -177,7 +178,10 @@ class Lumber private constructor() {
         private val explicitMaxTagLength = ThreadSafe<Int?>()
 
         /**
-         * Optional one-time tag. Set via [tag], consumed after one use.
+         * Optional one-time tag. Set via [tag], consumed on the next log call.
+         *
+         * Note: the tag is consumed even if the log is filtered out (e.g., [isLoggable] returns false)
+         * or suppressed via [quiet], to avoid leaking it into subsequent calls.
          */
         protected open val tag: String?
             get() =
@@ -187,19 +191,28 @@ class Lumber private constructor() {
                     ?.also { explicitTag.remove() }
 
         /**
-         * Optional one-time quiet flag. Set via [quiet], consumed after one use.
+         * Optional one-time quiet flag. Set via [quiet], consumed on the next log call.
+         *
+         * Note: the flag is consumed even if the log is filtered out, to avoid leaking it into
+         * subsequent calls.
          */
         protected open val quiet: Boolean
             get() = explicitQuiet.get()?.also { explicitQuiet.remove() } == true
 
         /**
-         * Optional one-time max tag length. Set via [maxTagLength], consumed after one use.
+         * Optional one-time max tag length. Set via [maxTagLength], consumed on the next log call.
+         *
+         * Note: the value is consumed even if the log is filtered out, to avoid leaking it into
+         * subsequent calls.
          */
         protected open val maxTagLength: Int?
             get() = explicitMaxTagLength.get()?.also { explicitMaxTagLength.remove() }
 
         /**
-         * Optional one-time max log length. Set via [maxLogLength], consumed after one use.
+         * Optional one-time max log line length. Set via [maxLogLength], consumed on the next log call.
+         *
+         * Note: the value is consumed even if the log is filtered out, to avoid leaking it into
+         * subsequent calls.
          */
         protected open val maxLogLength: Int?
             get() = explicitMaxLogLength.get()?.also { explicitMaxLogLength.remove() }
@@ -222,13 +235,13 @@ class Lumber private constructor() {
          * ```
          */
         open fun tag(tag: String): Oak {
-            explicitTag.set(tag.trimEnd().trimStart())
+            explicitTag.set(tag.trim())
             return this
         }
 
         /**
          * Sets a one-time quiet flag to be used for the next logging call on this specific [Oak].
-         * When enabled, some loggers might skip logging the message based on their implementation.
+         * When enabled, the log call is suppressed for this [Oak].
          * The quiet flag is temporary and only affects the immediate next log message.
          *
          * The flag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
@@ -239,7 +252,7 @@ class Lumber private constructor() {
          *
          * ## Example:
          * ```kotlin
-         * Lumber.quiet(true).error("This error might be ignored by some Oaks.");
+         * Lumber.quiet(true).error("This will not be logged");
          * // Expected output: <no output>
          * ```
          */
@@ -249,14 +262,21 @@ class Lumber private constructor() {
         }
 
         /**
-         * Sets a one-time max log length to be used for the next logging call on this specific [Oak].
-         * When enabled, some loggers might skip logging the message based on their implementation.
-         * The quiet flag is temporary and only affects the immediate next log message.
+         * Sets a one-time max log line length to be used for the next logging call on this specific [Oak].
          *
-         * The flag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
-         * and is cleared automatically after the log call.
+         * This does **not** drop/omit the log. If the final formatted message exceeds [length],
+         * Lumber will **split the message into multiple log entries**, each with at most [length] characters.
          *
-         * @param length The maximum length of the log message.
+         * ### One-shot behavior
+         * This setting is **consumed on the next log call** (including when the message is not loggable),
+         * and then cleared automatically for the current thread.
+         *
+         * ### Tag suffix for split parts
+         * When splitting happens, Lumber appends a suffix to the tag:
+         * - `"$tag #0"`, `"$tag #1"`, ...
+         * - If the tag is null, it becomes `"#0"`, `"#1"`, ...
+         *
+         * @param length Maximum number of characters per emitted log entry. Must be > 0.
          * @return The [Oak] instance for method chaining.
          *
          * ## Example:
@@ -275,13 +295,15 @@ class Lumber private constructor() {
 
         /**
          * Sets a one-time max tag length to be used for the next logging call on this specific [Oak].
-         * When enabled, some loggers might skip logging the message based on their implementation.
-         * The quiet flag is temporary and only affects the immediate next log message.
          *
-         * The flag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
-         * and is cleared automatically after the log call.
+         * If the tag exceeds [length], Lumber will **truncate** it to at most [length] characters
+         * (internally it takes only the first chunk).
          *
-         * @param length The maximum length of the tag message.
+         * ### One-shot behavior
+         * This setting is **consumed on the next log call** (including when the message is not loggable),
+         * and then cleared automatically for the current thread.
+         *
+         * @param length The maximum length of the tag. Must be > 0.
          * @return The [Oak] instance for method chaining.
          *
          * ## Example:
@@ -466,7 +488,9 @@ class Lumber private constructor() {
             vararg args: Any?,
         ) {
             // Consume tag even when message is not loggable so that next message is correctly tagged.
-            val tag = (tag ?: defaultTag())?.chunked(maxTagLength ?: MAX_TAG_LENGTH)?.first()
+            val tagLimit = maxTagLength ?: MAX_TAG_LENGTH
+            val tag = (tag ?: defaultTag())?.take(tagLimit)
+
             if (!isLoggable(tag, level) || quiet) return
 
             var formattedMessage = message
@@ -511,8 +535,8 @@ class Lumber private constructor() {
      */
     companion object OakWood : Oak() {
         // Holds all the planted Oak trees.
-        private val trees = mutableSetOf<Oak>()
-        private val mutex = Mutex()
+        private val treesRef = atomic<Set<Oak>>(emptySet())
+        private val trees by treesRef
 
         /**
          * The number of currently planted Oak trees.
@@ -520,12 +544,15 @@ class Lumber private constructor() {
          */
         val treeCount: Int get() = trees.size
 
+        @Throws(IllegalStateException::class)
         override fun log(
             level: Level,
             tag: String?,
             message: String,
             error: Throwable?,
-        ): Unit = error(message = "OakWood does not implement direct logging; use its dispatcher instead.")
+        ) = kotlin.error(
+            message = "OakWood does not implement direct logging; use its dispatcher instead.",
+        )
 
         /**
          * Dispatches the log message to all planted Oaks.
@@ -574,7 +601,6 @@ class Lumber private constructor() {
         /**
          * Sets a one-time tag to be used for the next logging call on all planted Oaks.
          * This method propagates the tag to every individual Oak managed by OakWood.
-         * The tag is stored in each Oak using a thread-local to ensure thread safety and is cleared after the log call.
          *
          * @param tag The tag to attach to the next log message for all Oaks.
          * @return The OakWood instance for method chaining.
@@ -595,15 +621,14 @@ class Lumber private constructor() {
         /**
          * Sets a one-time quiet flag to be used for the next logging call on all planted Oaks.
          * This method propagates the quiet flag to every individual Oak managed by OakWood.
-         * The flag is stored using a thread-local to ensure thread safety and is cleared after the log call.
          *
          * @param quiet True to enable quiet mode for the next log call in all Oaks; false otherwise.
          * @return The OakWood instance for method chaining.
          *
          * ## Example:
          * ```kotlin
-         * Lumber.quiet(true).error("This error might be ignored by some Oaks.")
-         * // No output in quiet mode if the Oaks implement this feature.
+         * Lumber.quiet(true).error("This will not be logged")
+         * // No output in quiet mode.
          * ```
          */
         override fun quiet(quiet: Boolean): Oak {
@@ -613,11 +638,10 @@ class Lumber private constructor() {
         }
 
         /**
-         * Sets a one-time max log length to be used for the next logging call on all planted Oaks.
+         * Sets a one-time max log line length to be used for the next logging call on all planted Oaks.
          * This method propagates the max log length to every individual Oak managed by OakWood.
-         * The flag is stored using a thread-local to ensure thread safety and is cleared after the log call.
          *
-         * @param length The maximum length of the log message for all Oaks.
+         * @param length Maximum number of characters per emitted log entry. Must be > 0.
          * @return The OakWood instance for method chaining.
          *
          * ## Example:
@@ -633,7 +657,7 @@ class Lumber private constructor() {
          * ```
          */
         override fun maxLogLength(length: Int): Oak {
-            // Propagate the maxTagLength to all Oaks.
+            // Propagate the maxLogLength to all Oaks.
             trees.forEach { it.maxLogLength(length) }
             return this
         }
@@ -641,9 +665,8 @@ class Lumber private constructor() {
         /**
          * Sets a one-time max tag length to be used for the next logging call on all planted Oaks.
          * This method propagates the max tag length to every individual Oak managed by OakWood.
-         * The flag is stored using a thread-local to ensure thread safety and is cleared after the log call.
          *
-         * @param length The maximum length of the tag for all Oaks.
+         * @param length The maximum length of the tag for all Oaks. Must be > 0.
          * @return The OakWood instance for method chaining.
          *
          * ## Example:
@@ -666,6 +689,7 @@ class Lumber private constructor() {
          * Plants new logging trees into the forest.
          * Accepts one or more Oak instances and adds them to the logging system.
          *
+         * @param tree Oak instance to be added to the forest.
          * @param trees An array of Oak instances to be added to the forest.
          * @throws IllegalArgumentException if trying to plant the same OakWood instance.
          *
@@ -683,7 +707,7 @@ class Lumber private constructor() {
         ) = apply {
             val allTrees = listOf(tree, *trees)
             allTrees.forEach { require(it !== this) { "Cannot plant Lumber itself." } }
-            mutex.synchronized(trees) { this.trees.addAll(allTrees) }
+            treesRef.update { it + allTrees }
         }
 
         /**
@@ -698,10 +722,7 @@ class Lumber private constructor() {
          * Lumber.uproot(consoleOak) // Removes consoleOak from the forest
          * ```
          */
-        fun uproot(tree: Oak) =
-            apply {
-                mutex.synchronized(trees) { trees.remove(tree) }
-            }
+        fun uproot(tree: Oak) = apply { treesRef.update { it - tree } }
 
         /**
          * Clears all planted trees from the forest.
@@ -712,10 +733,7 @@ class Lumber private constructor() {
          * Lumber.debug("Message will not be logged anymore")
          * ```
          */
-        fun uprootAll() =
-            apply {
-                mutex.synchronized(trees) { trees.clear() }
-            }
+        fun uprootAll() = apply { treesRef.value = emptySet() }
 
         /**
          * Returns a copy of all planted trees (Oaks).

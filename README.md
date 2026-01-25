@@ -182,6 +182,30 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
+## Coverage detail charts
+
+### Sunburst
+
+> The inner-most circle is the entire project, moving away from the center are folders then,
+> finally, a single file. The size and color of each slice is representing the number of statements
+> and the coverage, respectively.
+[![codecov](https://codecov.io/gh/matheus-corregiari/arch-lumber/graphs/sunburst.svg?token=P977R4GMUO)](https://codecov.io/gh/matheus-corregiari/arch-lumber)
+
+### Grid
+
+> Each block represents a single file in the project. The size and color of each block is
+> represented by the number of statements and the coverage, respectively.
+[![codecov](https://codecov.io/gh/matheus-corregiari/arch-lumber/graphs/tree.svg?token=P977R4GMUO)](https://codecov.io/gh/matheus-corregiari/arch-lumber)
+
+### Icicle
+
+> The top section represents the entire project. Proceeding with folders and finally individual
+> files. The size and color of each slice is representing the number of statements and the coverage,
+> respectively.
+[![codecov](https://codecov.io/gh/matheus-corregiari/arch-lumber/graphs/icicle.svg?token=P977R4GMUO)](https://codecov.io/gh/matheus-corregiari/arch-lumber)
+
+---
+
 [link-maven]: https://search.maven.org/artifact/io.github.matheus-corregiari/arch-lumber
 
 [link-ci]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/generate-tag.yml
@@ -207,5 +231,3 @@ See [LICENSE](LICENSE) for details.
 [badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml/badge.svg
 
 [badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/coverage.yml/badge.svg
-
-```

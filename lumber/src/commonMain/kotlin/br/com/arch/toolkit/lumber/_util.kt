@@ -2,8 +2,6 @@
 
 package br.com.arch.toolkit.lumber
 
-import kotlinx.coroutines.sync.Mutex
-
 internal val fqcnIgnore =
     setOfNotNull(
         Lumber::class,
@@ -12,16 +10,6 @@ internal val fqcnIgnore =
         Lumber.Oak::class,
         DebugOak::class,
     )
-
-internal fun <T> Mutex.synchronized(
-    key: Any,
-    block: () -> T,
-) = try {
-    runCatching { tryLock(owner = key) }
-    block()
-} finally {
-    runCatching { if (isLocked) unlock(owner = key) }
-}
 
 @Suppress("ReturnCount")
 internal fun String.format(vararg args: Any?): String {
@@ -56,7 +44,7 @@ internal fun String.format(vararg args: Any?): String {
 }
 
 internal fun String.camelcase(): String {
-    val parts = trimStart().trimEnd().split(" ", "_", "-")
+    val parts = trim().split(" ", "_", "-")
     return if (parts.size == 1) {
         parts.first()
     } else {

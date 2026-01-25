@@ -16,9 +16,9 @@ internal fun VersionCatalog.version(alias: String) =
     findVersion(alias).getOrNull()?.requiredVersion
         ?: error("Unable to find version with alias: $alias")
 
-fun versionInt(version: () -> Provider<String>) = version().getOrNull()?.toIntOrNull() ?: 0
+fun versionInt(version: Provider<String>) = version.getOrNull()?.toIntOrNull() ?: 0
 
-fun versionString(version: () -> Provider<String>) = version().getOrNull().orEmpty()
+fun versionString(version: Provider<String>) = version.getOrNull().orEmpty()
 
 internal val VersionCatalog.allDefinedDependencies: Set<String>
     get() =

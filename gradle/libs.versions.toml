@@ -1,17 +1,21 @@
 # ------------------------------------------------------------------------------------------------ #
 [versions]
 ## --- Plugins and more general stuff --- ##
+#noinspection UnusedVersionCatalogEntry
 jacoco = "0.8.14"
 detekt = "1.23.8"
 
 ## --- Build Config and SDK --- ##
+#noinspection UnusedVersionCatalogEntry
 build-sdk-min = "20"
+#noinspection UnusedVersionCatalogEntry
 build-sdk-compile = "36"
+#noinspection UnusedVersionCatalogEntry
 build-tools = "36.1.0"
 
 ## JetBrains
 jetbrains-kotlin = "2.3.0"
-jetbrains-coroutines = "1.10.2"
+jetbrains-atomic = "0.31.0"
 jetbrains-dokka = "2.1.0"
 jetbrains-kover = "0.9.4"
 
@@ -25,7 +29,6 @@ vanniktech-publish = "0.35.0"
 # ------------------------------------------------------------------------------------------------ #
 [libraries]
 ## JetBrains
-jetbrains-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "jetbrains-coroutines" }
 jetbrains-dokka = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "jetbrains-dokka" }
 jetbrains-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "jetbrains-kotlin" }
 jetbrains-multiplatform = { module = "org.jetbrains.kotlin.multiplatform:org.jetbrains.kotlin.multiplatform.gradle.plugin", version.ref = "jetbrains-kotlin" }
@@ -42,7 +45,7 @@ vanniktech-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", ve
 
 # ------------------------------------------------------------------------------------------------ #
 [plugins]
-## Nothing Here Yet!
+jetbrains-atomic = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "jetbrains-atomic" }
 
 # ------------------------------------------------------------------------------------------------ #
 [bundles]

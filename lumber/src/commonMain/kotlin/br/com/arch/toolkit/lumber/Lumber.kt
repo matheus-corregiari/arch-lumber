@@ -142,7 +142,7 @@ class Lumber private constructor() {
         Error,
 
         /** Critical failures that should never happen (What a Terrible Failure) */
-        Assert,
+        Assert
     }
 
     /**
@@ -324,7 +324,7 @@ class Lumber private constructor() {
         /** Log a [Level.Verbose] message. */
         open fun verbose(
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Verbose, message = message, args = args)
 
         /** Log a [Level.Verbose] exception only. */
@@ -334,7 +334,7 @@ class Lumber private constructor() {
         open fun verbose(
             error: Throwable,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Verbose, error = error, message = message, args = args)
         //endregion
 
@@ -343,7 +343,7 @@ class Lumber private constructor() {
         /** Log a [Level.Debug] message. */
         open fun debug(
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Debug, message = message, args = args)
 
         /** Log a [Level.Debug] exception only. */
@@ -353,7 +353,7 @@ class Lumber private constructor() {
         open fun debug(
             error: Throwable,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Debug, error = error, message = message, args = args)
         //endregion
 
@@ -362,7 +362,7 @@ class Lumber private constructor() {
         /** Log a [Level.Info] message. */
         open fun info(
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Info, message = message, args = args)
 
         /** Log a [Level.Info] exception only. */
@@ -372,7 +372,7 @@ class Lumber private constructor() {
         open fun info(
             error: Throwable,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Info, error = error, message = message, args = args)
         //endregion
 
@@ -381,7 +381,7 @@ class Lumber private constructor() {
         /** Log a [Level.Warn] message. */
         open fun warn(
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Warn, message = message, args = args)
 
         /** Log a [Level.Warn] exception only. */
@@ -391,7 +391,7 @@ class Lumber private constructor() {
         open fun warn(
             error: Throwable,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Warn, error = error, message = message, args = args)
         //endregion
 
@@ -400,7 +400,7 @@ class Lumber private constructor() {
         /** Log a [Level.Error] message. */
         open fun error(
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Error, message = message, args = args)
 
         /** Log a [Level.Error] exception only. */
@@ -410,7 +410,7 @@ class Lumber private constructor() {
         open fun error(
             error: Throwable,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Error, error = error, message = message, args = args)
         //endregion
 
@@ -419,7 +419,7 @@ class Lumber private constructor() {
         /** Log a [Level.Assert] message. */
         open fun wtf(
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Assert, message = message, args = args)
 
         /** Log a [Level.Assert] exception only. */
@@ -429,7 +429,7 @@ class Lumber private constructor() {
         open fun wtf(
             error: Throwable,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = Assert, error = error, message = message, args = args)
         //endregion
 
@@ -439,13 +439,13 @@ class Lumber private constructor() {
         open fun log(
             level: Level,
             message: String,
-            vararg args: Any?,
+            vararg args: Any?
         ) = log(level = level, error = null, message = message, args = args)
 
         /** Log an exception only. */
         open fun log(
             level: Level,
-            error: Throwable,
+            error: Throwable
         ) = log(level = level, error = error, message = null, args = emptyArray())
 
         /** Log exception + optional message with args. */
@@ -453,7 +453,7 @@ class Lumber private constructor() {
             level: Level,
             error: Throwable?,
             message: String?,
-            vararg args: Any?,
+            vararg args: Any?
         ) = prepareLog(level = level, error = error, message = message, args = args)
         //endregion
 
@@ -463,7 +463,7 @@ class Lumber private constructor() {
          */
         protected abstract fun isLoggable(
             tag: String?,
-            level: Level,
+            level: Level
         ): Boolean
 
         /**
@@ -478,14 +478,14 @@ class Lumber private constructor() {
             level: Level,
             tag: String?,
             message: String,
-            error: Throwable?,
+            error: Throwable?
         )
 
         private fun prepareLog(
             level: Level,
             error: Throwable?,
             message: String?,
-            vararg args: Any?,
+            vararg args: Any?
         ) {
             // Consume tag even when message is not loggable so that next message is correctly tagged.
             val tagLimit = maxTagLength ?: MAX_TAG_LENGTH
@@ -493,15 +493,17 @@ class Lumber private constructor() {
 
             if (!isLoggable(tag, level) || quiet) return
 
-            var formattedMessage = message
-            if (formattedMessage.isNullOrEmpty()) {
+            var formattedMessage = message.orEmpty().format(*args)
+            when {
                 // Swallow message if it's null and there's no throwable.
-                if (error == null) return
-                formattedMessage = error.stackTraceToString()
-            } else {
-                formattedMessage = formattedMessage.format(*args)
-                if (error != null) formattedMessage += "\n\n" + error.stackTraceToString()
+                formattedMessage.isBlank() && error == null -> return
+
+                formattedMessage.isBlank() && error != null ->
+                    formattedMessage = error.stackTraceToString()
+
+                error != null -> formattedMessage += "\n\n" + error.stackTraceToString()
             }
+
             val logLength = maxLogLength ?: MAX_LOG_LENGTH
             if (formattedMessage.length <= logLength) {
                 log(level = level, tag = tag, message = formattedMessage, error = error)
@@ -544,14 +546,13 @@ class Lumber private constructor() {
          */
         val treeCount: Int get() = trees.size
 
-        @Throws(IllegalStateException::class)
         override fun log(
             level: Level,
             tag: String?,
             message: String,
-            error: Throwable?,
+            error: Throwable?
         ) = kotlin.error(
-            message = "OakWood does not implement direct logging; use its dispatcher instead.",
+            message = "OakWood does not implement direct logging; use its dispatcher instead."
         )
 
         /**
@@ -573,7 +574,7 @@ class Lumber private constructor() {
             level: Level,
             error: Throwable?,
             message: String?,
-            vararg args: Any?,
+            vararg args: Any?
         ) {
             trees.forEach {
                 it.log(level = level, error = error, message = message, args = args)
@@ -595,7 +596,7 @@ class Lumber private constructor() {
          */
         override fun isLoggable(
             tag: String?,
-            level: Level,
+            level: Level
         ): Boolean = true
 
         /**
@@ -703,7 +704,7 @@ class Lumber private constructor() {
          */
         fun plant(
             tree: Oak,
-            vararg trees: Oak,
+            vararg trees: Oak
         ) = apply {
             val allTrees = listOf(tree, *trees)
             allTrees.forEach { require(it !== this) { "Cannot plant Lumber itself." } }

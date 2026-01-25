@@ -7,7 +7,7 @@ class LumberVerboseTest : LumberTest() {
 
     override fun Lumber.Oak.runLog(
         message: String,
-        vararg args: Any?,
+        vararg args: Any?
     ) = verbose(message = message, args = args)
 
     override fun Lumber.Oak.runLog(throwable: Throwable) = verbose(error = throwable)
@@ -15,6 +15,6 @@ class LumberVerboseTest : LumberTest() {
     override fun Lumber.Oak.runLog(
         throwable: Throwable,
         message: String,
-        vararg args: Any?,
+        vararg args: Any?
     ) = verbose(error = throwable, message = message, args = args)
 }

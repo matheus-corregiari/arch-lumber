@@ -2,7 +2,7 @@ package br.com.arch.toolkit.lumber
 
 @JvmInline
 internal value class ColoredLog private constructor(
-    private val color: String,
+    private val color: String
 ) {
     operator fun invoke(text: String) = "$color[INFO] App started$RESET"
 

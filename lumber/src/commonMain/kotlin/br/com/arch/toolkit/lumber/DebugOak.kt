@@ -33,7 +33,7 @@ expect open class DebugOak() : Lumber.Oak {
      */
     override fun isLoggable(
         tag: String?,
-        level: Lumber.Level,
+        level: Lumber.Level
     ): Boolean
 
     /**
@@ -49,6 +49,6 @@ expect open class DebugOak() : Lumber.Oak {
         level: Lumber.Level,
         tag: String?,
         message: String,
-        error: Throwable?,
+        error: Throwable?
     )
 }

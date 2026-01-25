@@ -8,7 +8,7 @@ internal val fqcnIgnore =
         Lumber.Level::class,
         Lumber.OakWood::class,
         Lumber.Oak::class,
-        DebugOak::class,
+        DebugOak::class
     )
 
 @Suppress("ReturnCount")
@@ -36,7 +36,7 @@ internal fun String.format(vararg args: Any?): String {
     val replaced =
         replaceRange(
             range = match.range,
-            replacement = formatted,
+            replacement = formatted
         )
 
     // Recursively format the rest of the string

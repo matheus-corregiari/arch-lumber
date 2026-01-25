@@ -4,13 +4,13 @@ import br.com.arch.toolkit.lumber.Lumber.Level
 import kotlin.test.assertEquals
 
 class TestTree(
-    private val falseForLevel: Level? = null,
+    private val falseForLevel: Level? = null
 ) : DebugOak() {
     val history = mutableListOf<Data>()
 
     override fun isLoggable(
         tag: String?,
-        level: Level,
+        level: Level
     ): Boolean {
         super.isLoggable(tag, level)
         return (level == falseForLevel).not()
@@ -20,7 +20,7 @@ class TestTree(
         level: Level,
         tag: String?,
         message: String,
-        error: Throwable?,
+        error: Throwable?
     ) {
         super.log(level, tag, message, error)
         history.add(Data(level, tag, message, error))
@@ -35,6 +35,6 @@ class TestTree(
         private val level: Level,
         private val tag: String?,
         private val message: String,
-        private val error: Throwable?,
+        private val error: Throwable?
     )
 }

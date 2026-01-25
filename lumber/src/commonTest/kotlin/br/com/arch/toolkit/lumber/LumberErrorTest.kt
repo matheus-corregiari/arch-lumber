@@ -7,7 +7,7 @@ class LumberErrorTest : LumberTest() {
 
     override fun Lumber.Oak.runLog(
         message: String,
-        vararg args: Any?,
+        vararg args: Any?
     ) = error(message = message, args = args)
 
     override fun Lumber.Oak.runLog(throwable: Throwable) = error(error = throwable)
@@ -15,6 +15,6 @@ class LumberErrorTest : LumberTest() {
     override fun Lumber.Oak.runLog(
         throwable: Throwable,
         message: String,
-        vararg args: Any?,
+        vararg args: Any?
     ) = error(error = throwable, message = message, args = args)
 }

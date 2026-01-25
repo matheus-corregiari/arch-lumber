@@ -15,7 +15,7 @@ abstract class LumberTest {
 
     abstract fun Oak.runLog(
         message: String,
-        vararg args: Any?,
+        vararg args: Any?
     )
 
     abstract fun Oak.runLog(throwable: Throwable)
@@ -23,7 +23,7 @@ abstract class LumberTest {
     abstract fun Oak.runLog(
         throwable: Throwable,
         message: String,
-        vararg args: Any?,
+        vararg args: Any?
     )
 
     @BeforeTest
@@ -43,7 +43,7 @@ abstract class LumberTest {
         val tree = newTree()
         Lumber.runLog("hello")
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), "hello", null),
+            TestTree.Data(level, defaultTag(), "hello", null)
         )
     }
 
@@ -52,7 +52,7 @@ abstract class LumberTest {
         val tree = newTree()
         Lumber.runLog("value=%s", 123)
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), "value=123", null),
+            TestTree.Data(level, defaultTag(), "value=123", null)
         )
     }
 
@@ -73,14 +73,14 @@ abstract class LumberTest {
                 level = level,
                 tag = defaultTag()?.let { "$it #0" } ?: "#0",
                 message = "a".repeat(MAX_LOG_LENGTH),
-                error = null,
+                error = null
             ),
             TestTree.Data(
                 level = level,
                 tag = defaultTag()?.let { "$it #1" } ?: "#1",
                 message = "a".repeat(10),
-                error = null,
-            ),
+                error = null
+            )
         )
     }
 
@@ -94,14 +94,14 @@ abstract class LumberTest {
                 level = level,
                 tag = "Custom #0",
                 message = "a".repeat(MAX_LOG_LENGTH),
-                error = null,
+                error = null
             ),
             TestTree.Data(
                 level = level,
                 tag = "Custom #1",
                 message = "a".repeat(10),
-                error = null,
-            ),
+                error = null
+            )
         )
     }
 
@@ -115,14 +115,14 @@ abstract class LumberTest {
                 level = level,
                 tag = defaultTag()?.let { "$it #0" } ?: "#0",
                 message = "a".repeat(MAX_LOG_LENGTH),
-                error = null,
+                error = null
             ),
             TestTree.Data(
                 level = level,
                 tag = defaultTag()?.let { "$it #1" } ?: "#1",
                 message = "extra",
-                error = null,
-            ),
+                error = null
+            )
         )
     }
 
@@ -136,8 +136,8 @@ abstract class LumberTest {
                 level = level,
                 tag = defaultTag(),
                 message = "fail\n\n${ex.stackTraceToString()}",
-                error = ex,
-            ),
+                error = ex
+            )
         )
     }
 
@@ -147,7 +147,7 @@ abstract class LumberTest {
         val ex = Throwable("fail")
         Lumber.maxLogLength(ex.stackTraceToString().length).runLog(ex, "")
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), ex.stackTraceToString(), ex),
+            TestTree.Data(level, defaultTag(), ex.stackTraceToString(), ex)
         )
     }
 
@@ -157,7 +157,7 @@ abstract class LumberTest {
         val ex = Throwable("fail")
         Lumber.maxLogLength(ex.stackTraceToString().length).runLog(ex)
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), ex.stackTraceToString(), ex),
+            TestTree.Data(level, defaultTag(), ex.stackTraceToString(), ex)
         )
     }
 
@@ -173,8 +173,8 @@ abstract class LumberTest {
                 level = level,
                 tag = defaultTag(),
                 message = "code 500\n\n${ex.stackTraceToString()}",
-                error = ex,
-            ),
+                error = ex
+            )
         )
     }
 
@@ -183,13 +183,13 @@ abstract class LumberTest {
         val tree = newTree()
         Lumber.tag("Custom").runLog("tagged")
         tree.assertAll(
-            TestTree.Data(level, "Custom", "tagged", null),
+            TestTree.Data(level, "Custom", "tagged", null)
         )
         // pro próximo log volta pro default
         Lumber.runLog("next")
         tree.assertAll(
             TestTree.Data(level, "Custom", "tagged", null),
-            TestTree.Data(level, defaultTag(), "next", null),
+            TestTree.Data(level, defaultTag(), "next", null)
         )
     }
 
@@ -200,7 +200,7 @@ abstract class LumberTest {
         tree.assertAll() // não loga
         Lumber.runLog("next")
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), "next", null),
+            TestTree.Data(level, defaultTag(), "next", null)
         )
     }
 
@@ -212,7 +212,7 @@ abstract class LumberTest {
         // próximo volta ao normal
         Lumber.runLog("active")
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), "active", null),
+            TestTree.Data(level, defaultTag(), "active", null)
         )
     }
 
@@ -239,9 +239,9 @@ abstract class LumberTest {
                         level = level,
                         tag = defaultTag()?.let { "$it #$index" } ?: "#$index",
                         message = log,
-                        error = ex,
+                        error = ex
                     )
-                }.toTypedArray(),
+                }.toTypedArray()
         )
     }
 
@@ -260,9 +260,9 @@ abstract class LumberTest {
                         level = level,
                         tag = defaultTag()?.let { "$it #$index" } ?: "#$index",
                         message = log,
-                        error = ex,
+                        error = ex
                     )
-                }.toTypedArray(),
+                }.toTypedArray()
         )
     }
 
@@ -283,7 +283,7 @@ abstract class LumberTest {
             .maxLogLength("oops\n\n${ex.stackTraceToString()}".length)
             .runLog(ex, "oops")
         tree.assertAll(
-            TestTree.Data(level, "Custom", "oops\n\n${ex.stackTraceToString()}", ex),
+            TestTree.Data(level, "Custom", "oops\n\n${ex.stackTraceToString()}", ex)
         )
         // próximo volta pro default
         Lumber.runLog("next")
@@ -292,14 +292,14 @@ abstract class LumberTest {
                 level = level,
                 tag = "Custom",
                 message = "oops\n\n${ex.stackTraceToString()}",
-                error = ex,
+                error = ex
             ),
             TestTree.Data(
                 level = level,
                 tag = defaultTag(),
                 message = "next",
-                error = null,
-            ),
+                error = null
+            )
         )
     }
 
@@ -311,7 +311,7 @@ abstract class LumberTest {
         tree.assertAll() // nada
         Lumber.runLog("next")
         tree.assertAll(
-            TestTree.Data(level, defaultTag(), "next", null),
+            TestTree.Data(level, defaultTag(), "next", null)
         )
     }
 
@@ -334,14 +334,14 @@ abstract class LumberTest {
 
         // como tag vazia não é aceita, deve cair pro defaultTag()
         tree.assertAll(
-            TestTree.Data(level = level, tag = defaultTag(), message = "empty tag", error = null),
+            TestTree.Data(level = level, tag = defaultTag(), message = "empty tag", error = null)
         )
 
         // pro próximo log continua default
         Lumber.runLog("next")
         tree.assertAll(
             TestTree.Data(level = level, tag = defaultTag(), message = "empty tag", error = null),
-            TestTree.Data(level = level, tag = defaultTag(), message = "next", error = null),
+            TestTree.Data(level = level, tag = defaultTag(), message = "next", error = null)
         )
     }
 }

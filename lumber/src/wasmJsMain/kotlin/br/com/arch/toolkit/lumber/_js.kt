@@ -9,7 +9,7 @@ internal fun jsLog(message: String): Unit =
     js(
         code = """{
         console.log(message);
-    }""",
+    }"""
     )
 
 /** Calls `console.info(message)`. */
@@ -18,7 +18,7 @@ internal fun jsLogInfo(message: String): Unit =
     js(
         code = """{
         console.info(message);
-    }""",
+    }"""
     )
 
 /** Calls `console.warn(message)`. */
@@ -27,7 +27,7 @@ internal fun jsLogWarn(message: String): Unit =
     js(
         code = """{
         console.warn(message);
-    }""",
+    }"""
     )
 
 /** Calls `console.error(message)`. */
@@ -36,5 +36,5 @@ internal fun jsLogError(message: String): Unit =
     js(
         code = """{
         console.error(message);
-    }""",
+    }"""
     )

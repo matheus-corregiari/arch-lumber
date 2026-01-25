@@ -37,7 +37,7 @@ actual open class DebugOak actual constructor() : Lumber.Oak() {
     /** Always returns `true`, allowing all logs to be emitted. */
     actual override fun isLoggable(
         tag: String?,
-        level: Lumber.Level,
+        level: Lumber.Level
     ) = true
 
     /**
@@ -52,7 +52,7 @@ actual open class DebugOak actual constructor() : Lumber.Oak() {
         level: Lumber.Level,
         tag: String?,
         message: String,
-        error: Throwable?,
+        error: Throwable?
     ) = when (level) {
         Lumber.Level.Verbose -> console.log("VERBOSE $tag : $message")
         Lumber.Level.Debug -> console.log("DEBUG $tag : $message")

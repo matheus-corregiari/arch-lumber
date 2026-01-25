@@ -31,7 +31,7 @@ package br.com.arch.toolkit.lumber
  * [Info]-[Startup] -> Application initialized
  * ```
  *
- * @constructor Creates a debug oak that logs with colored output
+ * @constructor Creates a debug tree that logs with colored output
  * for Apple/Darwin targets.
  * @see Lumber
  * @see Lumber.Oak
@@ -52,7 +52,7 @@ actual open class DebugOak : Lumber.Oak() {
     /** Always returns `true`, allowing all logs to be emitted. */
     actual override fun isLoggable(
         tag: String?,
-        level: Lumber.Level,
+        level: Lumber.Level
     ) = true
 
     /**
@@ -67,7 +67,7 @@ actual open class DebugOak : Lumber.Oak() {
         level: Lumber.Level,
         tag: String?,
         message: String,
-        error: Throwable?,
+        error: Throwable?
     ) {
         val formattedMessage =
             if (tag == null) {

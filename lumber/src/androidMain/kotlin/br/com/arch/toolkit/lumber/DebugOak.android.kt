@@ -44,7 +44,7 @@ actual open class DebugOak : Lumber.Oak() {
      */
     actual override fun isLoggable(
         tag: String?,
-        level: Lumber.Level,
+        level: Lumber.Level
     ) = Log.isLoggable(
         tag,
         when (level) {
@@ -54,7 +54,7 @@ actual open class DebugOak : Lumber.Oak() {
             Lumber.Level.Warn -> Log.WARN
             Lumber.Level.Error -> Log.ERROR
             Lumber.Level.Assert -> Log.ASSERT
-        },
+        }
     )
 
     /**
@@ -77,7 +77,7 @@ actual open class DebugOak : Lumber.Oak() {
         level: Lumber.Level,
         tag: String?,
         message: String,
-        error: Throwable?,
+        error: Throwable?
     ) {
         when (level) {
             Lumber.Level.Verbose -> Log.v(tag, message)

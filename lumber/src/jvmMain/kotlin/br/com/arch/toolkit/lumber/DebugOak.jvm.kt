@@ -52,7 +52,7 @@ actual open class DebugOak : Lumber.Oak() {
      */
     actual override fun isLoggable(
         tag: String?,
-        level: Lumber.Level,
+        level: Lumber.Level
     ): Boolean = true
 
     /**
@@ -67,7 +67,7 @@ actual open class DebugOak : Lumber.Oak() {
         level: Lumber.Level,
         tag: String?,
         message: String,
-        error: Throwable?,
+        error: Throwable?
     ) {
         val formattedMessage =
             if (tag == null) {

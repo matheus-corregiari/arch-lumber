@@ -6,7 +6,7 @@ common open-source practices.
 ## Quick Start
 
 1. **Fork & clone** the repo.
-2. **Use a recent JDK** (17+ recommended).
+2. **Use a recent JDK** (21+ recommended).
 3. **Build once** to warm up Gradle:
    ```bash
    ./gradlew :lumber:assemble

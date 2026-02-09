@@ -1,257 +1,161 @@
-# 🌲 Lumber – A Lightweight Logging Library for Kotlin Multiplatform
+# 🌲 Lumber
 
-#### Version
+**A Lightweight, Type-Safe Logging Library for Kotlin Multiplatform.**
 
-[![Maven Central][badge-maven]][link-maven] · [![LICENSE][badge-license]][link-license]
-
----
-
-#### Platforms
-
-![Android][badge-android] · ![Apple][badge-apple] · ![JVM][badge-jvm] · ![JS][badge-js] · ![WASM][badge-wasm]
-
----
-
-#### Quality
-
-![Lint][badge-lint] · ![Test][badge-test] · ![Coverage][badge-coverage]
+[![Maven Central][badge-maven]][link-maven]
+[![License][badge-license]](/LICENSE)
+[![Kotlin][badge-kotlin]](https://kotlinlang.org)
+![Lint][badge-lint]
+![Test][badge-test]
+![Coverage][badge-coverage]
 
 ---
 
-A flexible, type-safe, and multiplatform logging library inspired
-by [Timber](https://github.com/JakeWharton/timber).  
-Lumber brings a **simple API**, **prebuilt DebugOaks**, and **extensibility** for your Kotlin
-Multiplatform projects.
+Lumber is a modern logging library for Kotlin Multiplatform (KMP) inspired by the simplicity
+of [Timber][link-timber]. It provides a clean, idiomatic API for logging across all your KMP targets
+with zero boilerplate.
 
-To see more, take a look at the [documentation](/docs/api/lumber/index.md).
+## ✨ Features
 
-> Special thanks to Jake Wharton for the inspiration and making Timber the go-to logging library for
-> Android.
+- **🚀 KMP First**: Designed from the ground up for Kotlin Multiplatform.
+- **🛠️ Prebuilt DebugOaks**: Drop-in defaults for Android, iOS/Apple, JVM, JS, and Wasm.
+- **🎨 ANSI Color Support**: Beautifully colored logs in your terminal for JVM and Apple targets.
+- **🧩 Extensible Architecture**: Easily create custom "Oaks" to redirect logs to any destination (
+  files, crash reporting, etc.).
+- **🧵 Thread-Safe**: Built-in protection for concurrent logging.
+- **📏 Smart Formatting**: Support for simple string formatting (`%s`, `%d`) across all platforms.
+- **✂️ Automatic Splitting**: Large log messages are automatically split into manageable chunks.
 
----
+## 📦 Installation
 
-## 📑 Table of Contents
-
-* [Features](#-features)
-* [Installation](#-installation)
-* [Quick Start](#-quick-start)
-* [Usage](#-usage)
-    * [1. Plant a DebugOak](#1-plant-a-DebugOak)
-    * [2. Log messages](#2-log-messages)
-    * [3. Manage Oaks](#3-manage-oaks)
-* [Prebuilt DebugOaks](#-prebuilt-oaks)
-* [Custom Oaks](#-custom-oaks)
-* [API Reference](#-api-reference)
-* [Usability Tips](#-usability-tips)
-* [Contributing](#-contributing)
-* [License](#-license)
-
----
-
-## 🏷️ Features
-
-* **Kotlin Multiplatform Ready**
-* **Multiple Log Levels** — `Verbose`, `Debug`, `Info`, `Warn`, `Error`, `Assert`.
-* **Prebuilt DebugOaks** — Drop-in defaults per target:
-    * Android → Logcat
-    * Apple → ANSI colored `println`
-    * JS/WASM → Native `console.*` (browser or Node.js/wasm runtime)
-    * JVM → ANSI colored `println`
-* **Composable System** — Plant one or many Oaks (`ConsoleOak`, `FileOak`, custom).
-* **Thread-Safe** — Safe for concurrent logging.
-* **Inspired by [Timber](https://github.com/JakeWharton/timber)** — Similar ergonomics, extended for
-  KMP.
-
----
-
-## 🚀 Installation
-
-Add Lumber to your Gradle build:
+Add the dependency to your `commonMain` source set:
 
 ```kotlin
-// Kotlin DSL
-dependencies {
-    implementation("io.github.matheus-corregiari:arch-lumber:<latest-version>")
-}
-````
-
-```groovy
-// Groovy
-dependencies {
-    implementation 'io.github.matheus-corregiari:arch-lumber:<latest-version>'
-}
-````
-
----
-
-## ⚡ Quick Start
-
-1. Add the dependency to your shared (KMP) module.
-2. Plant a `DebugOak()` once (usually during app startup).
-3. Use `Lumber.*` wherever you need logging.
-
-```kotlin
-Lumber.plant(DebugOak())
-Lumber.info("KMP logging ready")
-```
-
----
-
-## 💡 Usage
-
-### 1. Plant a DebugOak
-
-```kotlin
-Lumber.plant(DebugOak())
-```
-
-### 2. Log messages
-
-```kotlin
-Lumber.verbose("Verbose details")
-Lumber.debug("Debugging info")
-Lumber.info("Initialization complete")
-Lumber.warn("This might need attention")
-Lumber.error(message = "Something failed!", error = Exception("Boom"))
-Lumber.wtf("Critical failure!", Exception("Should never happen"))
-```
-
-### 3. Manage Oaks
-
-```kotlin
-val console = ConsoleOak()
-Lumber.plant(console)
-
-// Remove one oak
-Lumber.uproot(console)
-
-// Or clear all oaks
-Lumber.uprootAll()
-```
-
----
-
-## 🌲 Prebuilt Oaks
-
-| Target    | Implementation | Backend                              |
-|-----------|----------------|--------------------------------------|
-| Android   | `DebugOak`     | `android.util.Log` (Logcat)          |
-| Apple     | `DebugOak`     | `println` with ANSI colors           |
-| JS (IR)   | `DebugOak`     | Native `console.log/info/warn/error` |
-| WASM (IR) | `DebugOak`     | Native `console.log/info/warn/error` |
-| JVM       | `DebugOak`     | `println` with ANSI colors           |
-
----
-
-## 🛠️ Custom Oaks
-
-Extend `Lumber.Oak` for your own logging:
-
-```kotlin
-class ConsoleOak : Lumber.Oak() {
-    override fun log(level: Level, tag: String?, message: String, error: Throwable?) {
-        println("$level: [$tag] $message")
+// build.gradle.kts
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation("io.github.matheus-corregiari:arch-lumber:<latest-version>")
+            }
+        }
     }
 }
 ```
 
-Plant it like this:
+## 🛠️ Usage
+
+### 1. Plant an Oak
+
+Before logging, you need to "plant" at least one `Oak`. A `DebugOak` is provided for standard
+platform logging.
 
 ```kotlin
-Lumber.plant(ConsoleOak(), FileOak())
-Lumber.debug("Logged to console and file")
+// In your platform-specific entry point (e.g., Application.onCreate, main)
+Lumber.plant(DebugOak())
+```
+
+### 2. Log Away
+
+Use the `Lumber` static API to log at various levels.
+
+```kotlin
+Lumber.verbose("Detailed trace information")
+Lumber.debug("User %s has logged in", username)
+Lumber.info("Network request completed in %dms", latency)
+Lumber.warn("Cache miss for key: %s", key)
+Lumber.error(exception, "An unexpected error occurred")
+Lumber.wtf("Critical failure that should never happen!")
+```
+
+### 3. Contextual Tags
+
+Use `tag()` for one-time contextual information. The tag is automatically cleared after the next log
+call.
+
+```kotlin
+Lumber.tag("AuthService").info("User session started")
+```
+
+### 4. Custom Oaks
+
+Create your own logging destinations by extending `Lumber.Oak`.
+
+```kotlin
+class AnalyticsOak : Lumber.Oak() {
+    override fun isLoggable(tag: String?, level: Lumber.Level) = level >= Lumber.Level.INFO
+
+    override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
+        // Send to your analytics service
+        Analytics.logEvent(
+            "app_log", mapOf(
+                "level" to level.name,
+                "message" to message,
+                "tag" to tag
+            )
+        )
+    }
+}
+
+Lumber.plant(AnalyticsOak())
+```
+
+## 🌍 Platform Support
+
+| Target                | DebugOak Implementation       | Output                    |
+|:----------------------|:------------------------------|:--------------------------|
+| **Android**           | `android.util.Log`            | Logcat                    |
+| **JVM**               | ANSI Colored `println`        | Terminal / Console        |
+| **Apple** (iOS/macOS) | ANSI Colored `println`        | Terminal / Xcode Console  |
+| **JS / Wasm**         | `console.log/info/warn/error` | Browser / Node.js Console |
+
+## 🏗️ Built With
+
+| Tool       | Version  |
+|:-----------|:---------|
+| **Kotlin** | `2.3.10` |
+| **Gradle** | `9.3.1`  |
+| **Java**   | `21`     |
+
+## 🤝 Contributing
+
+Contributions are welcome! If you find a bug or have a feature request, please open an issue. If
+you'd like to contribute code, please fork the repository and submit a pull request.
+
+Please read [CONTRIBUTING](CONTRIBUTING.md) for a straightforward, KMP-focused workflow.
+
+## 📚 Documentation
+
+For detailed API information, please refer to
+the [KDocs](/docs/api/lumber/index.md).
+
+## 📄 License
+
+```text
+Copyright 2025 Matheus Corregiari
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
 
 ---
 
-## 📚 API Reference
-
-### `Lumber` – static API
-
-| Method                      | Description                                |
-|-----------------------------|--------------------------------------------|
-| `plant(vararg oaks: Oak)`   | Add logging oaks                           |
-| `uproot(oak: Oak)`          | Remove a specific oak                      |
-| `uprootAll()`               | Remove all oaks                            |
-| `tag(tag: String)`          | Set a custom tag for the next log          |
-| `quiet(enabled: Boolean)`   | Enable/disable quiet mode for the next log |
-| `maxLogLength(length: Int)` | Set a custom log length for the next log   |
-| `maxTagLength(length: Int)` | Set a custom tag length for the next log   |
-
-### `Lumber.Level`
-
-| Level   | Purpose                          |
-|---------|----------------------------------|
-| Verbose | Detailed logs, tracing/debugging |
-| Debug   | Debugging information            |
-| Info    | Informational messages           |
-| Warn    | Warnings, potential issues       |
-| Error   | Errors and exceptions            |
-| Assert  | Critical failures (WTF)          |
-
----
-
-## ✅ Usability Tips
-
-* **No oaks, no logs:** If nothing is planted, logs are intentionally ignored.
-* **One-shot settings:** `tag()`, `quiet()`, `maxLogLength()`, and `maxTagLength()` apply only to the *next* call.
-* **Throwable output is platform-specific:** Android/JVM DebugOak do not print stack traces by default. Use a custom Oak
-  if you want to include error output.
-
----
-
-## 🤝 Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for a straightforward, KMP-focused workflow.
-
----
-
-## 📄 License
-
-This module is released under the **Apache 2.0 License**.
-See [LICENSE](LICENSE) for details.
-
----
-
-## Coverage detail charts
-
-### Sunburst
-
-> The inner-most circle is the entire project, moving away from the center are folders then,
-> finally, a single file. The size and color of each slice is representing the number of statements
-> and the coverage, respectively.
-[![codecov](https://codecov.io/gh/matheus-corregiari/arch-lumber/graphs/sunburst.svg?token=P977R4GMUO)](https://codecov.io/gh/matheus-corregiari/arch-lumber)
-
-### Grid
-
-> Each block represents a single file in the project. The size and color of each block is
-> represented by the number of statements and the coverage, respectively.
-[![codecov](https://codecov.io/gh/matheus-corregiari/arch-lumber/graphs/tree.svg?token=P977R4GMUO)](https://codecov.io/gh/matheus-corregiari/arch-lumber)
-
-### Icicle
-
-> The top section represents the entire project. Proceeding with folders and finally individual
-> files. The size and color of each slice is representing the number of statements and the coverage,
-> respectively.
-[![codecov](https://codecov.io/gh/matheus-corregiari/arch-lumber/graphs/icicle.svg?token=P977R4GMUO)](https://codecov.io/gh/matheus-corregiari/arch-lumber)
-
----
+*Inspired by [Timber][link-timber] by Jake Wharton.*
 
 [link-maven]: https://search.maven.org/artifact/io.github.matheus-corregiari/arch-lumber
 
-[link-ci]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/generate-tag.yml
+[link-timber]: https://github.com/JakeWharton/timber
 
-[link-license]: /LICENSE
-
-[badge-android]: http://img.shields.io/badge/-android-6EDB8D.svg?style=flat
-
-[badge-apple]: http://img.shields.io/badge/-apple-000000.svg?style=flat
-
-[badge-js]: http://img.shields.io/badge/-js-F7DF1E.svg?style=flat
-
-[badge-wasm]: http://img.shields.io/badge/-wasm-654FF0.svg?style=flat
-
-[badge-jvm]: http://img.shields.io/badge/-jvm-DB413D.svg?style=flat
+[badge-kotlin]: https://img.shields.io/badge/kotlin-2.3.10-blue.svg?logo=kotlin
 
 [badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/arch-lumber.svg
 

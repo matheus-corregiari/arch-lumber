@@ -5,7 +5,7 @@
 [common]\
 [Debug](index.md)
 
-Debug information for developers, disabled in release builds.
+For developer-facing messages to debug application flow.
 
 ## Properties
 

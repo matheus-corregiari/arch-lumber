@@ -5,7 +5,7 @@
 [common]\
 [Warn](index.md)
 
-Something unexpected but not fatal.
+For potential issues or unexpected events that do not halt execution.
 
 ## Properties
 

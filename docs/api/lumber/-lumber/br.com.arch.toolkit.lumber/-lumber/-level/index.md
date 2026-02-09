@@ -7,64 +7,18 @@ enum [Level](index.md) : [Enum](https://kotlinlang.org/api/core/kotlin-stdlib/ko
 
 Defines the severity level of a log message.
 
-Each level indicates intent and should be used consistently across the app:
-
-- 
-   [Verbose](-verbose/index.md) → **lowest priority**. Use for extremely detailed logs (e.g., internal variable dumps, step-by-step flows).
-
-```kotlin
-Lumber.verbose("Loop iteration=%d, value=%s", i, value)
-```
-
-- 
-   [Debug](-debug/index.md) → Developer-facing messages useful during development but usually turned off in production.
-
-```kotlin
-Lumber.debug("Loaded user profile for %s", userId)
-```
-
-- 
-   [Info](-info/index.md) → High-level events that describe the normal flow of the app. Safe to keep enabled in production.
-
-```kotlin
-Lumber.info("App started in %d ms", startupTime)
-```
-
-- 
-   [Warn](-warn/index.md) → Something unexpected happened or a potential issue was detected, but the app is still working correctly.
-
-```kotlin
-Lumber.warn("Cache miss for key=%s, falling back to network", key)
-```
-
-- 
-   [Error](-error/index.md) → A failure occurred that needs attention, usually accompanied by an exception.
-
-```kotlin
-try {
-    fetchData()
-} catch (ex: IOException) {
-    Lumber.error(ex, "Network request failed")
-}
-```
-
-- 
-   [Assert](-assert/index.md) → Highest priority. Use for conditions that should **never** happen (fatal errors, invariant violations).
-
-```kotlin
-checkNotNull(user) ?: Lumber.wtf("User must not be null here!")
-```
+Each level provides a clear indication of the log's importance and is used by `Oak` implementations to filter and format messages appropriately.
 
 ## Entries
 
 | | |
 |---|---|
-| [Verbose](-verbose/index.md) | [common]<br>[Verbose](-verbose/index.md)<br>Extremely detailed logging, usually disabled in production. |
-| [Debug](-debug/index.md) | [common]<br>[Debug](-debug/index.md)<br>Debug information for developers, disabled in release builds. |
-| [Info](-info/index.md) | [common]<br>[Info](-info/index.md)<br>General information about app state and high-level events. |
-| [Warn](-warn/index.md) | [common]<br>[Warn](-warn/index.md)<br>Something unexpected but not fatal. |
-| [Error](-error/index.md) | [common]<br>[Error](-error/index.md)<br>Recoverable or unrecoverable errors, often with exceptions. |
-| [Assert](-assert/index.md) | [common]<br>[Assert](-assert/index.md)<br>Critical failures that should never happen (What a Terrible Failure) |
+| [Verbose](-verbose/index.md) | [common]<br>[Verbose](-verbose/index.md)<br>For detailed, fine-grained debugging information. Typically disabled in production. |
+| [Debug](-debug/index.md) | [common]<br>[Debug](-debug/index.md)<br>For developer-facing messages to debug application flow. |
+| [Info](-info/index.md) | [common]<br>[Info](-info/index.md)<br>For high-level events that mark the application's lifecycle. |
+| [Warn](-warn/index.md) | [common]<br>[Warn](-warn/index.md)<br>For potential issues or unexpected events that do not halt execution. |
+| [Error](-error/index.md) | [common]<br>[Error](-error/index.md)<br>For errors and exceptions that impact functionality but may be recoverable. |
+| [Assert](-assert/index.md) | [common]<br>[Assert](-assert/index.md)<br>For critical, unrecoverable failures. Stands for &quot;What a Terrible Failure.&quot; |
 
 ## Properties
 

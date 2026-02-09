@@ -5,25 +5,13 @@
 [common]\
 open fun [maxTagLength](max-tag-length.md)(length: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](index.md)
 
-Sets a one-time max tag length to be used for the next logging call on this specific [Oak](index.md).
+Sets a one-time maximum length for the tag on the next log message.
 
-If the tag exceeds [length](max-tag-length.md), Lumber will **truncate** it to at most [length](max-tag-length.md) characters (internally it takes only the first chunk).
-
-### One-shot behavior
-
-This setting is **consumed on the next log call** (including when the message is not loggable), and then cleared automatically for the current thread.
+If the tag exceeds this length, it will be truncated.
 
 #### Return
 
-The [Oak](index.md) instance for method chaining.
-
-## Example:
-
-```kotlin
-Lumber.maxTagLength(3).tag("LongTag").debug("Debug message");
-// Expected output:
-Debug: [Lon] Debug message
-```
+The current `Oak` instance for chaining.
 
 #### Parameters
 
@@ -31,4 +19,4 @@ common
 
 | | |
 |---|---|
-| length | The maximum length of the tag. Must be > 0. |
+| length | The maximum length for the tag. Must be positive. |

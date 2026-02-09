@@ -5,7 +5,7 @@
 [common]\
 [Info](index.md)
 
-General information about app state and high-level events.
+For high-level events that mark the application's lifecycle.
 
 ## Properties
 

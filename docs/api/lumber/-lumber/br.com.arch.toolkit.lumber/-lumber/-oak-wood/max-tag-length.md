@@ -5,22 +5,13 @@
 [common]\
 open override fun [maxTagLength](max-tag-length.md)(length: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](../-oak/index.md)
 
-Sets a one-time max tag length to be used for the next logging call on all planted Oaks. This method propagates the max tag length to every individual Oak managed by OakWood.
+Sets a one-time maximum length for the tag on the next log message.
+
+If the tag exceeds this length, it will be truncated.
 
 #### Return
 
-The OakWood instance for method chaining.
-
-## Example:
-
-```kotlin
-Lumber.maxTagLength(3).tag("LongTag").debug("Debug message")
-// Expected output for ConsoleOak:
-// Debug: [Lon] Debug message
-
-// Expected output for FileOak:
-// Debug: [Lon] Debug message
-```
+The current `Oak` instance for chaining.
 
 #### Parameters
 
@@ -28,4 +19,4 @@ common
 
 | | |
 |---|---|
-| length | The maximum length of the tag for all Oaks. Must be > 0. |
+| length | The maximum length for the tag. Must be positive. |

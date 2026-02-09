@@ -5,14 +5,14 @@
 [common]\
 open fun [verbose](verbose.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)
 
-Log a [Level.Verbose](../-level/-verbose/index.md) message.
+Logs a [Verbose](../-level/-verbose/index.md) message.
 
 [common]\
 open fun [verbose](verbose.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))
 
-Log a [Level.Verbose](../-level/-verbose/index.md) exception only.
+Logs a [Verbose](../-level/-verbose/index.md) error.
 
 [common]\
 open fun [verbose](verbose.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)
 
-Log a [Level.Verbose](../-level/-verbose/index.md) exception with message.
+Logs a [Verbose](../-level/-verbose/index.md) error with a message.

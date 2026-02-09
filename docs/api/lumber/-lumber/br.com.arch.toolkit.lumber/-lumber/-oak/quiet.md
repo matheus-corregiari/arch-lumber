@@ -5,20 +5,11 @@
 [common]\
 open fun [quiet](quiet.md)(quiet: [Boolean](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-boolean/index.html)): [Lumber.Oak](index.md)
 
-Sets a one-time quiet flag to be used for the next logging call on this specific [Oak](index.md). When enabled, the log call is suppressed for this [Oak](index.md). The quiet flag is temporary and only affects the immediate next log message.
-
-The flag is stored using a ThreadSafe to ensure it is only applied for the current thread and is cleared automatically after the log call.
+Suppresses the next log message for this `Oak`.
 
 #### Return
 
-The [Oak](index.md) instance for method chaining.
-
-## Example:
-
-```kotlin
-Lumber.quiet(true).error("This will not be logged");
-// Expected output: <no output>
-```
+The current `Oak` instance for chaining.
 
 #### Parameters
 
@@ -26,4 +17,4 @@ common
 
 | | |
 |---|---|
-| quiet | True to enable quiet mode for the next log call; false otherwise. |
+| quiet | `true` to suppress the log, `false` otherwise. |

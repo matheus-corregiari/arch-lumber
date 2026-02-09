@@ -5,14 +5,14 @@
 [common]\
 open fun [info](info.md)(message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)
 
-Log a [Level.Info](../-level/-info/index.md) message.
+Logs an [Info](../-level/-info/index.md) message.
 
 [common]\
 open fun [info](info.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html))
 
-Log a [Level.Info](../-level/-info/index.md) exception only.
+Logs an [Info](../-level/-info/index.md) error.
 
 [common]\
 open fun [info](info.md)(error: [Throwable](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-throwable/index.html), message: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html), vararg args: [Any](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-any/index.html)?)
 
-Log a [Level.Info](../-level/-info/index.md) exception with message.
+Logs an [Info](../-level/-info/index.md) error with a message.

@@ -5,7 +5,7 @@
 [common]\
 [Error](index.md)
 
-Recoverable or unrecoverable errors, often with exceptions.
+For errors and exceptions that impact functionality but may be recoverable.
 
 ## Properties
 

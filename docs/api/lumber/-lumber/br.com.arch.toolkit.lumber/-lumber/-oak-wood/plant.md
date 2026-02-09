@@ -5,7 +5,7 @@
 [common]\
 fun [plant](plant.md)(tree: [Lumber.Oak](../-oak/index.md), vararg trees: [Lumber.Oak](../-oak/index.md)): [Lumber.OakWood](index.md)
 
-Plants new logging trees into the forest. Accepts one or more Oak instances and adds them to the logging system.
+Adds one or more `Oak`s to the logging system.
 
 #### Parameters
 
@@ -13,11 +13,11 @@ common
 
 | | |
 |---|---|
-| tree | Oak instance to be added to the forest. |
-| trees | An array of Oak instances to be added to the forest. |
+| tree | The first `Oak` to plant. |
+| trees | Additional `Oak`s to plant. |
 
 #### Throws
 
 | | |
 |---|---|
-| [IllegalArgumentException](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-illegal-argument-exception/index.html) | if trying to plant the same OakWood instance.<br>Example:<br>```kotlin val consoleOak = ConsoleOak() // A custom Oak implementation val fileOak = FileOak() // Another custom Oak implementation Lumber.plant(consoleOak, fileOak) // Adds both Oaks to the forest Lumber.debug("Message to consoleOak and fileOak") ``` |
+| [IllegalArgumentException](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-illegal-argument-exception/index.html) | if `OakWood` itself is planted. |

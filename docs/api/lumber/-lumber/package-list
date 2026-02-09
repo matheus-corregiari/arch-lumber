@@ -3,6 +3,7 @@ $dokka.linkExtension:md
 $dokka.location:br.com.arch.toolkit.lumber////PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/index.md
 $dokka.location:br.com.arch.toolkit.lumber/DebugOak///PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-oak/index.md
 $dokka.location:br.com.arch.toolkit.lumber/DebugOak/DebugOak/#/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-oak/-debug-oak.md
+$dokka.location:br.com.arch.toolkit.lumber/DebugOak/isLoggable/#kotlin.String?#br.com.arch.toolkit.lumber.Lumber.Level/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-debug-oak/is-loggable.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Level.Assert///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-lumber/br.com.arch.toolkit.lumber/-lumber/-level/-assert/index.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Level.Debug///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-lumber/br.com.arch.toolkit.lumber/-lumber/-level/-debug/index.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Level.Error///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-lumber/br.com.arch.toolkit.lumber/-lumber/-level/-error/index.md
@@ -24,6 +25,7 @@ $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/error/#kotlin.Throwable/Po
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/info/#kotlin.String#kotlin.Any?/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/info.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/info/#kotlin.Throwable#kotlin.String#kotlin.Any?/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/info.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/info/#kotlin.Throwable/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/info.md
+$dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/isLoggable/#kotlin.String?#br.com.arch.toolkit.lumber.Lumber.Level/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/is-loggable.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/log/#br.com.arch.toolkit.lumber.Lumber.Level#kotlin.String#kotlin.Any?/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/log.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/log/#br.com.arch.toolkit.lumber.Lumber.Level#kotlin.Throwable/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/log.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/log/#br.com.arch.toolkit.lumber.Lumber.Level#kotlin.Throwable?#kotlin.String?#kotlin.Any?/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/log.md
@@ -42,6 +44,7 @@ $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/wtf/#kotlin.Throwable#kotl
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.Oak/wtf/#kotlin.Throwable/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak/wtf.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.OakWood///PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak-wood/index.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.OakWood/forest/#/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak-wood/forest.md
+$dokka.location:br.com.arch.toolkit.lumber/Lumber.OakWood/isLoggable/#kotlin.String?#br.com.arch.toolkit.lumber.Lumber.Level/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak-wood/is-loggable.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.OakWood/log/#br.com.arch.toolkit.lumber.Lumber.Level#kotlin.Throwable?#kotlin.String?#kotlin.Any?/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak-wood/log.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.OakWood/maxLogLength/#kotlin.Int/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak-wood/max-log-length.md
 $dokka.location:br.com.arch.toolkit.lumber/Lumber.OakWood/maxTagLength/#kotlin.Int/PointingToDeclaration/-lumber/br.com.arch.toolkit.lumber/-lumber/-oak-wood/max-tag-length.md

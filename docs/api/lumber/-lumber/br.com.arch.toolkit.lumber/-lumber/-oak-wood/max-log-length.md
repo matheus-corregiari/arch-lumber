@@ -5,24 +5,13 @@
 [common]\
 open override fun [maxLogLength](max-log-length.md)(length: [Int](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-int/index.html)): [Lumber.Oak](../-oak/index.md)
 
-Sets a one-time max log line length to be used for the next logging call on all planted Oaks. This method propagates the max log length to every individual Oak managed by OakWood.
+Sets a one-time maximum length for the next log message.
+
+If a formatted message exceeds this length, it will be split into multiple chunks.
 
 #### Return
 
-The OakWood instance for method chaining.
-
-## Example:
-
-```kotlin
-Lumber.maxLogLength(10).tag("Tag").debug("Debug message")
-// Expected output for ConsoleOak:
-// Debug: [Tag #0] Debug mess
-// Debug: [Tag #1] age
-
-// Expected output for FileOak:
-// Debug: [Tag #0] Debug mess
-// Debug: [Tag #1] age
-```
+The current `Oak` instance for chaining.
 
 #### Parameters
 
@@ -30,4 +19,4 @@ common
 
 | | |
 |---|---|
-| length | Maximum number of characters per emitted log entry. Must be > 0. |
+| length | The maximum number of characters per log entry. Must be positive. |

@@ -5,7 +5,7 @@
 [common]\
 [Verbose](index.md)
 
-Extremely detailed logging, usually disabled in production.
+For detailed, fine-grained debugging information. Typically disabled in production.
 
 ## Properties
 

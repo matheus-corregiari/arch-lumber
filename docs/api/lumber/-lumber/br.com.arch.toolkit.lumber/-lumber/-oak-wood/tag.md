@@ -5,19 +5,13 @@
 [common]\
 open override fun [tag](tag.md)(tag: [String](https://kotlinlang.org/api/core/kotlin-stdlib/kotlin/-string/index.html)): [Lumber.Oak](../-oak/index.md)
 
-Sets a one-time tag to be used for the next logging call on all planted Oaks. This method propagates the tag to every individual Oak managed by OakWood.
+Sets a one-time tag for the next log message.
+
+The tag is applied only to the immediate next log and is then cleared.
 
 #### Return
 
-The OakWood instance for method chaining.
-
-## Example:
-
-```kotlin
-Lumber.tag("MyActivity").debug("Debug message")
-// Expected output for ConsoleOak: Debug: [MyActivity] Debug message
-// Expected output for FileOak: Debug: [MyActivity] Debug message
-```
+The current `Oak` instance for chaining.
 
 #### Parameters
 
@@ -25,4 +19,4 @@ common
 
 | | |
 |---|---|
-| tag | The tag to attach to the next log message for all Oaks. |
+| tag | The tag string. |

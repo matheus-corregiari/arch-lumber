@@ -5,7 +5,7 @@
 [common]\
 [Assert](index.md)
 
-Critical failures that should never happen (What a Terrible Failure)
+For critical, unrecoverable failures. Stands for &quot;What a Terrible Failure.&quot;
 
 ## Properties
 

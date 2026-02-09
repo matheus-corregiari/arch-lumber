@@ -5,11 +5,4 @@
 [common]\
 fun [uprootAll](uproot-all.md)(): [Lumber.OakWood](index.md)
 
-Clears all planted trees from the forest.
-
-## Example:
-
-```kotlin
-Lumber.uprootAll() // Removes all trees (Oaks) from the forest
-Lumber.debug("Message will not be logged anymore")
-```
+Removes all planted `Oak`s.

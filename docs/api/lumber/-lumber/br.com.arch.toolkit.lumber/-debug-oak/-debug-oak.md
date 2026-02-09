@@ -2,22 +2,12 @@
 
 # DebugOak
 
-[android, jvm, common, wasmJs]\
-[android, jvm]\
+[android, apple, jvm, common, js, wasmJs]\
+[android, apple, jvm]\
 constructor()
 
 [common]\
 expect constructor()
 
-[wasmJs]\
+[js, wasmJs]\
 actual constructor()
-
-[apple]\
-constructor()
-
-Creates a debug tree that logs with colored output for Apple/Darwin targets.
-
-[js]\
-actual constructor()
-
-Creates a debug oak that logs into the JavaScript console.

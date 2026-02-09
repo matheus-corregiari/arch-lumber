@@ -3,65 +3,49 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugOak (Apple - Darwin)
+ * # DebugOak (Apple)
  *
- * This oak prints log messages to the standard output (`println`)
- * with ANSI colors applied to each log [ColoredLog].
- * for better readability in terminal environments.
+ * The Apple-specific implementation of [DebugOak] (iOS, macOS, etc.) that logs messages
+ * to the standard output using `println` with ANSI color coding.
  *
- * Each [Lumber.Level] is mapped to a distinct color style:
- * - [Lumber.Level.Error]   → Red
- * - [Lumber.Level.Warn]    → Yellow
- * - [Lumber.Level.Info]    → Blue
- * - [Lumber.Level.Debug]   → Green
- * - [Lumber.Level.Verbose] → Gray
- * - [Lumber.Level.Assert]  → Cyan
+ * Each log level is assigned a distinct color for better visibility in the Xcode console
+ * or terminal:
+ * - **Error**: Red
+ * - **Warn**: Yellow
+ * - **Info**: Blue
+ * - **Debug**: Green
+ * - **Verbose**: Gray
+ * - **Assert**: Cyan
  *
- * The [isLoggable] method always returns `true`, ensuring all logs
- * are emitted without filtering.
- *
- * ### Example usage:
- * ```kotlin
- * Lumber.plant(DebugOak())
- * Lumber.i("Startup", "Application initialized")
- * ```
- *
- * Console output (with colors applied):
- * ```
- * [Info]-[Startup] -> Application initialized
- * ```
- *
- * @constructor Creates a debug tree that logs with colored output
- * for Apple/Darwin targets.
- * @see Lumber
- * @see Lumber.Oak
+ * This implementation maps each [Lumber.Level] to a specific style via [ColoredLog].
  */
 actual open class DebugOak : Lumber.Oak() {
-    /** Maps [Lumber.Level] to a [ColoredLog] for colored output. */
-    private val Lumber.Level.toStyle: ColoredLog
-        get() =
-            when (this) {
-                Lumber.Level.Error -> ColoredLog.Red
-                Lumber.Level.Warn -> ColoredLog.Yellow
-                Lumber.Level.Info -> ColoredLog.Blue
-                Lumber.Level.Debug -> ColoredLog.Green
-                Lumber.Level.Verbose -> ColoredLog.Gray
-                Lumber.Level.Assert -> ColoredLog.Cyan
-            }
 
-    /** Always returns `true`, allowing all logs to be emitted. */
-    actual override fun isLoggable(
-        tag: String?,
-        level: Lumber.Level
-    ) = true
+    /** Maps a `Lumber.Level` to its corresponding ANSI color style. */
+    private val Lumber.Level.toStyle: ColoredLog
+        get() = when (this) {
+            Lumber.Level.Error -> ColoredLog.Red
+            Lumber.Level.Warn -> ColoredLog.Yellow
+            Lumber.Level.Info -> ColoredLog.Blue
+            Lumber.Level.Debug -> ColoredLog.Green
+            Lumber.Level.Verbose -> ColoredLog.Gray
+            Lumber.Level.Assert -> ColoredLog.Cyan
+        }
 
     /**
-     * Prints the formatted log message to the standard output with colors.
+     * For Apple platforms, all log levels are considered loggable by default.
      *
-     * @param level The log level as defined in [Lumber.Level].
-     * @param tag An optional tag identifying the log source.
-     * @param message The log message content.
-     * @param error An optional [Throwable] attached to the log (currently ignored).
+     * @return Always `true`.
+     */
+    actual override fun isLoggable(tag: String?, level: Lumber.Level) = true
+
+    /**
+     * Writes the log message to the standard output, applying ANSI colors based on the level.
+     *
+     * @param level The log level, used to determine the color.
+     * @param tag The optional log tag.
+     * @param message The formatted log message.
+     * @param error An optional `Throwable` (its stack trace is included in the formatted message).
      */
     actual override fun log(
         level: Lumber.Level,
@@ -75,6 +59,12 @@ actual open class DebugOak : Lumber.Oak() {
             } else {
                 "[%s]-[%s] -> %s".format(level.name, tag, message)
             }
-        println(formattedMessage.lineSequence().map(level.toStyle::invoke).joinToString("\n"))
+        // Apply style to each line separately to preserve formatting
+        println(
+            formattedMessage.lineSequence().joinToString(
+                separator = "\n",
+                transform = level.toStyle::invoke
+            )
+        )
     }
 }

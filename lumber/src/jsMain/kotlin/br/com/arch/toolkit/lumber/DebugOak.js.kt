@@ -1,52 +1,40 @@
-@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING", "MatchingDeclarationName")
 
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugOak (Kotlin/JS)
+ * # DebugOak (JS)
  *
- * This oak routes log messages to the native JavaScript `console`,
- * using different methods depending on the provided log [Lumber.Level].
+ * The JavaScript-specific implementation of [DebugOak], which delegates all log messages to
+ * the native `console` object.
  *
- * - [Lumber.Level.Verbose] → `console.log`
- * - [Lumber.Level.Debug]   → `console.log`
- * - [Lumber.Level.Info]    → `console.info`
- * - [Lumber.Level.Warn]    → `console.warn`
- * - [Lumber.Level.Error]   → `console.error`
- * - [Lumber.Level.Assert]  → `console.error`
+ * It maps each [Lumber.Level] to the most appropriate `console` method:
+ * - **Verbose**: `console.log`
+ * - **Debug**: `console.log`
+ * - **Info**: `console.info`
+ * - **Warn**: `console.warn`
+ * - **Error**: `console.error`
+ * - **Assert**: `console.error`
  *
- * The [isLoggable] method always returns `true`, ensuring that all logs
- * are emitted without filtering.
- *
- * ### Example usage:
- * ```kotlin
- * Lumber.plant(DebugOak())
- * Lumber.d("Init", "Application successfully loaded")
- * ```
- *
- * Console output:
- * ```
- * DEBUG Init : Application successfully loaded
- * ```
- *
- * @constructor Creates a debug oak that logs into the JavaScript console.
- * @see Lumber
- * @see Lumber.Oak
+ * The output includes the level name and the tag to provide context within the browser
+ * or Node.js console.
  */
 actual open class DebugOak actual constructor() : Lumber.Oak() {
-    /** Always returns `true`, allowing all logs to be emitted. */
-    actual override fun isLoggable(
-        tag: String?,
-        level: Lumber.Level
-    ) = true
 
     /**
-     * Routes the log message to the native JavaScript `console`.
+     * For JS, all log levels are considered loggable by default.
      *
-     * @param level The log level as defined in [Lumber.Level].
-     * @param tag An optional tag to identify the log source.
-     * @param message The log message content.
-     * @param error An optional [Throwable] attached to the log (currently ignored).
+     * @return Always `true`.
+     */
+    actual override fun isLoggable(tag: String?, level: Lumber.Level) = true
+
+    /**
+     * Writes the log message to the JavaScript console.
+     *
+     * @param level The log level, used to select the `console` method.
+     * @param tag The optional log tag.
+     * @param message The formatted log message.
+     * @param error An optional `Throwable` (currently its stack trace is handled within the message).
      */
     actual override fun log(
         level: Lumber.Level,

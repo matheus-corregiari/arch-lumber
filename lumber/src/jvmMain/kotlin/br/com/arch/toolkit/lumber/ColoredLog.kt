@@ -1,10 +1,28 @@
 package br.com.arch.toolkit.lumber
 
+import br.com.arch.toolkit.lumber.ColoredLog.Companion.RESET
+
+/**
+ * # ColoredLog
+ *
+ * An inline value class representing an ANSI-colored log line.
+ *
+ * This class wraps an ANSI color escape code and provides an [invoke] operator to
+ * wrap a given string with that color and reset it at the end.
+ *
+ * @property color The ANSI escape sequence for the color.
+ */
 @JvmInline
 internal value class ColoredLog private constructor(
     private val color: String
 ) {
-    operator fun invoke(text: String) = "$color[INFO] App started$RESET"
+    /**
+     * Wraps the provided [text] with the [color] escape sequence and appends [RESET].
+     *
+     * @param text The text to colorize.
+     * @return The colorized string.
+     */
+    operator fun invoke(text: String) = "$color$text$RESET"
 
     companion object {
         const val RESET = "\u001B[0m"

@@ -5,63 +5,49 @@ package br.com.arch.toolkit.lumber
 /**
  * # DebugOak (JVM)
  *
- * JVM-specific implementation of [Lumber.Oak] that prints logs to the
- * standard output (`stdout`), with ANSI colors applied to each log [ColoredLog].
+ * The JVM-specific implementation of [DebugOak] that logs messages to the standard
+ * output (`stdout`) with ANSI color coding.
  *
- * Each [Lumber.Level] is mapped to a distinct color:
- * - [Lumber.Level.Error]   → Red
- * - [Lumber.Level.Warn]    → Yellow
- * - [Lumber.Level.Info]    → Blue
- * - [Lumber.Level.Debug]   → Green
- * - [Lumber.Level.Verbose] → Gray
- * - [Lumber.Level.Assert]  → Cyan
+ * Each log level is assigned a distinct color to improve readability in terminal environments:
+ * - **Error**: Red
+ * - **Warn**: Yellow
+ * - **Info**: Blue
+ * - **Debug**: Green
+ * - **Verbose**: Gray
+ * - **Assert**: Cyan
  *
- * ## Example
- * ```kotlin
- * // Plant the DebugOak for JVM
- * Lumber.plant(DebugOak())
- *
- * Lumber.info("Application started")
- * Lumber.debug("Processing request id=%d", 42)
- * Lumber.error(Exception("boom"), "Operation failed")
- * ```
- *
- * The output will be printed to the terminal with colors applied per log level.
+ * This implementation is ideal for server-side or desktop applications where console
+ * output is the primary means of debugging.
  */
 actual open class DebugOak : Lumber.Oak() {
-    /** Maps [Lumber.Level] to a [ColoredLog] for colored output. */
+
+    /** Maps a `Lumber.Level` to its corresponding ANSI color style. */
     private val Lumber.Level.toStyle: ColoredLog
-        get() =
-            when (this) {
-                Lumber.Level.Error -> ColoredLog.Red
-                Lumber.Level.Warn -> ColoredLog.Yellow
-                Lumber.Level.Info -> ColoredLog.Blue
-                Lumber.Level.Debug -> ColoredLog.Green
-                Lumber.Level.Verbose -> ColoredLog.Gray
-                Lumber.Level.Assert -> ColoredLog.Cyan
-            }
+        get() = when (this) {
+            Lumber.Level.Error -> ColoredLog.Red
+            Lumber.Level.Warn -> ColoredLog.Yellow
+            Lumber.Level.Info -> ColoredLog.Blue
+            Lumber.Level.Debug -> ColoredLog.Green
+            Lumber.Level.Verbose -> ColoredLog.Gray
+            Lumber.Level.Assert -> ColoredLog.Cyan
+        }
 
     /**
-     * Always returns `true` for JVM.
+     * For the JVM implementation, all log levels are considered loggable by default.
      *
-     * Unlike Android, there’s no system filter here.
-     * All log levels are considered loggable.
-     *
-     * @param tag The log tag (ignored in filtering).
-     * @param level The log level.
+     * @return Always `true`.
      */
-    actual override fun isLoggable(
-        tag: String?,
-        level: Lumber.Level
-    ): Boolean = true
+    actual override fun isLoggable(tag: String?, level: Lumber.Level) = true
 
     /**
-     * Prints a log message to the console with a color based on [level].
+     * Writes the log message to `stdout`, applying ANSI colors based on the log level.
      *
-     * @param level The log level (controls formatting and color).
-     * @param tag Optional tag. If non-null, it will be included in the prefix.
-     * @param message The message to log.
-     * @param error Optional throwable. Currently not printed; consider extending if needed.
+     * The final output is formatted to include the level, tag (if present), and the message.
+     *
+     * @param level The log level, used to determine the color.
+     * @param tag The optional log tag.
+     * @param message The formatted log message.
+     * @param error An optional `Throwable` (its stack trace is appended to the message).
      */
     actual override fun log(
         level: Lumber.Level,
@@ -77,6 +63,11 @@ actual open class DebugOak : Lumber.Oak() {
             }
 
         // Apply style to each line separately
-        println(formattedMessage.lineSequence().map(level.toStyle::invoke).joinToString("\n"))
+        println(
+            formattedMessage.lineSequence().joinToString(
+                separator = "\n",
+                transform = level.toStyle::invoke
+            )
+        )
     }
 }

@@ -2,6 +2,10 @@
 
 package br.com.arch.toolkit.lumber
 
+/**
+ * A set of classes to ignore when attempting to determine the calling class or file
+ * for automatic tagging.
+ */
 internal val fqcnIgnore =
     setOfNotNull(
         Lumber::class,
@@ -11,6 +15,16 @@ internal val fqcnIgnore =
         DebugOak::class
     )
 
+/**
+ * A simple platform-agnostic string formatter.
+ *
+ * It supports basic `%s` (string) and `%d` (integer) placeholders.
+ *
+ * @receiver The template string containing placeholders.
+ * @param args The arguments to inject into the template.
+ * @return The formatted string.
+ * @throws IllegalStateException if there are fewer arguments than placeholders.
+ */
 @Suppress("ReturnCount")
 internal fun String.format(vararg args: Any?): String {
     // Ignore in case of no arguments, there is nothing to do
@@ -43,6 +57,15 @@ internal fun String.format(vararg args: Any?): String {
     return replaced.format(args = args.drop(1).toTypedArray())
 }
 
+/**
+ * Converts a string to camelCase.
+ *
+ * It splits the string by spaces, underscores, or hyphens and joins the parts
+ * with the first letter of each part (except the first one) capitalized.
+ *
+ * @receiver The string to convert.
+ * @return The camelCased string.
+ */
 internal fun String.camelcase(): String {
     val parts = trim().split(" ", "_", "-")
     return if (parts.size == 1) {

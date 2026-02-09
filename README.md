@@ -7,7 +7,7 @@
 [![Kotlin][badge-kotlin]](https://kotlinlang.org)
 ![Lint][badge-lint]
 ![Test][badge-test]
-![Coverage][badge-coverage]
+[![Coverage][badge-coverage]][link-coverage]
 
 ---
 
@@ -155,13 +155,15 @@ limitations under the License.
 
 [link-timber]: https://github.com/JakeWharton/timber
 
+[link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
+
 [badge-kotlin]: https://img.shields.io/badge/kotlin-2.3.10-blue.svg?logo=kotlin
 
 [badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/arch-lumber.svg
 
 [badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-lumber
 
-[badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber/branch/master/graph/badge.svg?token=P977R4GMUO
+[badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber/graph/badge.svg?token=P977R4GMUO
 
 [badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml/badge.svg
 

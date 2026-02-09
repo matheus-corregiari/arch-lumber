@@ -8,67 +8,61 @@ import br.com.arch.toolkit.lumber.Lumber.Level.Error
 import br.com.arch.toolkit.lumber.Lumber.Level.Info
 import br.com.arch.toolkit.lumber.Lumber.Level.Verbose
 import br.com.arch.toolkit.lumber.Lumber.Level.Warn
-import br.com.arch.toolkit.lumber.Lumber.OakWood.forest
 import br.com.arch.toolkit.lumber.Lumber.OakWood.plant
-import br.com.arch.toolkit.lumber.Lumber.OakWood.quiet
-import br.com.arch.toolkit.lumber.Lumber.OakWood.tag
 import br.com.arch.toolkit.lumber.Lumber.OakWood.uproot
 import br.com.arch.toolkit.lumber.Lumber.OakWood.uprootAll
 import kotlinx.atomicfu.atomic
 import kotlinx.atomicfu.update
 
 /**
- * # Lumber - A Lightweight Logging Library for Kotlin Multiplatform
+ * # 🌲 Lumber
  *
- * Lumber is a modern, Kotlin Multiplatform (KMP) logging library inspired by
- * [Timber by Jake Wharton](https://github.com/JakeWharton/timber).
+ * A lightweight and extensible logging library for Kotlin Multiplatform, inspired by Timber.
  *
- * Lumber works across multiple targets:
- * - **JVM** (desktop, backend)
- * - **Android**
- * - **Kotlin/Native** (iOS, Linux, Windows)
- * - **Kotlin/JS & Wasm**
+ * ## Core Concepts
  *
- * ## Key Features
- * - Idiomatic Kotlin API with extension-friendly design.
- * - Multiple log levels ([Level.Verbose], [Level.Debug], [Level.Info], [Level.Warn], [Level.Error], [Level.Assert]).
- * - Delegation to multiple logging oaks ([Oak]) via the [OakWood] singleton.
- * - One-time [tag] and [quiet] controls for flexible output.
- * - Automatic message splitting if longer than [MAX_LOG_LENGTH].
- * - Simple string formatting (`%s`, `%d`), independent of platform.
+ * - **[Lumber]**: The main entry point for all logging operations. It provides a static-like
+ *   API for convenience.
+ * - **[Oak]**: An abstraction for a logging destination. You can implement your own `Oak`
+ *   to send logs to files, analytics services, or any other target.
+ * - **[DebugOak]**: A pre-built `Oak` for platform-specific default logging (e.g., Logcat on
+ *   Android, `println` on JVM).
+ * - **[plant]**: Registers an `Oak` instance to receive log messages.
+ * - **[uproot]**: Removes a previously planted `Oak`.
  *
- * ## Example Usage
- * ```kotlin
- * // Plant a custom Oak
- * Lumber.plant(ConsoleOak())
+ * ## Quick Start
  *
- * // Simple log
- * Lumber.info("User loaded")
+ * 1. **Plant an Oak:** In your application's entry point, plant a `DebugOak` or a custom one.
  *
- * // Formatted log
- * Lumber.debug("User %s took %dms to load", username, duration)
+ *    ```kotlin
+ *    Lumber.plant(DebugOak())
+ *    ```
  *
- * // Logging with exception
- * try {
- *     doFail()
- * } catch (ex: Exception) {
- *     Lumber.error(ex, "Something went wrong with user %s", username)
- * }
+ * 2. **Log messages:** Use the static methods to log messages at different levels.
  *
- * // One-time tag
- * Lumber.tag("Auth").warn("User session expired")
+ *    ```kotlin
+ *    Lumber.info("Application started")
+ *    Lumber.debug("User ID: %s", "12345")
+ *    Lumber.error(Exception("Something went wrong"), "Failed to load data")
+ *    ```
  *
- * // Suppress one log
- * Lumber.quiet(true).debug("This will not be logged")
- * ```
+ * ## Advanced Usage
  *
- * ## Best Practices
- * - Plant at least one [Oak] before logging, otherwise logs are ignored.
- * - Use different [Oak] implementations for different outputs (console, file, remote).
- * - Use `tag()` sparingly to annotate context; don’t overuse as it resets after one call.
- * - Avoid expensive string concatenation; rely on the formatting mechanism.
+ * - **Custom Tags:** Use `tag()` for one-time contextual tags.
  *
- * @author Matheus Corregiari
+ *   ```kotlin
+ *   Lumber.tag("Authentication").warn("Login failed for user: %s", "john.doe")
+ *   ```
+ *
+ * - **Multiple Oaks:** Plant multiple `Oak`s to direct logs to different destinations simultaneously.
+ *
+ *   ```kotlin
+ *   Lumber.plant(DebugOak(), FileOak("path/to/logfile.log"))
+ *   ```
+ *
+ * @see Oak
+ * @see DebugOak
+ * @see Level
  */
 class Lumber private constructor() {
     init {
@@ -78,98 +72,62 @@ class Lumber private constructor() {
     /**
      * Defines the severity level of a log message.
      *
-     * Each level indicates intent and should be used consistently across the app:
-     *
-     * - [Verbose] → **lowest priority**. Use for extremely detailed logs
-     *   (e.g., internal variable dumps, step-by-step flows).
-     *
-     *   ```kotlin
-     *   Lumber.verbose("Loop iteration=%d, value=%s", i, value)
-     *   ```
-     *
-     * - [Debug] → Developer-facing messages useful during development
-     *   but usually turned off in production.
-     *
-     *   ```kotlin
-     *   Lumber.debug("Loaded user profile for %s", userId)
-     *   ```
-     *
-     * - [Info] → High-level events that describe the normal flow of the app.
-     *   Safe to keep enabled in production.
-     *
-     *   ```kotlin
-     *   Lumber.info("App started in %d ms", startupTime)
-     *   ```
-     *
-     * - [Warn] → Something unexpected happened or a potential issue was detected,
-     *   but the app is still working correctly.
-     *
-     *   ```kotlin
-     *   Lumber.warn("Cache miss for key=%s, falling back to network", key)
-     *   ```
-     *
-     * - [Error] → A failure occurred that needs attention, usually accompanied by an exception.
-     *
-     *   ```kotlin
-     *   try {
-     *       fetchData()
-     *   } catch (ex: IOException) {
-     *       Lumber.error(ex, "Network request failed")
-     *   }
-     *   ```
-     *
-     * - [Assert] → Highest priority. Use for conditions that should **never** happen
-     *   (fatal errors, invariant violations).
-     *
-     *   ```kotlin
-     *   checkNotNull(user) ?: Lumber.wtf("User must not be null here!")
-     *   ```
+     * Each level provides a clear indication of the log's importance and is used by `Oak`
+     * implementations to filter and format messages appropriately.
      */
     enum class Level {
-        /** Extremely detailed logging, usually disabled in production. */
+        /** For detailed, fine-grained debugging information. Typically disabled in production. */
         Verbose,
 
-        /** Debug information for developers, disabled in release builds. */
+        /** For developer-facing messages to debug application flow. */
         Debug,
 
-        /** General information about app state and high-level events. */
+        /** For high-level events that mark the application's lifecycle. */
         Info,
 
-        /** Something unexpected but not fatal. */
+        /** For potential issues or unexpected events that do not halt execution. */
         Warn,
 
-        /** Recoverable or unrecoverable errors, often with exceptions. */
+        /** For errors and exceptions that impact functionality but may be recoverable. */
         Error,
 
-        /** Critical failures that should never happen (What a Terrible Failure) */
+        /** For critical, unrecoverable failures. Stands for "What a Terrible Failure." */
         Assert
     }
 
     /**
-     * # Oak - Abstract Logging Tree
+     * # Oak
      *
-     * Base class for logging destinations ("oaks").
-     * Extend [Oak] to implement your own logging strategy:
-     * - console printing,
-     * - file logging,
-     * - network / crash reporting,
-     * - etc.
+     * An `Oak` represents a single logging destination.
      *
-     * ## Example
+     * Extend this abstract class to create a custom logger, whether it sends logs to the console,
+     * a file, a remote server, or an analytics service.
+     *
+     * ## Implementing a Custom Oak
+     *
+     * You need to implement two methods:
+     *
+     * - **[isLoggable]**: Determines if a message with a given `level` and `tag` should be logged.
+     * - **[log]**: Performs the actual logging of the formatted message.
+     *
+     * ### Example
+     *
      * ```kotlin
      * class ConsoleOak : Lumber.Oak() {
      *     override fun isLoggable(tag: String?, level: Level) = true
+     *
      *     override fun log(level: Level, tag: String?, message: String, error: Throwable?) {
-     *         println("$level [$tag]: $message")
+     *         println("[$level] ${tag?.let { "($it) " } ?: ""} - $message")
      *         error?.printStackTrace()
      *     }
      * }
      *
+     * // Plant it
      * Lumber.plant(ConsoleOak())
-     * Lumber.debug("Debugging with %s", "Lumber")
      * ```
      *
-     * @see OakWood for the singleton dispatcher that manages multiple [Oak] instances.
+     * @see OakWood
+     * @see DebugOak
      */
     abstract class Oak {
         private val explicitTag = ThreadSafe<String?>()
@@ -178,10 +136,11 @@ class Lumber private constructor() {
         private val explicitMaxTagLength = ThreadSafe<Int?>()
 
         /**
-         * Optional one-time tag. Set via [tag], consumed on the next log call.
+         * A one-time tag for the next log message.
          *
-         * Note: the tag is consumed even if the log is filtered out (e.g., [isLoggable] returns false)
-         * or suppressed via [quiet], to avoid leaking it into subsequent calls.
+         * This value is consumed after the next log call, even if the message is not ultimately logged.
+         *
+         * @see tag
          */
         protected open val tag: String?
             get() =
@@ -191,48 +150,42 @@ class Lumber private constructor() {
                     ?.also { explicitTag.remove() }
 
         /**
-         * Optional one-time quiet flag. Set via [quiet], consumed on the next log call.
+         * A one-time flag to suppress the next log message.
          *
-         * Note: the flag is consumed even if the log is filtered out, to avoid leaking it into
-         * subsequent calls.
+         * This value is consumed after the next log call.
+         *
+         * @see quiet
          */
         protected open val quiet: Boolean
             get() = explicitQuiet.get()?.also { explicitQuiet.remove() } == true
 
         /**
-         * Optional one-time max tag length. Set via [maxTagLength], consumed on the next log call.
+         * A one-time maximum length for the tag on the next log message.
          *
-         * Note: the value is consumed even if the log is filtered out, to avoid leaking it into
-         * subsequent calls.
+         * This value is consumed after the next log call.
+         *
+         * @see maxTagLength
          */
         protected open val maxTagLength: Int?
             get() = explicitMaxTagLength.get()?.also { explicitMaxTagLength.remove() }
 
         /**
-         * Optional one-time max log line length. Set via [maxLogLength], consumed on the next log call.
+         * A one-time maximum length for the log message on the next log call.
          *
-         * Note: the value is consumed even if the log is filtered out, to avoid leaking it into
-         * subsequent calls.
+         * This value is consumed after the next log call.
+         *
+         * @see maxLogLength
          */
         protected open val maxLogLength: Int?
             get() = explicitMaxLogLength.get()?.also { explicitMaxLogLength.remove() }
 
         /**
-         * Sets a one-time tag to be used for the next logging call on this specific [Oak].
-         * This tag helps identify the source of the log, making it easier to trace.
-         * The tag is temporary and only affects the immediate next log message.
+         * Sets a one-time tag for the next log message.
          *
-         * The tag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
-         * and is cleared automatically after the log call.
+         * The tag is applied only to the immediate next log and is then cleared.
          *
-         * @param tag The tag to attach to the next log message.
-         * @return The [Oak] instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.tag("MyActivity").debug("Debug message")
-         * // Expected output: Debug: [MyActivity] Debug message
-         * ```
+         * @param tag The tag string.
+         * @return The current `Oak` instance for chaining.
          */
         open fun tag(tag: String): Oak {
             explicitTag.set(tag.trim())
@@ -240,21 +193,10 @@ class Lumber private constructor() {
         }
 
         /**
-         * Sets a one-time quiet flag to be used for the next logging call on this specific [Oak].
-         * When enabled, the log call is suppressed for this [Oak].
-         * The quiet flag is temporary and only affects the immediate next log message.
+         * Suppresses the next log message for this `Oak`.
          *
-         * The flag is stored using a [ThreadSafe] to ensure it is only applied for the current thread
-         * and is cleared automatically after the log call.
-         *
-         * @param quiet True to enable quiet mode for the next log call; false otherwise.
-         * @return The [Oak] instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.quiet(true).error("This will not be logged");
-         * // Expected output: <no output>
-         * ```
+         * @param quiet `true` to suppress the log, `false` otherwise.
+         * @return The current `Oak` instance for chaining.
          */
         open fun quiet(quiet: Boolean): Oak {
             explicitQuiet.set(quiet)
@@ -262,30 +204,12 @@ class Lumber private constructor() {
         }
 
         /**
-         * Sets a one-time max log line length to be used for the next logging call on this specific [Oak].
+         * Sets a one-time maximum length for the next log message.
          *
-         * This does **not** drop/omit the log. If the final formatted message exceeds [length],
-         * Lumber will **split the message into multiple log entries**, each with at most [length] characters.
+         * If a formatted message exceeds this length, it will be split into multiple chunks.
          *
-         * ### One-shot behavior
-         * This setting is **consumed on the next log call** (including when the message is not loggable),
-         * and then cleared automatically for the current thread.
-         *
-         * ### Tag suffix for split parts
-         * When splitting happens, Lumber appends a suffix to the tag:
-         * - `"$tag #0"`, `"$tag #1"`, ...
-         * - If the tag is null, it becomes `"#0"`, `"#1"`, ...
-         *
-         * @param length Maximum number of characters per emitted log entry. Must be > 0.
-         * @return The [Oak] instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.maxLogLength(10).tag("Tag").debug("Debug message");
-         * // Expected output:
-         * Debug: [Tag #0] Debug mess
-         * Debug: [Tag #1] age
-         * ```
+         * @param length The maximum number of characters per log entry. Must be positive.
+         * @return The current `Oak` instance for chaining.
          */
         open fun maxLogLength(length: Int): Oak {
             require(length > 0) { "length must be positive" }
@@ -294,24 +218,12 @@ class Lumber private constructor() {
         }
 
         /**
-         * Sets a one-time max tag length to be used for the next logging call on this specific [Oak].
+         * Sets a one-time maximum length for the tag on the next log message.
          *
-         * If the tag exceeds [length], Lumber will **truncate** it to at most [length] characters
-         * (internally it takes only the first chunk).
+         * If the tag exceeds this length, it will be truncated.
          *
-         * ### One-shot behavior
-         * This setting is **consumed on the next log call** (including when the message is not loggable),
-         * and then cleared automatically for the current thread.
-         *
-         * @param length The maximum length of the tag. Must be > 0.
-         * @return The [Oak] instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.maxTagLength(3).tag("LongTag").debug("Debug message");
-         * // Expected output:
-         * Debug: [Lon] Debug message
-         * ```
+         * @param length The maximum length for the tag. Must be positive.
+         * @return The current `Oak` instance for chaining.
          */
         open fun maxTagLength(length: Int): Oak {
             require(length > 0) { "length must be positive" }
@@ -321,165 +233,127 @@ class Lumber private constructor() {
 
         //region Verbose
 
-        /** Log a [Level.Verbose] message. */
-        open fun verbose(
-            message: String,
-            vararg args: Any?
-        ) = log(level = Verbose, message = message, args = args)
+        /** Logs a [Verbose] message. */
+        open fun verbose(message: String, vararg args: Any?) =
+            log(level = Verbose, message = message, args = args)
 
-        /** Log a [Level.Verbose] exception only. */
+        /** Logs a [Verbose] error. */
         open fun verbose(error: Throwable) = log(level = Verbose, error = error)
 
-        /** Log a [Level.Verbose] exception with message. */
-        open fun verbose(
-            error: Throwable,
-            message: String,
-            vararg args: Any?
-        ) = log(level = Verbose, error = error, message = message, args = args)
+        /** Logs a [Verbose] error with a message. */
+        open fun verbose(error: Throwable, message: String, vararg args: Any?) =
+            log(level = Verbose, error = error, message = message, args = args)
         //endregion
 
         //region Debug
 
-        /** Log a [Level.Debug] message. */
-        open fun debug(
-            message: String,
-            vararg args: Any?
-        ) = log(level = Debug, message = message, args = args)
+        /** Logs a [Debug] message. */
+        open fun debug(message: String, vararg args: Any?) =
+            log(level = Debug, message = message, args = args)
 
-        /** Log a [Level.Debug] exception only. */
+        /** Logs a [Debug] error. */
         open fun debug(error: Throwable) = log(level = Debug, error = error)
 
-        /** Log a [Level.Debug] exception with message. */
-        open fun debug(
-            error: Throwable,
-            message: String,
-            vararg args: Any?
-        ) = log(level = Debug, error = error, message = message, args = args)
+        /** Logs a [Debug] error with a message. */
+        open fun debug(error: Throwable, message: String, vararg args: Any?) =
+            log(level = Debug, error = error, message = message, args = args)
         //endregion
 
         //region Info
 
-        /** Log a [Level.Info] message. */
-        open fun info(
-            message: String,
-            vararg args: Any?
-        ) = log(level = Info, message = message, args = args)
+        /** Logs an [Info] message. */
+        open fun info(message: String, vararg args: Any?) =
+            log(level = Info, message = message, args = args)
 
-        /** Log a [Level.Info] exception only. */
+        /** Logs an [Info] error. */
         open fun info(error: Throwable) = log(level = Info, error = error)
 
-        /** Log a [Level.Info] exception with message. */
-        open fun info(
-            error: Throwable,
-            message: String,
-            vararg args: Any?
-        ) = log(level = Info, error = error, message = message, args = args)
+        /** Logs an [Info] error with a message. */
+        open fun info(error: Throwable, message: String, vararg args: Any?) =
+            log(level = Info, error = error, message = message, args = args)
         //endregion
 
         //region Warn
 
-        /** Log a [Level.Warn] message. */
-        open fun warn(
-            message: String,
-            vararg args: Any?
-        ) = log(level = Warn, message = message, args = args)
+        /** Logs a [Warn] message. */
+        open fun warn(message: String, vararg args: Any?) =
+            log(level = Warn, message = message, args = args)
 
-        /** Log a [Level.Warn] exception only. */
+        /** Logs a [Warn] error. */
         open fun warn(error: Throwable) = log(level = Warn, error = error)
 
-        /** Log a [Level.Warn] exception with message. */
-        open fun warn(
-            error: Throwable,
-            message: String,
-            vararg args: Any?
-        ) = log(level = Warn, error = error, message = message, args = args)
+        /** Logs a [Warn] error with a message. */
+        open fun warn(error: Throwable, message: String, vararg args: Any?) =
+            log(level = Warn, error = error, message = message, args = args)
         //endregion
 
         //region Error
 
-        /** Log a [Level.Error] message. */
-        open fun error(
-            message: String,
-            vararg args: Any?
-        ) = log(level = Error, message = message, args = args)
+        /** Logs an [Error] message. */
+        open fun error(message: String, vararg args: Any?) =
+            log(level = Error, message = message, args = args)
 
-        /** Log a [Level.Error] exception only. */
+        /** Logs an [Error] error. */
         open fun error(error: Throwable) = log(level = Error, error = error)
 
-        /** Log a [Level.Error] exception with message. */
-        open fun error(
-            error: Throwable,
-            message: String,
-            vararg args: Any?
-        ) = log(level = Error, error = error, message = message, args = args)
+        /** Logs an [Error] error with a message. */
+        open fun error(error: Throwable, message: String, vararg args: Any?) =
+            log(level = Error, error = error, message = message, args = args)
         //endregion
 
         //region Assert
 
-        /** Log a [Level.Assert] message. */
-        open fun wtf(
-            message: String,
-            vararg args: Any?
-        ) = log(level = Assert, message = message, args = args)
+        /** Logs an [Assert] message. */
+        open fun wtf(message: String, vararg args: Any?) =
+            log(level = Assert, message = message, args = args)
 
-        /** Log a [Level.Assert] exception only. */
+        /** Logs an [Assert] error. */
         open fun wtf(error: Throwable) = log(level = Assert, error = error)
 
-        /** Log a [Level.Assert] exception with message. */
-        open fun wtf(
-            error: Throwable,
-            message: String,
-            vararg args: Any?
-        ) = log(level = Assert, error = error, message = message, args = args)
+        /** Logs an [Assert] error with a message. */
+        open fun wtf(error: Throwable, message: String, vararg args: Any?) =
+            log(level = Assert, error = error, message = message, args = args)
         //endregion
 
         //region Raw Log
 
-        /** Log a message at [level] with optional formatting args. */
-        open fun log(
-            level: Level,
-            message: String,
-            vararg args: Any?
-        ) = log(level = level, error = null, message = message, args = args)
+        /** Logs a message with a specific [Level] and optional arguments. */
+        open fun log(level: Level, message: String, vararg args: Any?) =
+            log(level = level, error = null, message = message, args = args)
 
-        /** Log an exception only. */
-        open fun log(
-            level: Level,
-            error: Throwable
-        ) = log(level = level, error = error, message = null, args = emptyArray())
+        /** Logs an error with a specific [Level]. */
+        open fun log(level: Level, error: Throwable) =
+            log(level = level, error = error, message = null, args = emptyArray())
 
-        /** Log exception + optional message with args. */
-        open fun log(
-            level: Level,
-            error: Throwable?,
-            message: String?,
-            vararg args: Any?
-        ) = prepareLog(level = level, error = error, message = message, args = args)
+        /** The most generic log method, handling all parameters. */
+        open fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
+            prepareLog(level = level, error = error, message = message, args = args)
         //endregion
 
         /**
-         * Determines whether a log at [level] should be written.
-         * Override to filter logs (e.g. only >= Warn).
+         * Determines whether a message should be logged.
+         *
+         * Override this to implement custom filtering logic, such as logging only messages
+         * above a certain severity in production.
+         *
+         * @param tag The tag associated with the message, or `null` if none was provided.
+         * @param level The severity [Level] of the message.
+         * @return `true` if the message should be logged, `false` otherwise.
          */
-        protected abstract fun isLoggable(
-            tag: String?,
-            level: Level
-        ): Boolean
+        abstract fun isLoggable(tag: String?, level: Level): Boolean
 
         /**
-         * Performs the actual logging.
+         * Processes and writes the log entry.
          *
-         * @param level The log level.
-         * @param tag The optional tag.
-         * @param message The formatted message (never null here).
-         * @param error Optional exception.
+         * This is the core method where the actual logging to a destination occurs. The `message`
+         * parameter contains the final, formatted string.
+         *
+         * @param level The severity [Level] of the message.
+         * @param tag The final tag, which may be `null`.
+         * @param message The formatted and finalized log message.
+         * @param error An optional `Throwable` associated with the log.
          */
-        protected abstract fun log(
-            level: Level,
-            tag: String?,
-            message: String,
-            error: Throwable?
-        )
+        protected abstract fun log(level: Level, tag: String?, message: String, error: Throwable?)
 
         private fun prepareLog(
             level: Level,
@@ -489,27 +363,24 @@ class Lumber private constructor() {
         ) {
             // Consume tag even when message is not loggable so that next message is correctly tagged.
             val tagLimit = maxTagLength ?: MAX_TAG_LENGTH
-            val tag = (tag ?: defaultTag())?.take(tagLimit)
+            val currentTag = (tag ?: defaultTag())?.take(tagLimit)
 
-            if (!isLoggable(tag, level) || quiet) return
+            if (!isLoggable(currentTag, level) || quiet) return
 
             var formattedMessage = message.orEmpty().format(*args)
-            when {
+            if (formattedMessage.isBlank()) {
                 // Swallow message if it's null and there's no throwable.
-                formattedMessage.isBlank() && error == null -> return
-
-                formattedMessage.isBlank() && error != null ->
-                    formattedMessage = error.stackTraceToString()
-
-                error != null -> formattedMessage += "\n\n" + error.stackTraceToString()
+                formattedMessage = error?.stackTraceToString() ?: return
+            } else if (error != null) {
+                formattedMessage += "\n\n${error.stackTraceToString()}"
             }
 
             val logLength = maxLogLength ?: MAX_LOG_LENGTH
             if (formattedMessage.length <= logLength) {
-                log(level = level, tag = tag, message = formattedMessage, error = error)
+                log(level = level, tag = currentTag, message = formattedMessage, error = error)
             } else {
                 formattedMessage.chunked(logLength).forEachIndexed { index, part ->
-                    val newTag = tag?.let { "$it #$index" } ?: "#$index"
+                    val newTag = currentTag?.let { "$it #$index" } ?: "#$index"
                     log(level = level, tag = newTag, message = part.trimStart('\n'), error = error)
                 }
             }
@@ -517,236 +388,80 @@ class Lumber private constructor() {
     }
 
     /**
-     * # OakWood - Forest Manager
+     * # OakWood
      *
-     * Singleton dispatcher that holds and manages multiple [Oak] oaks.
-     * All calls to [Lumber] are delegated here.
+     * The central dispatcher that manages all planted `Oak`s.
      *
-     * - Call [plant] to add one or more [Oak] instances.
-     * - Call [uproot] or [uprootAll] to remove oaks.
-     * - Call [forest] to inspect planted oaks.
+     * All logging calls from the `Lumber` API are routed through this object. It iterates
+     * over the collection of planted `Oak`s and forwards the log details to each one.
      *
-     * ## Example
-     * ```kotlin
-     * val console = ConsoleOak()
-     * val remote = RemoteOak()
-     * Lumber.plant(console, remote)
-     *
-     * Lumber.warn("Something happened") // logged to both trees
-     * ```
+     * @see plant
+     * @see uproot
+     * @see uprootAll
      */
     companion object OakWood : Oak() {
-        // Holds all the planted Oak trees.
         private val treesRef = atomic<Set<Oak>>(emptySet())
         private val trees by treesRef
 
-        /**
-         * The number of currently planted Oak trees.
-         * @return the count of Oak trees in the forest.
-         */
+        /** The number of currently planted `Oak`s. */
         val treeCount: Int get() = trees.size
 
-        override fun log(
-            level: Level,
-            tag: String?,
-            message: String,
-            error: Throwable?
-        ) = kotlin.error(
-            message = "OakWood does not implement direct logging; use its dispatcher instead."
-        )
+        override fun log(level: Level, tag: String?, message: String, error: Throwable?) =
+            kotlin.error("OakWood does not implement direct logging; it is a dispatcher.")
 
-        /**
-         * Dispatches the log message to all planted Oaks.
-         *
-         * @param level The logging level for the message.
-         * @param message The log message.
-         * @param error An optional throwable to be logged.
-         *
-         * ## Example:
-         * ```kotlin
-         * // Assume two Oaks: consoleOak and fileOak are planted
-         * Lumber.debug(message = "Debug message", error = Exception("Example Exception"))
-         * // ConsoleOak: Debug message
-         * // FileOak: Debug message
-         * ```
-         */
-        override fun log(
-            level: Level,
-            error: Throwable?,
-            message: String?,
-            vararg args: Any?
-        ) {
-            trees.forEach {
-                it.log(level = level, error = error, message = message, args = args)
-            }
-        }
+        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
+            trees.forEach { it.log(level = level, error = error, message = message, args = args) }
 
-        /**
-         * Returns true for all levels, allowing logging for all cases.
-         * Override to implement any filtering logic if necessary.
-         *
-         * @param tag The tag associated with the log message.
-         * @param level The logging level.
-         * @return Always returns true for logging.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.isLoggable("MyTag", Level.Debug) // returns true
-         * ```
-         */
-        override fun isLoggable(
-            tag: String?,
-            level: Level
-        ): Boolean = true
+        override fun isLoggable(tag: String?, level: Level) =
+            trees.any { it.isLoggable(tag, level) }
 
-        /**
-         * Sets a one-time tag to be used for the next logging call on all planted Oaks.
-         * This method propagates the tag to every individual Oak managed by OakWood.
-         *
-         * @param tag The tag to attach to the next log message for all Oaks.
-         * @return The OakWood instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.tag("MyActivity").debug("Debug message")
-         * // Expected output for ConsoleOak: Debug: [MyActivity] Debug message
-         * // Expected output for FileOak: Debug: [MyActivity] Debug message
-         * ```
-         */
         override fun tag(tag: String): Oak {
-            // Propagate the tag to all Oaks.
             trees.forEach { it.tag(tag) }
             return this
         }
 
-        /**
-         * Sets a one-time quiet flag to be used for the next logging call on all planted Oaks.
-         * This method propagates the quiet flag to every individual Oak managed by OakWood.
-         *
-         * @param quiet True to enable quiet mode for the next log call in all Oaks; false otherwise.
-         * @return The OakWood instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.quiet(true).error("This will not be logged")
-         * // No output in quiet mode.
-         * ```
-         */
         override fun quiet(quiet: Boolean): Oak {
-            // Propagate the quiet flag to all Oaks.
             trees.forEach { it.quiet(quiet) }
             return this
         }
 
-        /**
-         * Sets a one-time max log line length to be used for the next logging call on all planted Oaks.
-         * This method propagates the max log length to every individual Oak managed by OakWood.
-         *
-         * @param length Maximum number of characters per emitted log entry. Must be > 0.
-         * @return The OakWood instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.maxLogLength(10).tag("Tag").debug("Debug message")
-         * // Expected output for ConsoleOak:
-         * // Debug: [Tag #0] Debug mess
-         * // Debug: [Tag #1] age
-         *
-         * // Expected output for FileOak:
-         * // Debug: [Tag #0] Debug mess
-         * // Debug: [Tag #1] age
-         * ```
-         */
         override fun maxLogLength(length: Int): Oak {
-            // Propagate the maxLogLength to all Oaks.
             trees.forEach { it.maxLogLength(length) }
             return this
         }
 
-        /**
-         * Sets a one-time max tag length to be used for the next logging call on all planted Oaks.
-         * This method propagates the max tag length to every individual Oak managed by OakWood.
-         *
-         * @param length The maximum length of the tag for all Oaks. Must be > 0.
-         * @return The OakWood instance for method chaining.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.maxTagLength(3).tag("LongTag").debug("Debug message")
-         * // Expected output for ConsoleOak:
-         * // Debug: [Lon] Debug message
-         *
-         * // Expected output for FileOak:
-         * // Debug: [Lon] Debug message
-         * ```
-         */
         override fun maxTagLength(length: Int): Oak {
-            // Propagate the maxTagLength to all Oaks.
             trees.forEach { it.maxTagLength(length) }
             return this
         }
 
         /**
-         * Plants new logging trees into the forest.
-         * Accepts one or more Oak instances and adds them to the logging system.
+         * Adds one or more `Oak`s to the logging system.
          *
-         * @param tree Oak instance to be added to the forest.
-         * @param trees An array of Oak instances to be added to the forest.
-         * @throws IllegalArgumentException if trying to plant the same OakWood instance.
-         *
-         * ## Example:
-         * ```kotlin
-         * val consoleOak = ConsoleOak() // A custom Oak implementation
-         * val fileOak = FileOak() // Another custom Oak implementation
-         * Lumber.plant(consoleOak, fileOak) // Adds both Oaks to the forest
-         * Lumber.debug("Message to consoleOak and fileOak")
-         * ```
+         * @param tree The first `Oak` to plant.
+         * @param trees Additional `Oak`s to plant.
+         * @throws IllegalArgumentException if `OakWood` itself is planted.
          */
-        fun plant(
-            tree: Oak,
-            vararg trees: Oak
-        ) = apply {
+        fun plant(tree: Oak, vararg trees: Oak) = apply {
             val allTrees = listOf(tree, *trees)
             allTrees.forEach { require(it !== this) { "Cannot plant Lumber itself." } }
             treesRef.update { it + allTrees }
         }
 
         /**
-         * Uproots a specific logging tree.
+         * Removes a specific `Oak` from the logging system.
          *
-         * @param tree The tree to be removed from the forest.
-         *
-         * ## Example:
-         * ```kotlin
-         * val consoleOak = ConsoleOak()
-         * Lumber.plant(consoleOak) // Adds consoleOak to the forest
-         * Lumber.uproot(consoleOak) // Removes consoleOak from the forest
-         * ```
+         * @param tree The `Oak` instance to remove.
          */
         fun uproot(tree: Oak) = apply { treesRef.update { it - tree } }
 
         /**
-         * Clears all planted trees from the forest.
-         *
-         * ## Example:
-         * ```kotlin
-         * Lumber.uprootAll() // Removes all trees (Oaks) from the forest
-         * Lumber.debug("Message will not be logged anymore")
-         * ```
+         * Removes all planted `Oak`s.
          */
         fun uprootAll() = apply { treesRef.value = emptySet() }
 
         /**
-         * Returns a copy of all planted trees (Oaks).
-         * This can be useful for iterating or debugging.
-         *
-         * @return A list of all planted Oaks.
-         *
-         * ## Example:
-         * ```kotlin
-         * val forest = Lumber.forest() // Get all planted Oaks
-         * forest.forEach { oak -> oak.debug("Inspecting Oak: ${oak.javaClass.simpleName}") }
-         * ```
+         * Returns an immutable list of all currently planted `Oak`s.
          */
         fun forest(): List<Oak> = trees.toList()
     }

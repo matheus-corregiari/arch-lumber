@@ -9,15 +9,19 @@ package br.com.arch.toolkit.lumber
  * but the actual logging behavior will differ depending on the platform (JVM, Android, and others).
  *
  * ## Targets:
- * - **JVM**: Uses SLF4J or other JVM-based logging frameworks.
  * - **Android**: Uses Android's `Log` class.
- * - **Future Platforms**: The framework is designed to allow easy extension to additional platforms, such as iOS and JavaScript.
+ * - **JVM**: Uses ANSI-colored `println` output.
+ * - **Apple**: Uses ANSI-colored `println`.
+ * - **JS/WASM**: Uses native `console.*` output.
  *
- * ## Example (JVM Implementation):
+ * You can always provide your own [Lumber.Oak] implementation if you want to
+ * integrate with other logging frameworks.
+ *
+ * ## Example (Custom Implementation):
  * ```kotlin
  * class MyDebugOak : DebugOak() {
  *     override fun log(level: Level, tag: String?, message: String, error: Throwable?) {
- *         // Platform-specific logging implementation (JVM using SLF4J)
+ *         // Platform-specific logging implementation
  *     }
  * }
  * ```

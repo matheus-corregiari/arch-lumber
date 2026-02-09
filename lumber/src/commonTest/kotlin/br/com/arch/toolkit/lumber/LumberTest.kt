@@ -194,6 +194,40 @@ abstract class LumberTest {
     }
 
     @Test
+    fun `message short - maxTagLength truncates tag - resets after use`() {
+        val tree = newTree()
+        Lumber.maxTagLength(3).tag("CustomTag").runLog("trim")
+        tree.assertAll(
+            TestTree.Data(level, "Cus", "trim", null)
+        )
+
+        // no próximo log, maxTagLength já foi consumido
+        Lumber.tag("CustomTag").runLog("next")
+        tree.assertAll(
+            TestTree.Data(level, "Cus", "trim", null),
+            TestTree.Data(level, "CustomTag", "next", null)
+        )
+    }
+
+    @Test
+    fun `message short - maxLogLength splits - resets after use`() {
+        val tree = newTree()
+        Lumber.maxLogLength(4).tag("Tag").runLog("Hello")
+        tree.assertAll(
+            TestTree.Data(level, "Tag #0", "Hell", null),
+            TestTree.Data(level, "Tag #1", "o", null)
+        )
+
+        // no próximo log, maxLogLength já foi consumido
+        Lumber.runLog("12345")
+        tree.assertAll(
+            TestTree.Data(level, "Tag #0", "Hell", null),
+            TestTree.Data(level, "Tag #1", "o", null),
+            TestTree.Data(level, defaultTag(), "12345", null)
+        )
+    }
+
+    @Test
     fun `message short - quiet true - tag default - error null - args empty`() {
         val tree = newTree()
         Lumber.quiet(true).runLog("muted")

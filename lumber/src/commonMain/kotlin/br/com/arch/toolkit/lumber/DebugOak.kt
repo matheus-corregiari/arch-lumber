@@ -3,37 +3,39 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugOak - Platform-specific Debug Logging Tree
+ * # DebugOak
  *
- * This is the common interface for the DebugOak implementation. It handles the log level and message formatting,
- * but the actual logging behavior will differ depending on the platform (JVM, Android, and others).
+ * A platform-specific implementation of [Lumber.Oak] designed for development logging.
  *
- * ## Targets:
- * - **Android**: Uses Android's `Log` class.
- * - **JVM**: Uses ANSI-colored `println` output.
- * - **Apple**: Uses ANSI-colored `println`.
- * - **JS/WASM**: Uses native `console.*` output.
+ * `DebugOak` provides a sensible default for each target platform, using the standard logging
+ * mechanisms available (e.g., Logcat on Android, `console` on JS/Wasm, and colored `println`
+ * on JVM and Apple platforms).
  *
- * You can always provide your own [Lumber.Oak] implementation if you want to
- * integrate with other logging frameworks.
+ * ## Behavior by Platform:
  *
- * ## Example (Custom Implementation):
+ * - **Android**: Logs to `android.util.Log`.
+ * - **JVM**: Logs to standard output with ANSI colors.
+ * - **Apple**: Logs to standard output with ANSI colors.
+ * - **JS/Wasm**: Logs to the browser or Node.js `console` object.
+ *
+ * ## Usage:
+ *
  * ```kotlin
- * class MyDebugOak : DebugOak() {
- *     override fun log(level: Level, tag: String?, message: String, error: Throwable?) {
- *         // Platform-specific logging implementation
- *     }
- * }
+ * Lumber.plant(DebugOak())
  * ```
+ *
+ * @see Lumber.Oak
  */
 expect open class DebugOak() : Lumber.Oak {
     /**
-     * Determines whether a log message at the specified level should be logged.
-     * This function will be implemented differently for each platform.
+     * Determines whether a log message should be output.
      *
-     * @param tag The tag to associate with the log message.
-     * @param level The logging level.
-     * @return Whether the message is loggable at the specified level.
+     * The implementation of this method is platform-dependent. For example, on Android,
+     * it might check the system log level.
+     *
+     * @param tag The tag associated with the log message.
+     * @param level The severity [Lumber.Level].
+     * @return `true` if the message should be logged, `false` otherwise.
      */
     override fun isLoggable(
         tag: String?,
@@ -41,13 +43,12 @@ expect open class DebugOak() : Lumber.Oak {
     ): Boolean
 
     /**
-     * Logs a message at the specified level, possibly including an error (Throwable).
-     * The implementation of this function will be platform-specific, using different logging systems.
+     * Performs the actual logging using the platform's default mechanism.
      *
-     * @param level The logging level.
-     * @param tag The tag associated with the log message.
-     * @param message The log message.
-     * @param error An optional throwable (error) to be logged.
+     * @param level The severity [Lumber.Level].
+     * @param tag The optional tag.
+     * @param message The formatted log message.
+     * @param error An optional `Throwable`.
      */
     override fun log(
         level: Lumber.Level,

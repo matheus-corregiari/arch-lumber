@@ -14,3 +14,7 @@ dependencyResolutionManagement {
     repositories(repositoryList)
     versionCatalogs { register("libs") { from(files("$rootDir/../gradle/libs.versions.toml")) } }
 }
+
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}

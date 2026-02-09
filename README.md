@@ -23,7 +23,7 @@ by [Timber](https://github.com/JakeWharton/timber).
 Lumber brings a **simple API**, **prebuilt DebugOaks**, and **extensibility** for your Kotlin
 Multiplatform projects.
 
-Too see more, take a look at the [documentation](/docs/api/lumber/index.md).
+To see more, take a look at the [documentation](/docs/api/lumber/index.md).
 
 > Special thanks to Jake Wharton for the inspiration and making Timber the go-to logging library for
 > Android.
@@ -34,6 +34,7 @@ Too see more, take a look at the [documentation](/docs/api/lumber/index.md).
 
 * [Features](#-features)
 * [Installation](#-installation)
+* [Quick Start](#-quick-start)
 * [Usage](#-usage)
     * [1. Plant a DebugOak](#1-plant-a-DebugOak)
     * [2. Log messages](#2-log-messages)
@@ -41,6 +42,8 @@ Too see more, take a look at the [documentation](/docs/api/lumber/index.md).
 * [Prebuilt DebugOaks](#-prebuilt-oaks)
 * [Custom Oaks](#-custom-oaks)
 * [API Reference](#-api-reference)
+* [Usability Tips](#-usability-tips)
+* [Contributing](#-contributing)
 * [License](#-license)
 
 ---
@@ -78,6 +81,19 @@ dependencies {
     implementation 'io.github.matheus-corregiari:arch-lumber:<latest-version>'
 }
 ````
+
+---
+
+## ⚡ Quick Start
+
+1. Add the dependency to your shared (KMP) module.
+2. Plant a `DebugOak()` once (usually during app startup).
+3. Use `Lumber.*` wherever you need logging.
+
+```kotlin
+Lumber.plant(DebugOak())
+Lumber.info("KMP logging ready")
+```
 
 ---
 
@@ -172,6 +188,21 @@ Lumber.debug("Logged to console and file")
 | Warn    | Warnings, potential issues       |
 | Error   | Errors and exceptions            |
 | Assert  | Critical failures (WTF)          |
+
+---
+
+## ✅ Usability Tips
+
+* **No oaks, no logs:** If nothing is planted, logs are intentionally ignored.
+* **One-shot settings:** `tag()`, `quiet()`, `maxLogLength()`, and `maxTagLength()` apply only to the *next* call.
+* **Throwable output is platform-specific:** Android/JVM DebugOak do not print stack traces by default. Use a custom Oak
+  if you want to include error output.
+
+---
+
+## 🤝 Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for a straightforward, KMP-focused workflow.
 
 ---
 

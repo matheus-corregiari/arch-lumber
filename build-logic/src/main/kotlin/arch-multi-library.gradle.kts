@@ -9,7 +9,10 @@ plugins {
 }
 
 extensions.configure<KotlinMultiplatformExtension> {
-    compilerOptions { jvmToolchain(projectJavaVersionCode) }
+    compilerOptions {
+        jvmToolchain(projectJavaVersionCode)
+        progressiveMode.set(true)
+    }
     withSourcesJar(true)
     applyDefaultHierarchyTemplate {
         common {

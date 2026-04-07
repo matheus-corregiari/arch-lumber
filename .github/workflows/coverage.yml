@@ -1,4 +1,4 @@
-name: Test
+name: Coverage
 
 on:
   push:
@@ -14,8 +14,8 @@ permissions:
   contents: read
 
 jobs:
-  lint:
-    name: Lint
+  coverage:
+    name: Coverage Gate
     runs-on: ubuntu-latest
 
     steps:
@@ -28,9 +28,25 @@ jobs:
         run: ./gradlew allTests
 
       - name: Coverage Reports
-        run: ./gradlew koverXmlReport
+        run: ./gradlew :lumber:koverXmlReport :lumber:koverHtmlReport :lumber:koverVerify
+
+      - name: Upload coverage HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-html
+          path: lumber/build/reports/kover/html
+          if-no-files-found: error
+
+      - name: Upload coverage XML
+        uses: actions/upload-artifact@v4
+        with:
+          name: kover-xml
+          path: lumber/build/reports/kover/xml
+          if-no-files-found: error
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: lumber/build/reports/kover/xml/report.xml
+          fail_ci_if_error: true

@@ -426,11 +426,13 @@ class Lumber private constructor() {
         }
 
         override fun maxLogLength(length: Int): Oak {
+            require(length > 0) { "length must be positive" }
             trees.forEach { it.maxLogLength(length) }
             return this
         }
 
         override fun maxTagLength(length: Int): Oak {
+            require(length > 0) { "length must be positive" }
             trees.forEach { it.maxTagLength(length) }
             return this
         }

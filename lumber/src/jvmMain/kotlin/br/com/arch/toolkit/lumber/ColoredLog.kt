@@ -22,16 +22,16 @@ internal value class ColoredLog private constructor(
      * @param text The text to colorize.
      * @return The colorized string.
      */
-    operator fun invoke(text: String) = "$color$text$RESET"
+    internal operator fun invoke(text: String): String = "$color$text$RESET"
 
     companion object {
-        const val RESET = "\u001B[0m"
+        internal const val RESET = "\u001B[0m"
 
-        val Red = ColoredLog("\u001B[31m")
-        val Green = ColoredLog("\u001B[32m")
-        val Yellow = ColoredLog("\u001B[33m")
-        val Blue = ColoredLog("\u001B[34m")
-        val Cyan = ColoredLog("\u001B[36m")
-        val Gray = ColoredLog("\u001B[90m")
+        internal val Red = ColoredLog("\u001B[31m")
+        internal val Green = ColoredLog("\u001B[32m")
+        internal val Yellow = ColoredLog("\u001B[33m")
+        internal val Blue = ColoredLog("\u001B[34m")
+        internal val Cyan = ColoredLog("\u001B[36m")
+        internal val Gray = ColoredLog("\u001B[90m")
     }
 }

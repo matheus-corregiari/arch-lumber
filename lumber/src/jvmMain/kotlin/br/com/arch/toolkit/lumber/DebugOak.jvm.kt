@@ -20,18 +20,6 @@ package br.com.arch.toolkit.lumber
  * output is the primary means of debugging.
  */
 actual open class DebugOak : Lumber.Oak() {
-
-    /** Maps a `Lumber.Level` to its corresponding ANSI color style. */
-    private val Lumber.Level.toStyle: ColoredLog
-        get() = when (this) {
-            Lumber.Level.Error -> ColoredLog.Red
-            Lumber.Level.Warn -> ColoredLog.Yellow
-            Lumber.Level.Info -> ColoredLog.Blue
-            Lumber.Level.Debug -> ColoredLog.Green
-            Lumber.Level.Verbose -> ColoredLog.Gray
-            Lumber.Level.Assert -> ColoredLog.Cyan
-        }
-
     /**
      * For the JVM implementation, all log levels are considered loggable by default.
      *
@@ -61,12 +49,20 @@ actual open class DebugOak : Lumber.Oak() {
             } else {
                 "[%s]-[%s] -> %s".format(level.name, tag, message)
             }
+        val style = when (level) {
+            Lumber.Level.Error -> ColoredLog.Red
+            Lumber.Level.Warn -> ColoredLog.Yellow
+            Lumber.Level.Info -> ColoredLog.Blue
+            Lumber.Level.Debug -> ColoredLog.Green
+            Lumber.Level.Verbose -> ColoredLog.Gray
+            Lumber.Level.Assert -> ColoredLog.Cyan
+        }
 
         // Apply style to each line separately
         println(
             formattedMessage.lineSequence().joinToString(
                 separator = "\n",
-                transform = level.toStyle::invoke
+                transform = style::invoke
             )
         )
     }

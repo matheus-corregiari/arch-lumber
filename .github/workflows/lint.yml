@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   lint:
-    name: Lint
+    name: Static Analysis
     runs-on: ubuntu-latest
 
     steps:

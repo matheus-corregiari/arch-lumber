@@ -1,22 +1,21 @@
 @file:Suppress("UnstableApiUsage")
 
-import io.gitlab.arturbosch.detekt.Detekt
-import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
-import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+import dev.detekt.gradle.Detekt
+import dev.detekt.gradle.extensions.DetektExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension
 
 plugins {
-    id("io.gitlab.arturbosch.detekt")
+    id("dev.detekt")
     id("org.jlleitschuh.gradle.ktlint")
 }
 
 extensions.configure<DetektExtension> {
     parallel = true
     buildUponDefaultConfig = true
-    autoCorrect = true
     allRules = false
-    config.setFrom("$rootDir/tools/detekt.yml")
+    config.setFrom("$rootDir/tools/detekt-config.yml")
     baseline = file("$rootDir/tools/detekt-baseline.xml")
+    basePath.set(rootDir)
 }
 extensions.configure<KtlintExtension> {
     android.set(true)
@@ -31,17 +30,11 @@ extensions.configure<KtlintExtension> {
 }
 
 tasks.withType<Detekt>().configureEach {
-    jvmTarget = projectJavaVersionName
+    basePath.set(rootDir.absolutePath)
     reports {
-        xml.required.set(true)
         html.required.set(true)
-        md.required.set(true)
-        txt.required.set(true)
+        checkstyle.required.set(true)
         sarif.required.set(true)
+        markdown.required.set(true)
     }
-}
-tasks.withType<DetektCreateBaselineTask>().configureEach { jvmTarget = projectJavaVersionName }
-
-dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:${libraries.version("detekt")}")
 }

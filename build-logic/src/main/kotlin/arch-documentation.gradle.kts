@@ -28,3 +28,15 @@ extensions.configure(DokkaExtension::class) {
         enableKotlinStdLibDocumentationLink.set(true)
     }
 }
+
+kover {
+    reports {
+        total {
+            verify {
+                rule("Minimum line coverage") {
+                    minBound(65)
+                }
+            }
+        }
+    }
+}

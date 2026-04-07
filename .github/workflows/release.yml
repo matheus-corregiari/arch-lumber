@@ -52,6 +52,9 @@ jobs:
       - name: Build
         run: ./gradlew build
 
+      - name: Verify Coverage
+        run: ./gradlew :lumber:koverVerify
+
       - name: Publish to GitHub Packages
         run: ./gradlew publishAllPublicationsToGithubRepository
 

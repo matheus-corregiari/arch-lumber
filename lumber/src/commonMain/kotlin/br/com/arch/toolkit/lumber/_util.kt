@@ -6,14 +6,13 @@ package br.com.arch.toolkit.lumber
  * A set of classes to ignore when attempting to determine the calling class or file
  * for automatic tagging.
  */
-internal val fqcnIgnore =
-    setOfNotNull(
-        Lumber::class,
-        Lumber.Level::class,
-        Lumber.OakWood::class,
-        Lumber.Oak::class,
-        DebugOak::class
-    )
+internal val fqcnIgnore = setOf(
+    Lumber::class,
+    Lumber.Level::class,
+    Lumber.OakWood::class,
+    Lumber.Oak::class,
+    DebugOak::class
+)
 
 /**
  * A simple platform-agnostic string formatter.

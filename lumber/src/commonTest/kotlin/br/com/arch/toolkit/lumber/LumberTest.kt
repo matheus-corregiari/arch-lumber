@@ -369,14 +369,29 @@ abstract class LumberTest {
 
         // como tag vazia não é aceita, deve cair pro defaultTag()
         tree.assertAll(
-            RecordingOak.Entry(level = level, tag = defaultTag(), message = "empty tag", error = null)
+            RecordingOak.Entry(
+                level = level,
+                tag = defaultTag(),
+                message = "empty tag",
+                error = null
+            )
         )
 
         // pro próximo log continua default
         Lumber.runLog("next")
         tree.assertAll(
-            RecordingOak.Entry(level = level, tag = defaultTag(), message = "empty tag", error = null),
-            RecordingOak.Entry(level = level, tag = defaultTag(), message = "next", error = null)
+            RecordingOak.Entry(
+                level = level,
+                tag = defaultTag(),
+                message = "empty tag",
+                error = null
+            ),
+            RecordingOak.Entry(
+                level = level,
+                tag = defaultTag(),
+                message = "next",
+                error = null
+            )
         )
     }
 }

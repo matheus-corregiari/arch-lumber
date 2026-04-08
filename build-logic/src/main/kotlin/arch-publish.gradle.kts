@@ -1,6 +1,7 @@
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
+import com.vanniktech.maven.publish.SourcesJar
 
 plugins {
     `maven-publish`
@@ -46,7 +47,7 @@ extensions.configure(MavenPublishBaseExtension::class) {
     configure(
         KotlinMultiplatform(
             javadocJar = JavadocJar.Dokka("dokkaGenerate"),
-            sourcesJar = true,
+            sourcesJar = SourcesJar.Sources(),
         ),
     )
 }

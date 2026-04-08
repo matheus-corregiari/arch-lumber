@@ -2,12 +2,12 @@
 
 ## Test Categories
 
-Split tests into two intentional categories:
+Treat tests as two intentional categories when adding or reorganizing coverage:
 
 - behavior validation tests: verify the expected contract of the library through stable, assertive checks
 - exploration tests: probe edge cases, target-specific behavior, regressions, and implementation-sensitive scenarios before or alongside behavior validation
 
-Behavior validation tests are the default. Exploration tests exist to discover risk, confirm assumptions, and justify new or refined behavior validation coverage.
+Behavior validation tests are the default today. Exploration tests exist to discover risk, confirm assumptions, and justify new or refined behavior validation coverage when needed.
 
 ## Test Placement
 

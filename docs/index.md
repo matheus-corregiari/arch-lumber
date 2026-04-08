@@ -8,6 +8,13 @@ It is designed around three ideas:
 - log with one-line calls
 - keep the behavior predictable across targets
 
+## Compatibility
+
+- Kotlin `2.3.20`
+- Android `minSdk 20`, `compileSdk 36`
+- Gradle wrapper `9.3.1`
+- JDK toolchain `21` resolved through Foojay
+
 ## Why it exists
 
 The library aims to give you a Timber-like logging flow without forcing a JVM-only model.
@@ -34,3 +41,5 @@ If you want the full contract, read the [Getting Started](getting-started.md) gu
 - generated API docs from Dokka
 - versioned changelog pages
 - a short roadmap for future enhancements
+- contributor notes that keep docs and API references in sync
+- compatibility and toolchain references that match the project configuration

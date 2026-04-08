@@ -24,7 +24,7 @@
 - Keep the docs site aligned with the README, but avoid duplicating large sections verbatim.
 - When adding a new concept page, wire it into `mkdocs.yml`.
 - When changing examples in code or KDoc, check whether the same example appears in `README.md` or `docs/`.
-- Always update Dokka together with MkDocs when public code changes anywhere in the repository.
+- When public code changes, update the committed Dokka output under `docs/api/` together with the relevant MkDocs content.
 - Reference concrete dependency versions from the project configuration whenever documentation mentions Kotlin, plugins, Android SDKs, or runtime/toolchain requirements.
 
 ## README Rules

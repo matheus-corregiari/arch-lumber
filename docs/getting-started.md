@@ -1,4 +1,11 @@
-﻿# Getting Started
+# Getting Started
+
+## Requirements
+
+- JDK `21` from the project toolchain
+- Gradle wrapper `9.3.1`
+- Kotlin `2.3.20`
+- Android `minSdk 20` and `compileSdk 36` for Android consumers
 
 ## Add the dependency
 
@@ -48,6 +55,13 @@ class AnalyticsOak : Lumber.Oak() {
 
 Lumber.plant(AnalyticsOak())
 ```
+
+## Compatibility notes
+
+- Android support starts at `minSdk 20`.
+- The build uses the Gradle toolchain with Foojay resolution for JDK `21`.
+- The published API follows the same KDoc and Dokka contract as the source code.
+- If setup, platform behavior, or API shape changes, update this guide together with the generated docs.
 
 ## What to read next
 

@@ -1,4 +1,4 @@
-﻿# Arch Lumber
+# Arch Lumber
 
 Arch Lumber is a Kotlin Multiplatform logging library with a small public API and platform-specific `DebugOak` defaults.
 
@@ -9,6 +9,14 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 ![Test][badge-test]
 [![Coverage][badge-coverage]][link-coverage]
 
+## Requirements
+
+- Kotlin `2.3.20`
+- Gradle wrapper `9.3.1`
+- JDK `21` via the Gradle toolchain and Foojay resolver
+- Android `minSdk 20` and `compileSdk 36`
+- Use the project wrapper instead of a local Gradle install
+
 ## What it does
 
 - `Lumber` is the logging entry point
@@ -16,11 +24,27 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 - `DebugOak` gives you platform defaults out of the box
 - one-shot state keeps tags and limits scoped to the next log call
 
+## Documentation Maintenance
+
+- Keep KDoc aligned with the shipped contract of public APIs.
+- Update MkDocs and Dokka when setup, usage, API, compatibility, or platform behavior changes.
+- Keep dependency versions, Android compatibility notes, and toolchain references aligned with project configuration.
+- Generate release changelogs from the diff between the previous tag and the release tag.
+- Keep contributor-facing implementation conventions in [`steering/`](steering/README.md).
+
 ## Quick Start
 
 ```kotlin
 Lumber.plant(DebugOak())
 Lumber.info("App started")
+```
+
+## Installation
+
+```kotlin
+dependencies {
+    implementation("io.github.matheus-corregiari:arch-lumber:<latest>")
+}
 ```
 
 ## Core API
@@ -68,6 +92,16 @@ Lumber.plant(AnalyticsOak())
 | Apple | ANSI colored stdout |
 | JS / WasmJS | native `console` |
 
+## Target compatibility
+
+| Area | Current value |
+|---|---|
+| Kotlin | `2.3.20` |
+| Gradle wrapper | `9.3.1` |
+| JDK toolchain | `21` |
+| Android | `minSdk 20`, `compileSdk 36` |
+| Published targets | Android, JVM, Apple, JS, WasmJS |
+
 ## Docs
 
 - [Getting Started](docs/getting-started.md)
@@ -75,6 +109,7 @@ Lumber.plant(AnalyticsOak())
 - [Usage Recipes](docs/recipes.md)
 - [API Reference](docs/api/lumber/index.md)
 - [Changelog](docs/changelog/index.md)
+- [Contributing](docs/contributing.md)
 
 ## Future Enhancements
 
@@ -83,10 +118,6 @@ Lumber.plant(AnalyticsOak())
 - add richer Android log filtering examples
 - add release-note automation so changelog pages are generated from commits
 - add platform-specific docs snippets for Android, JVM, Apple, JS, and WasmJS
-
-## Contributing
-
-See [Contributing](docs/contributing.md).
 
 ## License
 

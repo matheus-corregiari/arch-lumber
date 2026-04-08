@@ -1,12 +1,16 @@
-﻿# Changelog
+# Changelog
 
-This project keeps versioned changelog pages in `docs/changelog/`.
+This directory keeps one page per released version.
 
-The format is intentionally short:
+Each release page should stay short and factual, based on the tag range for that release.
 
-- what changed
-- why it matters
-- any compatibility caution
+Each page should include:
+
+- release motivation
+- notable changes from the release range
+- compatibility notes or migration cautions when needed
+- a dependency/version table
+- a target compatibility table
 
 ## Releases
 

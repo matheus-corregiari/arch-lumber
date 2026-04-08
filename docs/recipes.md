@@ -24,7 +24,15 @@ Lumber.maxLogLength(120).debug(longMessage)
 ## Use a filtered oak
 
 ```kotlin
+class AnalyticsSink {
+    fun write(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
+        Analytics.track(level.name, tag, message, error)
+    }
+}
+
 class WarningsOnlyOak : Lumber.Oak() {
+    private val sink = AnalyticsSink()
+
     override fun isLoggable(tag: String?, level: Lumber.Level) = level >= Lumber.Level.Warn
 
     override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
@@ -36,6 +44,14 @@ class WarningsOnlyOak : Lumber.Oak() {
 ## Plant more than one oak
 
 ```kotlin
+class AnalyticsOak : Lumber.Oak() {
+    override fun isLoggable(tag: String?, level: Lumber.Level) = level >= Lumber.Level.Info
+
+    override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
+        Analytics.track(level.name, tag, message, error)
+    }
+}
+
 Lumber.plant(DebugOak(), AnalyticsOak())
 ```
 

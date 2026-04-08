@@ -141,6 +141,16 @@ class LumberBehaviorTest {
         assertEquals("length must be positive", error.message)
     }
 
+    @Test
+    fun `max tag length must be positive`() {
+        val error =
+            assertFailsWith<IllegalArgumentException> {
+                Lumber.maxTagLength(0)
+            }
+
+        assertEquals("length must be positive", error.message)
+    }
+
     private fun newTree(blockedLevel: Level? = null): RecordingOak =
         RecordingOak(blockedLevel).also {
             Lumber.uproot(it)

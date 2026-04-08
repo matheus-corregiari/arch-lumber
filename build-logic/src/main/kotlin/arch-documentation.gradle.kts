@@ -1,3 +1,5 @@
+import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
+import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.dokka.gradle.DokkaExtension
 
@@ -29,12 +31,18 @@ extensions.configure(DokkaExtension::class) {
     }
 }
 
-kover {
+extensions.configure(KoverProjectExtension::class) {
     reports {
         total {
             verify {
                 rule("Minimum line coverage") {
-                    minBound(65)
+                    minBound(65, CoverageUnit.LINE)
+                }
+                rule("Minimum instruction coverage") {
+                    minBound(65, CoverageUnit.INSTRUCTION)
+                }
+                rule("Minimum branch coverage") {
+                    minBound(65, CoverageUnit.BRANCH)
                 }
             }
         }

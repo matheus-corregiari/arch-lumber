@@ -60,11 +60,11 @@ Lumber.plant(AnalyticsOak())
 
 - Android support starts at `minSdk 20`.
 - The build uses the Gradle toolchain with Foojay resolution for JDK `21`.
-- The published API follows the same KDoc and Dokka contract as the source code.
-- If setup, platform behavior, or API shape changes, update this guide together with the generated docs.
+- The published API follows the same KDoc and Dokka HTML reference as the source code.
+- If setup, platform behavior, or API shape changes, update this guide together with the API reference landing page and generated HTML.
 
 ## What to read next
 
 - [Core Concepts](core-concepts.md)
 - [Usage Recipes](recipes.md)
-- [API Reference](api/lumber/index.md)
+- [API Reference](api/index.md)

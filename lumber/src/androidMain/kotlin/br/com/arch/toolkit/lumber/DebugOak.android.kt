@@ -5,38 +5,15 @@ package br.com.arch.toolkit.lumber
 import android.util.Log
 
 /**
- * # DebugOak (Android)
+ * Android [DebugOak] backed by [Log].
  *
- * Android-specific implementation of [Lumber.Oak], delegating logs
- * to the [Android's Log](https://developer.android.com/reference/android/util/Log) framework.
- *
- * This is conceptually similar to Timber's `DebugOak`:
- * it prints all logs to Logcat, mapping [Lumber.Level] to
- * the corresponding Android priority.
- *
- * ## Example
- * ```kotlin
- * // Plant the DebugOak for Android
- * Lumber.plant(DebugOak())
- *
- * Lumber.debug("Debug message with id=%d", 42)
- * Lumber.error(Exception("Oops"), "Something went wrong")
- * ```
+ * Entries are mapped to the corresponding Android log priority and written to Logcat.
  *
  * @see Lumber.Oak
  */
 actual open class DebugOak : Lumber.Oak() {
     /**
-     * Determines whether a log at the given `level` should be printed.
-     *
-     * Delegates to `Log.isLoggable`, mapping [Lumber.Level] to the
-     * corresponding Android priority:
-     * - [Lumber.Level.Verbose] → `Log.VERBOSE`
-     * - [Lumber.Level.Debug]   → `Log.DEBUG`
-     * - [Lumber.Level.Info]    → `Log.INFO`
-     * - [Lumber.Level.Warn]    → `Log.WARN`
-     * - [Lumber.Level.Error]   → `Log.ERROR`
-     * - [Lumber.Level.Assert]  → `Log.ASSERT`
+     * Delegates loggability checks to [Log.isLoggable] using the mapped Android priority.
      *
      * @param tag Optional tag, can be `null` (Android will use `"null"`).
      * @param level The logging level.
@@ -58,15 +35,7 @@ actual open class DebugOak : Lumber.Oak() {
     )
 
     /**
-     * Prints a log message at the given `level` using Android's `Log`.
-     *
-     * Maps [Lumber.Level] to the corresponding Android method:
-     * - [Lumber.Level.Verbose] → `Log.v`
-     * - [Lumber.Level.Debug]   → `Log.d`
-     * - [Lumber.Level.Info]    → `Log.i`
-     * - [Lumber.Level.Warn]    → `Log.w`
-     * - [Lumber.Level.Error]   → `Log.e`
-     * - [Lumber.Level.Assert]  → `Log.wtf`
+     * Writes the entry to the matching Android [Log] method.
      *
      * @param level The logging level.
      * @param tag Optional tag (may be `null`).

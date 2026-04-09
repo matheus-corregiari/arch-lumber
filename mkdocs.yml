@@ -33,6 +33,6 @@ nav:
   - Getting Started: getting-started.md
   - Core Concepts: core-concepts.md
   - Usage Recipes: recipes.md
-  - API Reference: api/lumber/index.md
+  - API Reference: api/index.md
   - Changelog: changelog/index.md
   - Contributing: contributing.md

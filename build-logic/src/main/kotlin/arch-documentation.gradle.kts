@@ -12,13 +12,11 @@ extensions.configure(JacocoPluginExtension::class) {
     toolVersion = libraries.version("jacoco")
 }
 
-project.plugins.apply(DokkaMarkdownPlugin::class.java)
 extensions.configure(DokkaExtension::class) {
     moduleName.set(project.name.capitalized())
     moduleVersion.set(project.versionName)
-    basePublicationsDirectory.set(file("$rootDir/docs/api/${project.name}"))
-    dokkaPublications.getByName("html").enabled.set(false)
-    dokkaPublications.getByName("markdown").outputDirectory = basePublicationsDirectory
+    basePublicationsDirectory.set(file("$rootDir/docs/api/reference"))
+    dokkaPublications.getByName("html").outputDirectory = basePublicationsDirectory
 
     dokkaSourceSets.configureEach {
         reportUndocumented.set(true)

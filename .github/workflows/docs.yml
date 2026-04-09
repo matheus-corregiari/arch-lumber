@@ -27,8 +27,8 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup-gradle
 
-      - name: Generate Dokka Markdown
-        run: ./gradlew :lumber:dokkaGenerateMarkdown
+      - name: Generate Dokka HTML
+        run: ./gradlew :lumber:dokkaGeneratePublicationHtml
 
       - name: Setup Python
         uses: actions/setup-python@v6

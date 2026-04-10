@@ -32,13 +32,13 @@ Lumber.plant(DebugOak())
 Lumber.info("App started")
 ```
 
-If you want the full contract, read the [Getting Started](getting-started.md) guide and the [API Reference](api/lumber/index.md).
+If you want the full contract, read the [Getting Started](getting-started.md) guide and the [API Reference](api/index.md).
 
 ## What you will find here
 
 - concise setup instructions
 - focused usage recipes
-- generated API docs from Dokka
+- embedded API docs generated from Dokka HTML
 - versioned changelog pages
 - a short roadmap for future enhancements
 - contributor notes that keep docs and API references in sync

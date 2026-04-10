@@ -3,22 +3,12 @@
 package br.com.arch.toolkit.lumber
 
 /**
- * # DebugOak
+ * Default development [Lumber.Oak] for each supported platform.
  *
- * A platform-specific implementation of [Lumber.Oak] designed for development logging.
- *
- * `DebugOak` provides a sensible default for each target platform, using the standard logging
- * mechanisms available (e.g., Logcat on Android, `console` on JS/Wasm, and colored `println`
- * on JVM and Apple platforms).
- *
- * ## Behavior by Platform:
- *
- * - **Android**: Logs to `android.util.Log`.
- * - **JVM**: Logs to standard output with ANSI colors.
- * - **Apple**: Logs to standard output with ANSI colors.
- * - **JS/Wasm**: Logs to the browser or Node.js `console` object.
- *
- * ## Usage:
+ * `DebugOak` routes logs to the platform-native debug sink:
+ * - Android uses `android.util.Log`
+ * - JVM and Apple targets write colored console output
+ * - JS and WasmJS use `console`
  *
  * ```kotlin
  * Lumber.plant(DebugOak())
@@ -28,10 +18,7 @@ package br.com.arch.toolkit.lumber
  */
 expect open class DebugOak() : Lumber.Oak {
     /**
-     * Determines whether a log message should be output.
-     *
-     * The implementation of this method is platform-dependent. For example, on Android,
-     * it might check the system log level.
+     * Returns whether a log entry should be emitted on the current platform.
      *
      * @param tag The tag associated with the log message.
      * @param level The severity [Lumber.Level].
@@ -43,7 +30,7 @@ expect open class DebugOak() : Lumber.Oak {
     ): Boolean
 
     /**
-     * Performs the actual logging using the platform's default mechanism.
+     * Writes the final log entry using the platform's default debug mechanism.
      *
      * @param level The severity [Lumber.Level].
      * @param tag The optional tag.

@@ -5,7 +5,7 @@
 - Keep `README.md` as the repository landing page: explain what the library does, what problem it solves, how to install it, how to use it, system requirements, target compatibility, and what toolchain it is compiled with.
 - Keep badges at the top of `README.md`, and keep their reference definitions at the bottom of the file.
 - Keep `docs/` as the published MkDocs site for user-facing guidance.
-- Keep Dokka as the generated API reference for public symbols and keep it aligned with MkDocs.
+- Keep Dokka as the generated HTML API reference for public symbols and keep it aligned with MkDocs.
 - Keep KDoc as the source of truth for API intent and behavior close to the code.
 - Keep `docs/changelog/` as the public history of released behavior changes.
 
@@ -24,7 +24,7 @@
 - Keep the docs site aligned with the README, but avoid duplicating large sections verbatim.
 - When adding a new concept page, wire it into `mkdocs.yml`.
 - When changing examples in code or KDoc, check whether the same example appears in `README.md` or `docs/`.
-- When public code changes, update the committed Dokka output under `docs/api/` together with the relevant MkDocs content.
+- When public code changes, update the MkDocs API landing page and regenerate the Dokka HTML output under `docs/api/reference/`.
 - Reference concrete dependency versions from the project configuration whenever documentation mentions Kotlin, plugins, Android SDKs, or runtime/toolchain requirements.
 
 ## README Rules
@@ -59,6 +59,6 @@
 
 ## Change Checklist
 
-- Public API changed: update KDoc, README, MkDocs content, Dokka output, and changelog.
+- Public API changed: update KDoc, README, MkDocs content, Dokka HTML output, and changelog.
 - User-visible behavior changed: update docs and changelog.
 - Internal refactor only: update docs only if behavior or contributor guidance changed.

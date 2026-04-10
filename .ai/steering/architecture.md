@@ -4,7 +4,7 @@
 
 - Treat `lumber/` as the single published library module.
 - Keep reusable Gradle conventions in `build-logic/`.
-- Keep published documentation in `docs/`; keep contributor-facing implementation guidance in `steering/`.
+- Keep published documentation in `docs/`; keep contributor-facing implementation guidance in `.ai/steering/`.
 
 ## Kotlin Multiplatform Boundaries
 

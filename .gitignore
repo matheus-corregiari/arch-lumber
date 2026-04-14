@@ -7,7 +7,9 @@
 *.log
 *.iml
 /local.properties
-/docs/api/reference/
+/docs/api/
 .DS_Store
 /captures
 .externalNativeBuild
+# Added by code-review-graph
+.code-review-graph/

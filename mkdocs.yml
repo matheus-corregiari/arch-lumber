@@ -4,18 +4,21 @@ site_url: https://matheus-corregiari.github.io/arch-lumber/
 repo_url: https://github.com/matheus-corregiari/arch-lumber
 edit_uri: blob/master/docs/
 
+# Configuration
 theme:
-  name: material
-  features:
-    - navigation.tabs
-    - navigation.sections
-    - navigation.instant
-    - content.code.copy
-    - content.code.annotate
+  name: "material"
+  language: "en"
+  icon:
+    logo: material/blur-radial
   palette:
-    - scheme: default
-      primary: blue grey
-      accent: teal
+    primary: "white"
+    accent: "teal"
+  font:
+    text: "DM Sans"
+    code: "DM Mono"
+  features:
+    - content.tabs.link
+    - content.code.copy
 
 markdown_extensions:
   - admonition
@@ -33,6 +36,6 @@ nav:
   - Getting Started: getting-started.md
   - Core Concepts: core-concepts.md
   - Usage Recipes: recipes.md
-  - API Reference: api/index.md
+  - API Reference: https://matheus-corregiari.github.io/arch-lumber/api/
   - Changelog: changelog/index.md
   - Contributing: contributing.md

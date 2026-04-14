@@ -1,35 +1,68 @@
-# Contributing
+<!-- Generated from CONTRIBUTING.md. Do not edit directly. -->
 
-## Working style
+# Contributing to Lumber
 
-- keep changes small
-- keep examples real
-- keep docs aligned with the public API
-- use the Gradle wrapper for local validation
+Thanks for taking the time to contribute.
 
-## Local validation
+This file is the source of truth for contributor guidance. The MkDocs page at `docs/contributing.md` is generated from this file so GitHub indexes the root guide while the docs site still exposes the same content.
+
+## Quick Start
+
+1. Fork and clone the repo.
+2. Use JDK `21`.
+3. Build once to warm up Gradle:
+
+```bash
+./gradlew :lumber:assemble
+```
+
+## Repository Layout
+
+- `lumber/src/commonMain` -> shared API and behavior
+- `lumber/src/<platform>Main` -> platform-specific `DebugOak` implementations
+- `lumber/src/commonTest` -> cross-platform tests
+- `docs/` -> published MkDocs content
+
+## Development Workflow
+
+1. Create a branch from `master`.
+2. Make changes with KMP in mind. Prefer `commonMain` when possible.
+3. Keep KDoc and docs aligned with shipped behavior.
+4. Add or update tests when behavior changes.
+5. Sync the MkDocs contributing page before building docs.
+
+## Local Validation
 
 ```bash
 ./gradlew :lumber:assemble
 ./gradlew :lumber:allTests
+./gradlew detekt
+./gradlew ktlintCheck
 ./gradlew :lumber:dokkaGeneratePublicationHtml
-mkdocs build --strict
+python tools/sync_contributing.py
+python -m mkdocs build --strict
 ```
 
-Use the same wrapper and toolchain settings as the project when checking docs or examples.
+Use the project wrapper and toolchain settings when validating changes.
 
-## What to update with code
+## Documentation Expectations
 
-- README
-- KDocs
-- API reference landing page and generated Dokka HTML under `docs/api/reference/` when public API docs change
-- changelog entry
-- API examples if the public behavior changed
+- Keep examples short, real, and KMP-friendly.
+- Explain one-shot behavior like `tag`, `quiet`, `maxLogLength`, and `maxTagLength` when relevant.
+- Mention platform differences when they affect output.
+- Update README, KDoc, generated API docs under `docs/api/`, and examples when public behavior changes.
+- Generate each changelog page from the diff between the previous tag and the release tag.
 
-## Documentation rules
+## Dependency Hygiene
 
-- Keep KDoc aligned with the shipped behavior and signatures.
-- Update both MkDocs and the Dokka HTML output when setup, examples, API, or platform behavior changes.
-- Keep dependency versions, Android compatibility notes, and toolchain references aligned with project configuration.
-- Generate each release changelog from the diff between the previous tag and the current release tag.
-- Keep repository-level engineering conventions in `.ai/steering/` and treat them as the source for contributor-facing conventions.
+- Keep direct build and tooling dependencies current when updates are low risk.
+- Prefer stable releases over RC, beta, or alpha unless the repo already depends on a prerelease.
+- If an update needs a bigger migration, call that out explicitly instead of sneaking it into a routine refresh.
+
+## Pull Request Checklist
+
+- [ ] Tests updated or added when behavior changed
+- [ ] KDoc updated if behavior or usage changed
+- [ ] README or docs updated if the public API changed
+- [ ] `python tools/sync_contributing.py` run if contributor guidance changed
+- [ ] Validation checks passing

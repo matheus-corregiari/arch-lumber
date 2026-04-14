@@ -35,11 +35,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Sync Contributing page
+        run: python tools/sync_contributing.py
+
       - name: Install MkDocs
         run: pip install mkdocs-material
 
       - name: Build MkDocs site
-        run: mkdocs build --strict
+        run: python -m mkdocs build --strict
 
       - name: Configure Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'

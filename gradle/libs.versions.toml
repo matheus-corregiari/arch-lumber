@@ -16,7 +16,7 @@ build-tools = "36.1.0"
 ## JetBrains
 jetbrains-kotlin = "2.3.20"
 jetbrains-atomic = "0.31.0"
-jetbrains-dokka = "2.1.0"
+jetbrains-dokka = "2.2.0"
 jetbrains-kover = "0.9.7"
 
 ## AndroidX

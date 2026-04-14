@@ -27,10 +27,10 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 ## Documentation Maintenance
 
 - Keep KDoc aligned with the shipped contract of public APIs.
-- Update MkDocs pages and the embedded Dokka HTML when setup, usage, API, compatibility, or platform behavior changes.
+- Update MkDocs pages and the generated Dokka HTML when setup, usage, API, compatibility, or platform behavior changes.
 - Keep dependency versions, Android compatibility notes, and toolchain references aligned with project configuration.
 - Generate release changelogs from the diff between the previous tag and the release tag.
-- Keep contributor-facing implementation conventions in [`.ai/steering/`](.ai/steering/README.md).
+- Keep contributor-facing guidance in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Quick Start
 
@@ -107,7 +107,7 @@ Lumber.plant(AnalyticsOak())
 - [Getting Started](docs/getting-started.md)
 - [Core Concepts](docs/core-concepts.md)
 - [Usage Recipes](docs/recipes.md)
-- [API Reference](docs/api/index.md)
+- [API Reference](https://matheus-corregiari.github.io/arch-lumber/api/)
 - [Changelog](docs/changelog/index.md)
 - [Contributing](docs/contributing.md)
 

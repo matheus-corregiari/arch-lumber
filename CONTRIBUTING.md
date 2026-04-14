@@ -1,53 +1,66 @@
 # Contributing to Lumber
 
-Thanks for taking the time to contribute! This guide keeps the workflow simple and aligned with
-common open-source practices.
+Thanks for taking the time to contribute.
+
+This file is the source of truth for contributor guidance. The MkDocs page at `docs/contributing.md` is generated from this file so GitHub indexes the root guide while the docs site still exposes the same content.
 
 ## Quick Start
 
-1. **Fork & clone** the repo.
-2. **Use a recent JDK** (21+ recommended).
-3. **Build once** to warm up Gradle:
-   ```bash
-   ./gradlew :lumber:assemble
-   ```
+1. Fork and clone the repo.
+2. Use JDK `21`.
+3. Build once to warm up Gradle:
 
-## Repository Layout (KMP focus)
+```bash
+./gradlew :lumber:assemble
+```
 
-* `lumber/src/commonMain` → shared API and behavior.
-* `lumber/src/<platform>Main` → platform-specific DebugOak implementations.
-* `lumber/src/commonTest` → cross-platform tests (preferred).
+## Repository Layout
+
+- `lumber/src/commonMain` -> shared API and behavior
+- `lumber/src/<platform>Main` -> platform-specific `DebugOak` implementations
+- `lumber/src/commonTest` -> cross-platform tests
+- `docs/` -> published MkDocs content
 
 ## Development Workflow
 
-1. Create a branch from `main`.
-2. Make changes with KMP in mind (favor `commonMain` when possible).
-3. Keep KDoc/Javadoc **accurate and consistent** with actual behavior.
-4. Add or update **unit tests** for changes in behavior.
+1. Create a branch from `master`.
+2. Make changes with KMP in mind. Prefer `commonMain` when possible.
+3. Keep KDoc and docs aligned with shipped behavior.
+4. Add or update tests when behavior changes.
+5. Sync the MkDocs contributing page before building docs.
 
-## Running Tests
+## Local Validation
 
 ```bash
+./gradlew :lumber:assemble
 ./gradlew :lumber:allTests
+./gradlew detekt
+./gradlew ktlintCheck
+./gradlew :lumber:dokkaGeneratePublicationHtml
+python tools/sync_contributing.py
+python -m mkdocs build --strict
 ```
+
+Use the project wrapper and toolchain settings when validating changes.
 
 ## Documentation Expectations
 
-Keep docs simple and easy to follow:
-
-* Prefer **short code snippets** that work in KMP.
-* Explain **one-shot** behaviors (`tag`, `quiet`, `maxLogLength`, `maxTagLength`) where relevant.
-* Mention **platform differences** when they affect output.
+- Keep examples short, real, and KMP-friendly.
+- Explain one-shot behavior like `tag`, `quiet`, `maxLogLength`, and `maxTagLength` when relevant.
+- Mention platform differences when they affect output.
+- Update README, KDoc, generated API docs under `docs/api/`, and examples when public behavior changes.
+- Generate each changelog page from the diff between the previous tag and the release tag.
 
 ## Dependency Hygiene
 
-* Keep libraries updated where possible.
-* If a problem looks complex, propose **more efficient or KMP-friendly alternatives** in the PR
-  description (e.g., smaller runtime, better multiplatform support).
+- Keep direct build and tooling dependencies current when updates are low risk.
+- Prefer stable releases over RC, beta, or alpha unless the repo already depends on a prerelease.
+- If an update needs a bigger migration, call that out explicitly instead of sneaking it into a routine refresh.
 
 ## Pull Request Checklist
 
-* [ ] Tests updated/added and passing.
-* [ ] KDoc/Javadoc updated if behavior or usage changed.
-* [ ] README/docs updated if the public API changed.
-* [ ] Changes verified across KMP targets where possible.
+- [ ] Tests updated or added when behavior changed
+- [ ] KDoc updated if behavior or usage changed
+- [ ] README or docs updated if the public API changed
+- [ ] `python tools/sync_contributing.py` run if contributor guidance changed
+- [ ] Validation checks passing

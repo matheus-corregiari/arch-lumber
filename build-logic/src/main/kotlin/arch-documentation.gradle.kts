@@ -15,7 +15,7 @@ extensions.configure(JacocoPluginExtension::class) {
 extensions.configure(DokkaExtension::class) {
     moduleName.set(project.name.capitalized())
     moduleVersion.set(project.versionName)
-    basePublicationsDirectory.set(file("$rootDir/docs/api/reference"))
+    basePublicationsDirectory.set(file("$rootDir/docs/api"))
     dokkaPublications.getByName("html").outputDirectory = basePublicationsDirectory
 
     dokkaSourceSets.configureEach {

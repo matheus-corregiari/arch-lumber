@@ -6,24 +6,21 @@ jacoco = "0.8.14"
 detekt = "2.0.0-alpha.2"
 
 ## --- Build Config and SDK --- ##
-#noinspection UnusedVersionCatalogEntry
 build-sdk-min = "20"
-#noinspection UnusedVersionCatalogEntry
 build-sdk-compile = "36"
-#noinspection UnusedVersionCatalogEntry
 build-tools = "36.1.0"
 
 ## JetBrains
 jetbrains-kotlin = "2.3.20"
-jetbrains-atomic = "0.31.0"
+jetbrains-atomic = "0.32.1"
 jetbrains-dokka = "2.2.0"
-jetbrains-kover = "0.9.7"
+jetbrains-kover = "0.9.8"
 
 ## AndroidX
-androidx-plugin = "9.0.0"
+androidx-plugin = "9.1.1"
 
 ## Tools
-ktlint = "14.1.0"
+ktlint = "14.2.0"
 vanniktech-publish = "0.36.0"
 
 # ------------------------------------------------------------------------------------------------ #

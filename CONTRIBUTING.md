@@ -2,8 +2,6 @@
 
 Thanks for taking the time to contribute.
 
-This file is the source of truth for contributor guidance. The MkDocs page at `docs/contributing.md` is generated from this file so GitHub indexes the root guide while the docs site still exposes the same content.
-
 ## Quick Start
 
 1. Fork and clone the repo.
@@ -37,7 +35,6 @@ This file is the source of truth for contributor guidance. The MkDocs page at `d
 ./gradlew detekt
 ./gradlew ktlintCheck
 ./gradlew :lumber:dokkaGeneratePublicationHtml
-python tools/sync_contributing.py
 python -m mkdocs build --strict
 ```
 
@@ -62,5 +59,4 @@ Use the project wrapper and toolchain settings when validating changes.
 - [ ] Tests updated or added when behavior changed
 - [ ] KDoc updated if behavior or usage changed
 - [ ] README or docs updated if the public API changed
-- [ ] `python tools/sync_contributing.py` run if contributor guidance changed
 - [ ] Validation checks passing

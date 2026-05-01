@@ -11,7 +11,7 @@ build-sdk-compile = "36"
 build-tools = "36.1.0"
 
 ## JetBrains
-jetbrains-kotlin = "2.3.20"
+jetbrains-kotlin = "2.3.21"
 jetbrains-atomic = "0.32.1"
 jetbrains-dokka = "2.2.0"
 jetbrains-kover = "0.9.8"

@@ -27,7 +27,7 @@ extensions.configure<KotlinMultiplatformExtension> {
         }
     }
 
-    androidLibrary {
+    android {
         namespace = "br.com.arch.toolkit.${project.name}"
         testNamespace = "test.$namespace"
         androidResources { enable = false }

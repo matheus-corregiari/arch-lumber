@@ -1,6 +1,7 @@
 # Arch Lumber
 
-Arch Lumber is a Kotlin Multiplatform logging library with a small public API and platform-specific `DebugOak` defaults.
+Arch Lumber is a Kotlin Multiplatform logging library with a small public API and platform-specific
+`DebugOak` defaults.
 
 [![Maven Central][badge-maven]][link-maven]
 [![License][badge-license]](/LICENSE)
@@ -11,10 +12,10 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 
 ## Requirements
 
-- Kotlin `2.3.20`
-- Gradle wrapper `9.3.1`
+- Kotlin `2.3.21`
+- Gradle wrapper `9.5.0`
 - JDK `21` via the Gradle toolchain and Foojay resolver
-- Android `minSdk 20` and `compileSdk 36`
+- Android `minSdk 20` and `compileSdk 37`
 - Use the project wrapper instead of a local Gradle install
 
 ## What it does
@@ -27,8 +28,10 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 ## Documentation Maintenance
 
 - Keep KDoc aligned with the shipped contract of public APIs.
-- Update MkDocs pages and the generated Dokka HTML when setup, usage, API, compatibility, or platform behavior changes.
-- Keep dependency versions, Android compatibility notes, and toolchain references aligned with project configuration.
+- Update MkDocs pages and the generated Dokka HTML when setup, usage, API, compatibility, or
+  platform behavior changes.
+- Keep dependency versions, Android compatibility notes, and toolchain references aligned with
+  project configuration.
 - Generate release changelogs from the diff between the previous tag and the release tag.
 - Keep contributor-facing guidance in [`CONTRIBUTING.md`](CONTRIBUTING.md).
 
@@ -85,21 +88,21 @@ Lumber.plant(AnalyticsOak())
 
 ## Platform behavior
 
-| Target | Default `DebugOak` output |
-|---|---|
-| Android | `android.util.Log` |
-| JVM | ANSI colored stdout |
-| Apple | ANSI colored stdout |
-| JS / WasmJS | native `console` |
+| Target      | Default `DebugOak` output |
+|-------------|---------------------------|
+| Android     | `android.util.Log`        |
+| JVM         | ANSI colored stdout       |
+| Apple       | ANSI colored stdout       |
+| JS / WasmJS | native `console`          |
 
 ## Target compatibility
 
-| Area | Current value |
-|---|---|
-| Kotlin | `2.3.20` |
-| Gradle wrapper | `9.3.1` |
-| JDK toolchain | `21` |
-| Android | `minSdk 20`, `compileSdk 36` |
+| Area              | Current value                   |
+|-------------------|---------------------------------|
+| Kotlin            | `2.3.21`                        |
+| Gradle wrapper    | `9.5.0`                         |
+| JDK toolchain     | `21`                            |
+| Android           | `minSdk 20`, `compileSdk 37`    |
 | Published targets | Android, JVM, Apple, JS, WasmJS |
 
 ## Docs
@@ -109,7 +112,7 @@ Lumber.plant(AnalyticsOak())
 - [Usage Recipes](docs/recipes.md)
 - [API Reference](https://matheus-corregiari.github.io/arch-lumber/api/)
 - [Changelog](docs/changelog/index.md)
-- [Contributing](docs/contributing.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## Future Enhancements
 
@@ -138,10 +141,17 @@ limitations under the License.
 ```
 
 [link-maven]: https://search.maven.org/artifact/io.github.matheus-corregiari/arch-lumber
+
 [link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
-[badge-kotlin]: https://img.shields.io/badge/kotlin-2.3.20-blue.svg?logo=kotlin
+
+[badge-kotlin]: https://img.shields.io/badge/kotlin-2.3.21-blue.svg?logo=kotlin
+
 [badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/arch-lumber.svg
+
 [badge-license]: https://img.shields.io/github/license/matheus-corregiari/arch-lumber
+
 [badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber/graph/badge.svg?token=P977R4GMUO
+
 [badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml/badge.svg
+
 [badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/coverage.yml/badge.svg

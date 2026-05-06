@@ -8,7 +8,7 @@ plugins {
 }
 
 kotlin {
-    androidLibrary {
+    android {
         compileSdk = versionInt(libs.versions.build.sdk.compile)
         minSdk = versionInt(libs.versions.build.sdk.min)
         buildToolsVersion = versionString(libs.versions.build.tools)

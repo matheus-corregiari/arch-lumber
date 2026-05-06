@@ -3,7 +3,7 @@
 ## --- Plugins and more general stuff --- ##
 #noinspection UnusedVersionCatalogEntry
 jacoco = "0.8.14"
-detekt = "2.0.0-alpha.2"
+detekt = "2.0.0-alpha.3"
 
 ## --- Build Config and SDK --- ##
 build-sdk-min = "20"
@@ -11,13 +11,13 @@ build-sdk-compile = "36"
 build-tools = "36.1.0"
 
 ## JetBrains
-jetbrains-kotlin = "2.3.20"
+jetbrains-kotlin = "2.3.21"
 jetbrains-atomic = "0.32.1"
 jetbrains-dokka = "2.2.0"
 jetbrains-kover = "0.9.8"
 
 ## AndroidX
-androidx-plugin = "9.1.1"
+androidx-plugin = "9.2.0"
 
 ## Tools
 ktlint = "14.2.0"

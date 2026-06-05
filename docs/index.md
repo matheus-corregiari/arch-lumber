@@ -10,9 +10,9 @@ It is designed around three ideas:
 
 ## Compatibility
 
-- Kotlin `2.3.20`
+- Kotlin `2.4.0`
 - Android `minSdk 20`, `compileSdk 36`
-- Gradle wrapper `9.3.1`
+- Gradle wrapper `9.5.1`
 - JDK toolchain `21` resolved through Foojay
 
 ## Why it exists

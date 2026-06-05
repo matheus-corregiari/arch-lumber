@@ -3,8 +3,8 @@
 ## Requirements
 
 - JDK `21` from the project toolchain
-- Gradle wrapper `9.3.1`
-- Kotlin `2.3.20`
+- Gradle wrapper `9.5.1`
+- Kotlin `2.4.0`
 - Android `minSdk 20` and `compileSdk 36` for Android consumers
 
 ## Add the dependency
@@ -36,10 +36,13 @@ Lumber.wtf("This should never happen")
 
 ## Add context
 
-Use `tag()` for a one-shot tag on the next log call.
+Use `tag()` to create a lightweight logging facade that keeps the same tag across calls.
 
 ```kotlin
-Lumber.tag("Auth").info("Session created")
+val authLog = Lumber.tag("Auth")
+
+authLog.info("Session created")
+authLog.info("Session refreshed")
 ```
 
 ## Use your own oak

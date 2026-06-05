@@ -32,16 +32,26 @@ class ConsoleOak : Lumber.Oak() {
 - Apple prints colored lines to stdout
 - JS and WasmJS use the native console
 
-## One-shot state
+## Tagged facades
+
+`Lumber.tag(...)` returns a lightweight facade that keeps the tag across calls.
+
+```kotlin
+val authLog = Lumber.tag("Auth")
+
+authLog.info("Session created")
+authLog.info("Session refreshed")
+```
+
+## One-shot options
 
 These values are consumed after the next log call:
 
-- `tag(...)`
 - `quiet(...)`
 - `maxLogLength(...)`
 - `maxTagLength(...)`
 
-That behavior keeps logging state local and predictable.
+That behavior keeps temporary logging options local and predictable.
 
 ## Forest
 

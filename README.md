@@ -12,10 +12,10 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 
 ## Requirements
 
-- Kotlin `2.3.21`
-- Gradle wrapper `9.5.0`
+- Kotlin `2.4.0`
+- Gradle wrapper `9.5.1`
 - JDK `21` via the Gradle toolchain and Foojay resolver
-- Android `minSdk 20` and `compileSdk 37`
+- Android `minSdk 20` and `compileSdk 36`
 - Use the project wrapper instead of a local Gradle install
 
 ## What it does
@@ -23,7 +23,7 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 - `Lumber` is the logging entry point
 - `Lumber.Oak` is the extension point for custom sinks
 - `DebugOak` gives you platform defaults out of the box
-- one-shot state keeps tags and limits scoped to the next log call
+- tagged facades keep context across calls, while quiet and length options stay one-shot
 
 ## Documentation Maintenance
 
@@ -69,7 +69,10 @@ Lumber.error(exception, "Operation failed")
 ### Add context
 
 ```kotlin
-Lumber.tag("Auth").info("Session created")
+val authLog = Lumber.tag("Auth")
+
+authLog.info("Session created")
+authLog.info("Session refreshed")
 ```
 
 ### Write a custom oak
@@ -99,10 +102,10 @@ Lumber.plant(AnalyticsOak())
 
 | Area              | Current value                   |
 |-------------------|---------------------------------|
-| Kotlin            | `2.3.21`                        |
-| Gradle wrapper    | `9.5.0`                         |
+| Kotlin            | `2.4.0`                         |
+| Gradle wrapper    | `9.5.1`                         |
 | JDK toolchain     | `21`                            |
-| Android           | `minSdk 20`, `compileSdk 37`    |
+| Android           | `minSdk 20`, `compileSdk 36`    |
 | Published targets | Android, JVM, Apple, JS, WasmJS |
 
 ## Docs
@@ -144,7 +147,7 @@ limitations under the License.
 
 [link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
 
-[badge-kotlin]: https://img.shields.io/badge/kotlin-2.3.21-blue.svg?logo=kotlin
+[badge-kotlin]: https://img.shields.io/badge/kotlin-2.4.0-blue.svg?logo=kotlin
 
 [badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/arch-lumber.svg
 

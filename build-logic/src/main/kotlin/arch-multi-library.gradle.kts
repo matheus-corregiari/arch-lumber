@@ -62,13 +62,13 @@ extensions.configure<KotlinMultiplatformExtension> {
     val exportName =
         project.name.split("-").joinToString(
             separator = "",
-            transform = String::capitalizeFirstChar,
+            transform = String::capitalizeFirstChar
         )
     val exportId = "br.com.arch.toolkit.${project.name}"
     listOf(
         iosArm64(),
         iosX64(),
-        iosSimulatorArm64(),
+        iosSimulatorArm64()
     ).forEach { target ->
         target.binaries.framework {
             baseName = "${exportName}Kit"

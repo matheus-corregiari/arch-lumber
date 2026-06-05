@@ -1,0 +1,4 @@
+interface:
+  display_name: "Grill Me"
+  short_description: "Relentless design interrogation"
+  default_prompt: "Use $skill-grill-me to stress-test a plan or design by asking one question at a time, with a recommendation for each answer."

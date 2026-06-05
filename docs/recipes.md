@@ -3,7 +3,9 @@
 ## Structured logging
 
 ```kotlin
-Lumber.tag("Sync").info("Synced %d records", count)
+val syncLog = Lumber.tag("Sync")
+
+syncLog.info("Synced %d records", count)
 ```
 
 ## Log exceptions with context

@@ -43,7 +43,7 @@ Use the project wrapper and toolchain settings when validating changes.
 ## Documentation Expectations
 
 - Keep examples short, real, and KMP-friendly.
-- Explain one-shot behavior like `tag`, `quiet`, `maxLogLength`, and `maxTagLength` when relevant.
+- Explain tagged facade behavior and one-shot options like `quiet`, `maxLogLength`, and `maxTagLength` when relevant.
 - Mention platform differences when they affect output.
 - Update README, KDoc, generated API docs under `docs/api/`, and examples when public behavior changes.
 - Generate each changelog page from the diff between the previous tag and the release tag.

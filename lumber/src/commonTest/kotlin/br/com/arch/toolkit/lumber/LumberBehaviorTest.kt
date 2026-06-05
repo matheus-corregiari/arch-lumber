@@ -96,7 +96,7 @@ class LumberBehaviorTest {
     }
 
     @Test
-    fun `consumes one-shot tag and length overrides`() {
+    fun `consumes pending length override when creating tagged facade`() {
         val tree = newTree()
 
         Lumber.maxTagLength(3).tag("CustomTag").info("first")
@@ -105,6 +105,49 @@ class LumberBehaviorTest {
         tree.assertAll(
             RecordingOak.Entry(Level.Info, "Cus", "first", null),
             RecordingOak.Entry(Level.Info, defaultTag(), "second", null)
+        )
+    }
+
+    @Test
+    fun `tagged facade keeps tag across calls`() {
+        val tree = newTree()
+        val tagged = Lumber.tag("Custom")
+
+        tagged.info("first")
+        tagged.info("second")
+
+        tree.assertAll(
+            RecordingOak.Entry(Level.Info, "Custom", "first", null),
+            RecordingOak.Entry(Level.Info, "Custom", "second", null)
+        )
+    }
+
+    @Test
+    fun `tagged facade consumes length overrides once`() {
+        val tree = newTree()
+        val tagged = Lumber.tag("Tag")
+
+        tagged.maxLogLength(4).warn("Hello")
+        tagged.warn("World")
+
+        tree.assertAll(
+            RecordingOak.Entry(Level.Warn, "Tag #0", "Hell", null),
+            RecordingOak.Entry(Level.Warn, "Tag #1", "o", null),
+            RecordingOak.Entry(Level.Warn, "Tag", "World", null)
+        )
+    }
+
+    @Test
+    fun `tag transfers pending one-shot options from Lumber`() {
+        val tree = newTree()
+
+        Lumber.maxLogLength(4).tag("Tag").warn("Hello")
+        Lumber.warn("World")
+
+        tree.assertAll(
+            RecordingOak.Entry(Level.Warn, "Tag #0", "Hell", null),
+            RecordingOak.Entry(Level.Warn, "Tag #1", "o", null),
+            RecordingOak.Entry(Level.Warn, defaultTag(), "World", null)
         )
     }
 
@@ -149,6 +192,16 @@ class LumberBehaviorTest {
             }
 
         assertEquals("length must be positive", error.message)
+    }
+
+    @Test
+    fun `tagged facade cannot be planted`() {
+        val error =
+            assertFailsWith<IllegalArgumentException> {
+                Lumber.plant(Lumber.tag("Tag"))
+            }
+
+        assertEquals("Cannot plant tagged Lumber.", error.message)
     }
 
     private fun newTree(blockedLevel: Level? = null): RecordingOak =

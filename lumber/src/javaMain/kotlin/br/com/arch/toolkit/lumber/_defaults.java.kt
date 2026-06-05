@@ -5,8 +5,6 @@ package br.com.arch.toolkit.lumber
 internal actual const val MAX_LOG_LENGTH: Int = 4000
 internal actual const val MAX_TAG_LENGTH: Int = 25
 
-internal actual class ThreadSafe<T> : ThreadLocal<T>()
-
 @Suppress("ThrowingExceptionsWithoutMessageOrCause")
 internal actual fun defaultTag(): String? {
     val ignore = fqcnIgnore.map { it.qualifiedName }

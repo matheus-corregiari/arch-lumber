@@ -2,9 +2,6 @@
 
 package br.com.arch.toolkit.lumber
 
-import kotlin.concurrent.atomics.AtomicReference
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
-
 internal actual const val MAX_LOG_LENGTH: Int = 8000
 internal actual const val MAX_TAG_LENGTH: Int = 30
 private val METHOD_REGEX =
@@ -20,17 +17,6 @@ internal actual fun defaultTag(): String? {
         .firstOrNull()
         ?.chunked(MAX_TAG_LENGTH)
         ?.first()
-}
-
-@OptIn(ExperimentalAtomicApi::class)
-internal actual class ThreadSafe<T> {
-    private val atomic = AtomicReference<T?>(null)
-
-    actual fun get(): T? = atomic.load()
-
-    actual fun set(data: T?) = atomic.store(data)
-
-    actual fun remove() = set(null)
 }
 
 private fun extractData(match: MatchResult): Triple<String, String, String>? {

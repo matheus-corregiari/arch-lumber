@@ -9,6 +9,7 @@ import br.com.arch.toolkit.lumber.Lumber.Level.Info
 import br.com.arch.toolkit.lumber.Lumber.Level.Verbose
 import br.com.arch.toolkit.lumber.Lumber.Level.Warn
 import br.com.arch.toolkit.lumber.Lumber.OakWood.plant
+import br.com.arch.toolkit.lumber.Lumber.OakWood.tag
 import br.com.arch.toolkit.lumber.Lumber.OakWood.uproot
 import br.com.arch.toolkit.lumber.Lumber.OakWood.uprootAll
 import kotlinx.atomicfu.atomic
@@ -25,8 +26,7 @@ import kotlinx.atomicfu.update
  * Lumber.tag("Auth").info("Session created")
  * ```
  *
- * [Lumber] keeps one-shot tag and length overrides scoped to the next log call on each planted
- * [Oak].
+ * [Lumber] keeps one-shot options scoped to the next log call on the current logging facade.
  *
  * @see Oak
  * @see DebugOak
@@ -66,114 +66,13 @@ class Lumber private constructor() {
      * Extend [Oak] to send log entries to a console, file, analytics backend, or any other sink.
      * Implement [isLoggable] for filtering and [log] for the final write step.
      *
-     * One-shot configuration methods such as [tag], [quiet], [maxLogLength], and [maxTagLength]
-     * apply only to the next log call for the current [Oak].
+     * An [Oak] is only a logging destination. Use [OakWood] for one-shot options and tagged
+     * logging facades.
      *
      * @see OakWood
      * @see DebugOak
      */
     abstract class Oak {
-        private val explicitTag = ThreadSafe<String?>()
-        private val explicitQuiet = ThreadSafe<Boolean?>()
-        private val explicitMaxLogLength = ThreadSafe<Int?>()
-        private val explicitMaxTagLength = ThreadSafe<Int?>()
-
-        /**
-         * A one-time tag for the next log message.
-         *
-         * This value is consumed after the next log call, even if the message is not ultimately logged.
-         *
-         * @see tag
-         */
-        protected open val tag: String?
-            get() =
-                explicitTag
-                    .get()
-                    .takeIf { it.isNullOrBlank().not() }
-                    ?.also { explicitTag.remove() }
-
-        /**
-         * A one-time flag that suppresses the next log call for this [Oak].
-         *
-         * This value is consumed after the next log call.
-         *
-         * @see quiet
-         */
-        protected open val quiet: Boolean
-            get() = explicitQuiet.get()?.also { explicitQuiet.remove() } == true
-
-        /**
-         * A one-time maximum length for the tag on the next log message.
-         *
-         * This value is consumed after the next log call.
-         *
-         * @see maxTagLength
-         */
-        protected open val maxTagLength: Int?
-            get() = explicitMaxTagLength.get()?.also { explicitMaxTagLength.remove() }
-
-        /**
-         * A one-time maximum length for the log message on the next log call.
-         *
-         * This value is consumed after the next log call.
-         *
-         * @see maxLogLength
-         */
-        protected open val maxLogLength: Int?
-            get() = explicitMaxLogLength.get()?.also { explicitMaxLogLength.remove() }
-
-        /**
-         * Sets a one-time tag for the next log message.
-         *
-         * The tag is applied only to the immediate next log and is then cleared.
-         *
-         * @param tag The tag string.
-         * @return The current `Oak` instance for chaining.
-         */
-        open fun tag(tag: String): Oak {
-            explicitTag.set(tag.trim())
-            return this
-        }
-
-        /**
-         * Suppresses the next log message for this `Oak`.
-         *
-         * @param quiet `true` to suppress the log, `false` otherwise.
-         * @return The current `Oak` instance for chaining.
-         */
-        open fun quiet(quiet: Boolean): Oak {
-            explicitQuiet.set(quiet)
-            return this
-        }
-
-        /**
-         * Sets a one-time maximum length for the next log message.
-         *
-         * If a formatted message exceeds this length, it will be split into multiple chunks.
-         *
-         * @param length The maximum number of characters per log entry. Must be positive.
-         * @return The current `Oak` instance for chaining.
-         */
-        open fun maxLogLength(length: Int): Oak {
-            require(length > 0) { "length must be positive" }
-            explicitMaxLogLength.set(length)
-            return this
-        }
-
-        /**
-         * Sets a one-time maximum length for the tag on the next log message.
-         *
-         * If the tag exceeds this length, it will be truncated.
-         *
-         * @param length The maximum length for the tag. Must be positive.
-         * @return The current `Oak` instance for chaining.
-         */
-        open fun maxTagLength(length: Int): Oak {
-            require(length > 0) { "length must be positive" }
-            explicitMaxTagLength.set(length)
-            return this
-        }
-
         //region Verbose
 
         /** Logs a [Verbose] message. */
@@ -271,8 +170,19 @@ class Lumber private constructor() {
         /**
          * Lowest-level entry point before formatting, filtering, and chunking are applied.
          */
-        open fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
-            prepareLog(level = level, error = error, message = message, args = args)
+        open fun log(
+            level: Level,
+            error: Throwable?,
+            message: String?,
+            vararg args: Any?
+        ) = prepareLog(
+            level = level,
+            error = error,
+            message = message,
+            tag = null,
+            options = LogOptions(),
+            args = args
+        )
         //endregion
 
         /**
@@ -300,17 +210,19 @@ class Lumber private constructor() {
          */
         protected abstract fun log(level: Level, tag: String?, message: String, error: Throwable?)
 
-        private fun prepareLog(
+        @Suppress("LongParameterList")
+        internal fun prepareLog(
             level: Level,
             error: Throwable?,
             message: String?,
+            tag: String?,
+            options: LogOptions,
             vararg args: Any?
         ) {
-            // Consume tag even when the entry is filtered so the next call starts clean.
-            val tagLimit = maxTagLength ?: MAX_TAG_LENGTH
-            val currentTag = (tag ?: defaultTag())?.take(tagLimit)
+            val currentTag = (tag?.takeIf { it.isNotBlank() } ?: defaultTag())
+                ?.take(options.maxTagLength)
 
-            if (!isLoggable(currentTag, level) || quiet) return
+            if (!isLoggable(currentTag, level) || options.quiet) return
 
             var formattedMessage = message.orEmpty().format(*args)
             if (formattedMessage.isBlank()) {
@@ -320,15 +232,79 @@ class Lumber private constructor() {
                 formattedMessage += "\n\n${error.stackTraceToString()}"
             }
 
-            val logLength = maxLogLength ?: MAX_LOG_LENGTH
-            if (formattedMessage.length <= logLength) {
+            if (formattedMessage.length <= options.maxLogLength) {
                 log(level = level, tag = currentTag, message = formattedMessage, error = error)
             } else {
-                formattedMessage.chunked(logLength).forEachIndexed { index, part ->
+                formattedMessage.chunked(options.maxLogLength).forEachIndexed { index, part ->
                     val newTag = currentTag?.let { "$it #$index" } ?: "#$index"
                     log(level = level, tag = newTag, message = part.trimStart('\n'), error = error)
                 }
             }
+        }
+    }
+
+    internal data class LogOptions(
+        val quiet: Boolean = false,
+        val maxLogLength: Int = MAX_LOG_LENGTH,
+        val maxTagLength: Int = MAX_TAG_LENGTH
+    )
+
+    /**
+     * Tagged logging facade backed by the current [OakWood] forest.
+     *
+     * Instances are lightweight and keep their tag across log calls. One-shot options configured
+     * on this facade are consumed by the next log call, even when that call is filtered.
+     */
+    class TaggedLumber internal constructor(
+        private val tag: String,
+        initialOptions: LogOptions?
+    ) : Oak() {
+        private val optionsRef = atomic(initialOptions)
+
+        override fun log(level: Level, tag: String?, message: String, error: Throwable?) =
+            kotlin.error("TaggedLumber does not implement direct logging; it is a facade.")
+
+        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
+            OakWood.dispatchLog(
+                level = level,
+                error = error,
+                message = message,
+                args = args,
+                tag = tag,
+                options = consumeOptions()
+            )
+
+        override fun isLoggable(tag: String?, level: Level) =
+            OakWood.isLoggable(tag ?: this.tag, level)
+
+        /**
+         * Suppresses the next log message for this tagged facade.
+         */
+        fun quiet(quiet: Boolean): TaggedLumber = apply {
+            updateOptions { it.copy(quiet = quiet) }
+        }
+
+        /**
+         * Sets a one-time maximum length for the next log message on this tagged facade.
+         */
+        fun maxLogLength(length: Int): TaggedLumber = apply {
+            require(length > 0) { "length must be positive" }
+            updateOptions { it.copy(maxLogLength = length) }
+        }
+
+        /**
+         * Sets a one-time maximum length for the tag on the next log message on this facade.
+         */
+        fun maxTagLength(length: Int): TaggedLumber = apply {
+            require(length > 0) { "length must be positive" }
+            updateOptions { it.copy(maxTagLength = length) }
+        }
+
+        private fun consumeOptions(): LogOptions =
+            optionsRef.getAndSet(null) ?: LogOptions()
+
+        private fun updateOptions(update: (LogOptions) -> LogOptions) {
+            optionsRef.update { update(it ?: LogOptions()) }
         }
     }
 
@@ -341,6 +317,7 @@ class Lumber private constructor() {
      */
     companion object OakWood : Oak() {
         private val treesRef = atomic<Set<Oak>>(emptySet())
+        private val optionsRef = atomic<LogOptions?>(null)
         private val trees by treesRef
 
         /** Number of currently planted [Oak] instances. */
@@ -349,32 +326,52 @@ class Lumber private constructor() {
         override fun log(level: Level, tag: String?, message: String, error: Throwable?) =
             kotlin.error("OakWood does not implement direct logging; it is a dispatcher.")
 
-        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
-            trees.forEach { it.log(level = level, error = error, message = message, args = args) }
+        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) {
+            dispatchLog(
+                level = level,
+                error = error,
+                message = message,
+                args = args,
+                tag = null,
+                options = consumeOptions()
+            )
+        }
 
         override fun isLoggable(tag: String?, level: Level) =
             trees.any { it.isLoggable(tag, level) }
 
-        override fun tag(tag: String): Oak {
-            trees.forEach { it.tag(tag) }
-            return this
+        /**
+         * Returns a tagged logging facade backed by the current forest.
+         *
+         * The returned facade keeps the tag for every log call. One-shot options configured before
+         * [tag] are transferred to the returned facade and consumed by its next log call.
+         */
+        fun tag(tag: String): TaggedLumber = TaggedLumber(
+            tag = tag.trim(),
+            initialOptions = consumeOptions()
+        )
+
+        /**
+         * Suppresses the next log message emitted through [Lumber].
+         */
+        fun quiet(quiet: Boolean): OakWood = apply {
+            updateOptions { it.copy(quiet = quiet) }
         }
 
-        override fun quiet(quiet: Boolean): Oak {
-            trees.forEach { it.quiet(quiet) }
-            return this
-        }
-
-        override fun maxLogLength(length: Int): Oak {
+        /**
+         * Sets a one-time maximum length for the next log message emitted through [Lumber].
+         */
+        fun maxLogLength(length: Int): OakWood = apply {
             require(length > 0) { "length must be positive" }
-            trees.forEach { it.maxLogLength(length) }
-            return this
+            updateOptions { it.copy(maxLogLength = length) }
         }
 
-        override fun maxTagLength(length: Int): Oak {
+        /**
+         * Sets a one-time maximum length for the next tag emitted through [Lumber].
+         */
+        fun maxTagLength(length: Int): OakWood = apply {
             require(length > 0) { "length must be positive" }
-            trees.forEach { it.maxTagLength(length) }
-            return this
+            updateOptions { it.copy(maxTagLength = length) }
         }
 
         /**
@@ -386,7 +383,10 @@ class Lumber private constructor() {
          */
         fun plant(tree: Oak, vararg trees: Oak) = apply {
             val allTrees = listOf(tree, *trees)
-            allTrees.forEach { require(it !== this) { "Cannot plant Lumber itself." } }
+            allTrees.forEach {
+                require(it !== this) { "Cannot plant Lumber itself." }
+                require(it !is TaggedLumber) { "Cannot plant tagged Lumber." }
+            }
             treesRef.update { it + allTrees }
         }
 
@@ -406,5 +406,32 @@ class Lumber private constructor() {
          * Returns a snapshot of the currently planted [Oak] instances.
          */
         fun forest(): List<Oak> = trees.toList()
+
+        internal fun dispatchLog(
+            level: Level,
+            error: Throwable?,
+            message: String?,
+            tag: String?,
+            options: LogOptions,
+            vararg args: Any?
+        ) {
+            trees.forEach {
+                it.prepareLog(
+                    level = level,
+                    error = error,
+                    message = message,
+                    args = args,
+                    tag = tag,
+                    options = options
+                )
+            }
+        }
+
+        private fun consumeOptions(): LogOptions =
+            optionsRef.getAndSet(null) ?: LogOptions()
+
+        private fun updateOptions(update: (LogOptions) -> LogOptions) {
+            optionsRef.update { update(it ?: LogOptions()) }
+        }
     }
 }

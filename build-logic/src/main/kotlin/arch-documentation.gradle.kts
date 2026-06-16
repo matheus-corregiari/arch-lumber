@@ -1,3 +1,9 @@
+/**
+ * Configures documentation and coverage tooling for publishable modules.
+ *
+ * The plugin enables Dokka, Kover, Jacoco, and coverage thresholds so CI can generate API reference
+ * material and enforce coverage consistently.
+ */
 import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
 import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.internal.extensions.stdlib.capitalized

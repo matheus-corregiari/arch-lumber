@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,11 +24,8 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup-gradle
 
-      - name: Tests
-        run: ./gradlew allTests
-
-      - name: Coverage Reports
-        run: ./gradlew :lumber:koverXmlReport :lumber:koverHtmlReport :lumber:koverVerify
+      - name: Tests and coverage reports
+        run: ./gradlew ciCoverage
 
       - name: Upload coverage HTML
         uses: actions/upload-artifact@v4

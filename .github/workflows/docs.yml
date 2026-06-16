@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -27,16 +27,13 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup-gradle
 
-      - name: Generate Dokka HTML
-        run: ./gradlew :lumber:dokkaGeneratePublicationHtml
+      - name: Generate docs
+        run: ./gradlew ciDocs
 
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
-
-      - name: Sync Contributing page
-        run: python tools/sync_contributing.py
 
       - name: Install MkDocs
         run: pip install mkdocs-material

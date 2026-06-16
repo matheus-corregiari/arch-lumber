@@ -1,0 +1,77 @@
+name: Master Release
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - closed
+
+concurrency:
+  group: master-release-${{ github.event.pull_request.head.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  release:
+    name: Tag and publish
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout master
+        uses: actions/checkout@v6
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Resolve release version
+        id: version
+        run: |
+          chmod +x .github/scripts/release-version.sh
+          .github/scripts/release-version.sh "${{ github.event.pull_request.head.ref }}"
+
+      - name: Setup
+        uses: ./.github/actions/setup-gradle
+
+      - name: Build
+        run: ./gradlew ciBuild
+
+      - name: Verify Coverage
+        run: ./gradlew ciCoverage
+
+      - name: Create release tag
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git tag -a "${{ steps.version.outputs.version }}" -m "${{ steps.version.outputs.version }}"
+          git push origin "${{ steps.version.outputs.version }}"
+
+      - name: Version Name
+        uses: ./.github/actions/version-name
+
+      - name: Publish to GitHub Packages
+        env:
+          ORG_GRADLE_PROJECT_GITHUB_ACTOR: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew ciPublishGithubPackages
+
+      - name: Publish to Maven Central
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGN_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGN_KEYID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGN_PASSWORD }}
+        run: ./gradlew ciPublishMavenCentral
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: Arch Lumber ${{ steps.version.outputs.version }}
+          prerelease: ${{ steps.version.outputs.prerelease }}
+          generate_release_notes: true

@@ -4,7 +4,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "master", "develop" ]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,8 +24,5 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup-gradle
 
-      - name: Run Detekt
-        run: ./gradlew detekt
-
-      - name: Run KtLint
-        run: ./gradlew ktlintCheck
+      - name: Run lint
+        run: ./gradlew ciLint

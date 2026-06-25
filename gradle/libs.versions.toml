@@ -21,7 +21,7 @@ androidx-plugin = "9.2.1"
 
 ## Tools
 ktlint = "14.2.0"
-vanniktech-publish = "0.36.0"
+vanniktech-publish = "0.37.0"
 
 # ------------------------------------------------------------------------------------------------ #
 [libraries]

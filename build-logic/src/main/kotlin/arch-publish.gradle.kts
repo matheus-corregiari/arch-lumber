@@ -8,6 +8,7 @@ import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 import com.vanniktech.maven.publish.SourcesJar
+import org.gradle.plugins.signing.Sign
 
 plugins {
     `maven-publish`
@@ -56,4 +57,15 @@ extensions.configure(MavenPublishBaseExtension::class) {
             sourcesJar = SourcesJar.Sources(),
         ),
     )
+}
+
+tasks.withType<Sign>().configureEach {
+    onlyIf {
+        val localPublish = gradle.taskGraph.allTasks.any {
+            it.name == "ciPublishLocal" ||
+                it.name == "publishToMavenLocal" ||
+                it.name.endsWith("ToMavenLocal")
+        }
+        !localPublish
+    }
 }

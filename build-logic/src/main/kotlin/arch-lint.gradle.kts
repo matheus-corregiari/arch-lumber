@@ -1,5 +1,11 @@
 @file:Suppress("UnstableApiUsage")
 
+/**
+ * Configures static analysis for library modules.
+ *
+ * The plugin applies Detekt and Ktlint, points both tools at the repository config files, and
+ * standardizes report generation for CI artifacts.
+ */
 import dev.detekt.gradle.Detekt
 import dev.detekt.gradle.extensions.DetektExtension
 import org.jlleitschuh.gradle.ktlint.KtlintExtension

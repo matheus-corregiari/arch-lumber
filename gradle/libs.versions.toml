@@ -3,7 +3,7 @@
 ## --- Plugins and more general stuff --- ##
 #noinspection UnusedVersionCatalogEntry
 jacoco = "0.8.14"
-detekt = "2.0.0-alpha.3"
+detekt = "2.0.0-alpha.5"
 
 ## --- Build Config and SDK --- ##
 build-sdk-min = "20"
@@ -21,7 +21,7 @@ androidx-plugin = "9.2.1"
 
 ## Tools
 ktlint = "14.2.0"
-vanniktech-publish = "0.36.0"
+vanniktech-publish = "0.37.0"
 
 # ------------------------------------------------------------------------------------------------ #
 [libraries]
@@ -36,7 +36,7 @@ jetbrains-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.r
 androidx-library = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "androidx-plugin" }
 
 ## Tools
-detekt = { module = "dev.detekt:dev.detekt.gradle.plugin", version.ref = "detekt" }
+detekt = { module = "dev.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 ktlint = { module = "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin", version.ref = "ktlint" }
 vanniktech-publish = { module = "com.vanniktech:gradle-maven-publish-plugin", version.ref = "vanniktech-publish" }
 

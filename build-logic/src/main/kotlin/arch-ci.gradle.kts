@@ -86,13 +86,24 @@ gradle.projectsEvaluated {
         dependsOn(multiplatformProjects.mapNotNull { it.taskPath("allTests") })
     }
     ciCoverage.configure {
-        dependsOn(listOfNotNull(taskPath("koverXmlReport"), taskPath("koverHtmlReport"), taskPath("koverVerify")))
+        dependsOn(
+            listOfNotNull(
+                taskPath("koverXmlReport"),
+                taskPath("koverHtmlReport"),
+                taskPath("koverVerify")
+            )
+        )
+        dependsOn(multiplatformProjects.mapNotNull { it.taskPath("koverVerify") })
     }
     ciPublishMavenCentral.configure {
         dependsOn(publishableProjects.mapNotNull { it.taskPath("publishAndReleaseToMavenCentral") })
     }
     ciPublishGithubPackages.configure {
-        dependsOn(publishableProjects.mapNotNull { it.taskPath("publishAllPublicationsToGithubRepository") })
+        dependsOn(
+            publishableProjects.mapNotNull {
+                it.taskPath("publishAllPublicationsToGithubRepository")
+            }
+        )
     }
     ciPublishLocal.configure {
         dependsOn(publishableProjects.mapNotNull { it.taskPath("publishToMavenLocal") })

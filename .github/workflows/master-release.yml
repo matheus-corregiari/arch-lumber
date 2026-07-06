@@ -66,6 +66,9 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_GITHUB_ACTOR: ${{ github.actor }}
           ORG_GRADLE_PROJECT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGN_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGN_KEYID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGN_PASSWORD }}
         run: ./gradlew ciPublishGithubPackages
 
       - name: Publish to Maven Central

@@ -1,6 +1,7 @@
 name: Sync Master to Develop
 
 on:
+  workflow_dispatch:
   pull_request:
     branches:
       - master
@@ -18,10 +19,16 @@ permissions:
 jobs:
   sync:
     name: Open back-merge PR
-    if: github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout develop
+        uses: actions/checkout@v4
+        with:
+          ref: develop
+          fetch-depth: 0
+
       - name: Create or reuse master to develop PR
         id: pull-request
         env:
@@ -29,12 +36,29 @@ jobs:
         run: |
           set -euo pipefail
 
+          branch="automation/sync-master-to-develop"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin master develop
+          git fetch origin "$branch" || true
+          git switch -C "$branch" origin/develop
+          git merge --no-ff --no-edit origin/master
+
+          if git diff --quiet origin/develop..HEAD; then
+            echo "No master changes to sync into develop."
+            echo "url=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git push --force-with-lease origin "$branch"
+
           pr_url="$(
             gh pr list \
               --repo "$GITHUB_REPOSITORY" \
               --state open \
               --base develop \
-              --head master \
+              --head "$branch" \
               --json url \
               --jq '.[0].url // empty'
           )"
@@ -44,9 +68,9 @@ jobs:
               gh pr create \
                 --repo "$GITHUB_REPOSITORY" \
                 --base develop \
-                --head master \
+                --head "$branch" \
                 --title "chore: sync master back to develop" \
-                --body "Automated back-merge after a pull request was merged into master. Approve the pending workflow runs so the configured checks can complete."
+                --body "Automated back-merge after a pull request was merged into master."
             )"
           fi
 
@@ -54,6 +78,7 @@ jobs:
           echo "Back-merge PR: $pr_url"
 
       - name: Enable auto-merge
+        if: steps.pull-request.outputs.url != ''
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh pr merge "${{ steps.pull-request.outputs.url }}" --auto --merge

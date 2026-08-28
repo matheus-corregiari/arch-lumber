@@ -38,5 +38,14 @@ nav:
   - Usage Recipes: recipes.md
   - Ecosystem: ecosystem.md
   - API Reference: https://matheus-corregiari.github.io/arch-lumber/api/
-  - Changelog: changelog/index.md
+  - Changelog:
+      - Overview: changelog/index.md
+      - 1.3.0: changelog/1.3.0.md
+      - 1.2.1: changelog/1.2.1.md
+      - 1.2.0: changelog/1.2.0.md
+      - 1.1.0: changelog/1.1.0.md
+      - 1.0.3: changelog/1.0.3.md
+      - 1.0.2: changelog/1.0.2.md
+      - 1.0.1: changelog/1.0.1.md
+      - 1.0.0: changelog/1.0.0.md
   - Contributing: contributing.md

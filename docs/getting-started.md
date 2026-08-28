@@ -3,9 +3,9 @@
 ## Requirements
 
 - JDK `21` from the project toolchain
-- Gradle wrapper `9.5.1`
-- Kotlin `2.4.0`
-- Android `minSdk 20` and `compileSdk 36` for Android consumers
+- Gradle wrapper `9.7.1`
+- Kotlin `2.4.10`
+- Android `minSdk 20` and `compileSdk 37` for Android consumers
 
 ## Add the dependency
 
@@ -18,6 +18,10 @@ dependencies {
 ## Plant a default oak
 
 `DebugOak` gives you the default platform behavior.
+
+```text
+application code -> Lumber -> planted Oak(s) -> platform output
+```
 
 ```kotlin
 Lumber.plant(DebugOak())

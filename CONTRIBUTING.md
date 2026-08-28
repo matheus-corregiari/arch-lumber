@@ -27,6 +27,29 @@ Thanks for taking the time to contribute.
 4. Add or update tests when behavior changes.
 5. Sync the MkDocs contributing page before building docs.
 
+## Branching and Releases
+
+- This repository has no `develop` branch.
+- Work branches (`feature/*`, `fix/*`, `bugfix/*`, `config/*`, `docs/*`, and `chore/*`) open
+  pull requests into a `release/x.y.0[-rcN]` or `hotfix/x.y.z[-rcN]` branch, where `z >= 1`.
+- Pull requests targeting `master` must originate from those `release/*` or `hotfix/*` branches.
+- Merging either branch type into `master` is the only automatic publication trigger.
+- The release workflow derives the tag from the branch name, publishes artifacts, and creates the
+  GitHub Release.
+
+```text
+feature/*, fix/*, bugfix/*, docs/*, config/*, chore/*
+                         |
+                         v
+                 release/* or hotfix/*
+                         |
+                         v
+                      master
+                         |
+                         v
+            publish artifacts, tag, GitHub Release
+```
+
 ## Local Validation
 
 ```bash

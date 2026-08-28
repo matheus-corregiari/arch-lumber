@@ -21,13 +21,11 @@ fun versionInt(version: Provider<String>) = version.getOrNull()?.toIntOrNull() ?
 fun versionString(version: Provider<String>) = version.getOrNull().orEmpty()
 
 internal val VersionCatalog.allDefinedDependencies: Set<String>
-    get() =
-        libraryAliases
-            .asSequence()
-            .map(::findLibrary)
-            .mapNotNull {
-                it
-                    .getOrNull()
-                    ?.get()
-                    ?.run { "${module.group}:${module.name}:${versionConstraint.requiredVersion}:" }
-            }.toSet()
+    get() = libraryAliases
+        .asSequence()
+        .map(::findLibrary)
+        .mapNotNull {
+            it.getOrNull()
+                ?.get()
+                ?.run { "${module.group}:${module.name}:${versionConstraint.requiredVersion}:" }
+        }.toSet()

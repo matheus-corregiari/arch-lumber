@@ -3,12 +3,11 @@ import org.gradle.api.Project
 import java.io.File
 
 internal val Project.versionName: String
-    get() =
-        runGitCommand(
-            fileName = "version-name.txt",
-            command = "git describe",
-            default = "0.0.0",
-        )
+    get() = runGitCommand(
+        fileName = "version-name.txt",
+        command = "git describe",
+        default = "0.0.0",
+    )
 
 @Suppress("DEPRECATION")
 private val String.execute: Process get() = Runtime.getRuntime().exec(this)
@@ -53,11 +52,10 @@ private fun Project.runGitCommand(
 }
 
 private fun validateGit(): Boolean {
-    val command =
-        when {
-            Os.isFamily(Os.FAMILY_WINDOWS) -> "git --version"
-            else -> "whereis git"
-        }
+    val command = when {
+        Os.isFamily(Os.FAMILY_WINDOWS) -> "git --version"
+        else -> "whereis git"
+    }
     return when (val output = command.executeWithText) {
         null -> false
         else -> (output.isEmpty() || output == "git:").not()

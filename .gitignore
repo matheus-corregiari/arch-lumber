@@ -4,6 +4,7 @@
 **/.idea/
 **/.git/
 **/site/
+/.codex/
 **/kotlin-js-store/
 *.log
 *.iml

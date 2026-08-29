@@ -11,5 +11,5 @@ Arch Toolkit.
 - [Arch Toolkit sample hub](https://matheus-corregiari.github.io/arch-toolkit/sample/)
 - [Arch Toolkit web sample](https://matheus-corregiari.github.io/arch-toolkit/samples/web/)
 
-Use the local docs for this library's API and behavior. Use the ecosystem hub for release flow,
-cross-library standards, and sample coverage across the Arch libraries.
+Use the local docs for this library's API, behavior, and release flow. Use the ecosystem hub for
+cross-library standards and sample coverage across the Arch libraries.

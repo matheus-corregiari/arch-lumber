@@ -407,6 +407,7 @@ class Lumber private constructor() {
          */
         fun forest(): List<Oak> = trees.toList()
 
+        @Suppress("LongParameterList")
         internal fun dispatchLog(
             level: Level,
             error: Throwable?,

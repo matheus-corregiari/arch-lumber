@@ -6,7 +6,6 @@
  * The plugin owns common compiler, hierarchy, Android namespace, lint, test coverage, native
  * framework, and source jar defaults shared by publishable library modules.
  */
-import com.android.build.api.variant.impl.capitalizeFirstChar
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
@@ -48,9 +47,6 @@ extensions.configure<KotlinMultiplatformExtension> {
             ignoreWarnings = false
             absolutePaths = false
             warningsAsErrors = false
-
-            htmlOutput = File("$rootDir/build/reports/lint/html/${project.name}-lint.html")
-            xmlOutput = File("$rootDir/build/reports/lint/xml/${project.name}-lint.xml")
         }
         testCoverage { jacocoVersion = libraries.version("jacoco") }
         optimization.consumerKeepRules.file("consumer-proguard-rules.pro")
@@ -60,7 +56,7 @@ extensions.configure<KotlinMultiplatformExtension> {
         browser { testTask { useKarma { useChromeHeadless() } } }
         binaries.library()
     }
-    js(IR) {
+    js {
         browser { testTask { useKarma { useChromeHeadless() } } }
         binaries.library()
     }
@@ -68,7 +64,7 @@ extensions.configure<KotlinMultiplatformExtension> {
     val exportName =
         project.name.split("-").joinToString(
             separator = "",
-            transform = String::capitalizeFirstChar
+            transform = { it.replaceFirstChar(Char::titlecase) }
         )
     val exportId = "br.com.arch.toolkit.${project.name}"
     listOf(
@@ -84,7 +80,7 @@ extensions.configure<KotlinMultiplatformExtension> {
     }
 
     sourceSets {
-        val javaMain by getting
+        val javaMain = named("javaMain").get()
         androidMain { dependsOn(javaMain) }
     }
 }

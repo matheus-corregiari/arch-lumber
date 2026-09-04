@@ -125,33 +125,63 @@ jobs:
           path: site
 
   codeql:
-    name: CodeQL
+    name: CodeQL (${{ matrix.language }})
     needs: policy
     runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: java-kotlin
+            build-mode: manual
+          - language: python
+            build-mode: none
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
       - uses: ./.github/actions/setup-gradle
+        if: matrix.language == 'java-kotlin'
         with:
           cache-disabled: 'true'
       - uses: actions/setup-python@v7
+        if: matrix.language == 'java-kotlin'
         with:
           python-version: '3.12'
       - name: Select analysis compiler
+        if: matrix.language == 'java-kotlin'
         run: python .github/scripts/release.py codeql
       - uses: github/codeql-action/init@v4
         with:
-          # Mixed-language jobs use the traced build below, without the single-language build-mode input.
-          languages: java-kotlin,actions,python
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
       - name: Compile analysis targets
+        if: matrix.build-mode == 'manual'
         run: ./gradlew ciCodeql --no-build-cache --no-daemon
       - uses: github/codeql-action/analyze@v4
         with:
+          category: /language:${{ matrix.language }}
           wait-for-processing: true
+
+  security:
+    name: CodeQL Policy
+    needs: codeql
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
       - name: Reject blocking alerts
         env:
           GH_TOKEN: ${{ github.token }}
@@ -160,7 +190,7 @@ jobs:
   gate:
     name: CI Gate
     if: always()
-    needs: [policy, coverage, static, docs, codeql]
+    needs: [policy, coverage, static, docs, codeql, security]
     runs-on: ubuntu-latest
     steps:
       - name: Require every gate to succeed

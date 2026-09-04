@@ -137,10 +137,13 @@ jobs:
         include:
           - language: actions
             build-mode: none
+            category: /language:actions
           - language: java-kotlin
             build-mode: manual
+            category: .github/workflows/ci.yml:codeql
           - language: python
             build-mode: none
+            category: /language:python
     steps:
       - uses: actions/checkout@v7
         with:
@@ -163,16 +166,10 @@ jobs:
       - name: Compile analysis targets
         if: matrix.build-mode == 'manual'
         run: ./gradlew ciCodeql --no-build-cache --no-daemon
-      - name: Perform categorized CodeQL analysis
-        if: matrix.language != 'java-kotlin'
+      - name: Perform CodeQL analysis
         uses: github/codeql-action/analyze@v4
         with:
-          category: /language:${{ matrix.language }}
-          wait-for-processing: true
-      - name: Perform Java/Kotlin CodeQL analysis
-        if: matrix.language == 'java-kotlin'
-        uses: github/codeql-action/analyze@v4
-        with:
+          category: ${{ matrix.category }}
           wait-for-processing: true
 
   security:

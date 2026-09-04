@@ -47,6 +47,8 @@ gradle.projectsEvaluated {
     val libraries = subprojects.filter { it.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform") }
     val publishable = subprojects.filter { it.plugins.hasPlugin("com.vanniktech.maven.publish") }
     fun List<Project>.paths(name: String) = mapNotNull { it.tasks.findByName(name)?.path }
+    fun List<Project>.pathsStartingWith(prefix: String) =
+        flatMap { project -> project.tasks.matching { it.name.startsWith(prefix) }.map { it.path } }
 
     // Master must execute tests again; compilation remains cacheable.
     if (System.getenv("GITHUB_EVENT_NAME") == "push" && System.getenv("GITHUB_REF") == "refs/heads/master") {
@@ -59,7 +61,12 @@ gradle.projectsEvaluated {
     }
 
     ciLint.configure {
-        dependsOn(libraries.paths("detekt"), libraries.paths("ktlintCheck"), libraries.paths("lint"))
+        dependsOn(
+            libraries.paths("detekt"),
+            libraries.paths("ktlintCheck"),
+            libraries.paths("lint"),
+            libraries.pathsStartingWith("lintAnalyze"),
+        )
     }
     ciDocs.configure { dependsOn(publishable.paths("dokkaGenerate")) }
     ciBuild.configure { dependsOn(publishable.paths("assemble")) }

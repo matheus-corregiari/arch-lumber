@@ -57,12 +57,33 @@ class ReleasePolicyTest(unittest.TestCase):
             self.assertEqual([{"name": "CI Gate"}], release.pages("jobs", "jobs"))
 
     def test_publication_requires_successful_named_gates(self):
-        run = {"id": 1, "head_branch": "master", "status": "completed", "conclusion": "success"}
+        run = {"id": 1, "head_branch": "master", "status": "in_progress", "conclusion": None}
         with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
                 patch("release.api", return_value={"workflow_runs": [run]}), \
                 patch("release.pages", return_value=[{"name": "CI Gate", "conclusion": "skipped"}]):
             with self.assertRaises(ValueError):
                 release.approved("sha")
+
+    def test_publication_ignores_non_gate_job_failure(self):
+        run = {"id": 1, "head_branch": "master", "status": "in_progress", "conclusion": None}
+        required = {"Release Policy", "Coverage Gate", "Static Analysis", "Docs Gate",
+                    "CodeQL", "CI Gate", "Create Release Tag"}
+        jobs = [{"name": name, "conclusion": "success"} for name in required]
+        jobs.append({"name": "Deploy Docs", "conclusion": "failure"})
+        with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
+                patch("release.api", return_value={"workflow_runs": [run]}), \
+                patch("release.pages", return_value=jobs):
+            release.approved("sha")
+
+    def test_publication_rejects_failed_gate_immediately(self):
+        run = {"id": 1, "head_branch": "master", "status": "in_progress", "conclusion": None}
+        with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
+                patch("release.api", return_value={"workflow_runs": [run]}), \
+                patch("release.pages", return_value=[{"name": "CodeQL", "conclusion": "failure"}]), \
+                patch("release.time.sleep") as sleep:
+            with self.assertRaisesRegex(ValueError, "CodeQL"):
+                release.approved("sha")
+            sleep.assert_not_called()
 
     def test_release_requires_unique_merged_pr(self):
         with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \

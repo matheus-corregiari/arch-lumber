@@ -114,20 +114,21 @@ def prepare():
 
 def approved(sha):
     repository = os.environ["GITHUB_REPOSITORY"]
-    # Tag creation happens before the producing CI run has finished; wait for that exact run.
+    # The tag starts this workflow before its producing CI run and the independent Pages job finish.
+    # Approve the release as soon as every required gate succeeds; Pages is not a release gate.
     for attempt in range(60):
         runs = api(f"repos/{repository}/actions/workflows/ci.yml/runs?event=push&head_sha={sha}&per_page=100")["workflow_runs"]
         runs = [run for run in runs if run["head_branch"] == "master"]
         if runs:
             run = max(runs, key=lambda entry: entry["id"])
-            if run["status"] == "completed":
-                if run["conclusion"] != "success":
-                    raise ValueError("CI for the tagged master commit did not succeed")
-                jobs = pages(f"repos/{repository}/actions/runs/{run['id']}/jobs", "jobs")
-                required = {"Release Policy", "Coverage Gate", "Static Analysis", "Docs Gate", "CodeQL", "CI Gate", "Create Release Tag"}
-                success = {job["name"] for job in jobs if job["conclusion"] == "success"}
-                if not required <= success:
-                    raise ValueError(f"Missing successful gates: {sorted(required - success)}")
+            jobs = pages(f"repos/{repository}/actions/runs/{run['id']}/jobs", "jobs")
+            required = {"Release Policy", "Coverage Gate", "Static Analysis", "Docs Gate", "CodeQL", "CI Gate", "Create Release Tag"}
+            conclusions = {job["name"]: job["conclusion"] for job in jobs if job["name"] in required}
+            failed = sorted(name for name, conclusion in conclusions.items()
+                            if conclusion in ("failure", "cancelled", "timed_out", "action_required", "skipped"))
+            if failed:
+                raise ValueError(f"Failed release gates: {failed}")
+            if all(conclusions.get(name) == "success" for name in required):
                 return
         time.sleep(10)
     raise ValueError("Timed out waiting for successful CI on the tagged master commit")

@@ -66,7 +66,6 @@ extensions.configure<KotlinMultiplatformExtension> {
             separator = "",
             transform = { it.replaceFirstChar(Char::titlecase) }
         )
-    val exportId = "br.com.arch.toolkit.${project.name}"
     listOf(
         iosArm64(),
         iosX64(),
@@ -75,7 +74,6 @@ extensions.configure<KotlinMultiplatformExtension> {
         target.binaries.framework {
             baseName = "${exportName}Kit"
             isStatic = true
-            freeCompilerArgs += listOf("-bundle-id", exportId)
         }
     }
 

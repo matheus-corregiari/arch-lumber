@@ -1,27 +1,16 @@
-name: "Gets and stores the new version name so we can use it do deploy"
-description: "Boilerplate steps"
-
+name: Set the exact release version
+description: Publication never falls back to git describe
 inputs:
   version:
-    description: Explicit release version; falls back to git describe when omitted
-    required: false
-    default: ""
-
+    required: true
+    description: Validated version from the release branch or tag
 runs:
-  using: "composite"
+  using: composite
   steps:
-
-    # Setup versionName because we love it
-    - name: Get next version name
-      id: new-version
-      if: inputs.version == ''
-      uses: proudust/gh-describe@v1.5.3
-
-    # Write versionName into build file to use properly in the future
-    - name: Write version into build file
-      shell: bash
+    - shell: bash
       env:
-        VERSION_NAME: ${{ inputs.version || steps.new-version.outputs.describe }}
+        VERSION_NAME: ${{ inputs.version }}
       run: |
+        [[ "$VERSION_NAME" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-rc[1-9][0-9]*)?$ ]]
         mkdir -p build
         printf '%s\n' "$VERSION_NAME" > build/version-name.txt

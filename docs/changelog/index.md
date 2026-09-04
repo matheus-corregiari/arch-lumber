@@ -1,6 +1,6 @@
 # Changelog
 
-This directory keeps one page per released version.
+This directory keeps release notes and explicitly marked planned versions.
 
 Each release page should stay short and factual, based on the tag range for that release.
 
@@ -11,6 +11,10 @@ Each page should include:
 - compatibility notes or migration cautions when needed
 - a dependency/version table
 - a target compatibility table
+
+## Planned
+
+- [1.4.0](1.4.0.md)
 
 ## Releases
 

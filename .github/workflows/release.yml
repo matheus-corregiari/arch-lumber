@@ -1,52 +1,111 @@
 name: Release
 
 on:
+  push:
+    tags: ['[0-9]*']
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing annotated tag to resume
+        required: true
+        type: string
+      destination:
+        description: Resume only a destination that has not been published
+        type: choice
+        default: both
+        options: [both, central, github, release-only]
+
+permissions:
+  contents: read
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: publish-release
   cancel-in-progress: false
 
 jobs:
-  assemble_deploy:
+  verify:
+    name: Verify Release Tag
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
+    outputs:
+      sha: ${{ steps.tag.outputs.sha }}
+      version: ${{ steps.tag.outputs.version }}
+      runner: ${{ steps.tag.outputs.runner }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Verify tag and approved commit
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
+        run: python .github/scripts/release.py verify-tag "$RELEASE_TAG"
 
+  publish:
+    name: Publish Packages
+    needs: verify
+    runs-on: ${{ needs.verify.outputs.runner }}
     permissions:
       contents: read
       packages: write
-
-    env:
-      # Github Packages
-      ORG_GRADLE_PROJECT_GITHUB_ACTOR: ${{ github.actor }}
-      ORG_GRADLE_PROJECT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Maven
-      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-
-      # Signing
-      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGN_KEY }}
-      ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGN_KEYID }}
-      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGN_PASSWORD }}
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup
-        uses: ./.github/actions/setup-gradle
-
-      - name: Version Name
-        uses: ./.github/actions/version-name
-
-      - name: Build
-        run: ./gradlew ciBuild
-
-      - name: Verify Coverage
-        run: ./gradlew ciCoverage
-
-      - name: Publish to GitHub Packages
-        run: ./gradlew ciPublishGithubPackages
-
-      - name: Publish to Maven Central
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.verify.outputs.sha }}
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle
+      - uses: ./.github/actions/version-name
+        with:
+          version: ${{ needs.verify.outputs.version }}
+      - name: List publication coordinates
+        run: ./gradlew ciPublicationManifest
+      - name: Verify destinations omitted during recovery
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DESTINATION: ${{ inputs.destination }}
+        run: python3 .github/scripts/release.py publications "$DESTINATION"
+      - name: Publish Maven Central
+        if: github.event_name == 'push' || inputs.destination == 'both' || inputs.destination == 'central'
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGN_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGN_KEYID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGN_PASSWORD }}
         run: ./gradlew ciPublishMavenCentral
+      - name: Publish GitHub Packages
+        if: github.event_name == 'push' || inputs.destination == 'both' || inputs.destination == 'github'
+        env:
+          ORG_GRADLE_PROJECT_GITHUB_ACTOR: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_GITHUB_TOKEN: ${{ github.token }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGN_KEY }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGN_KEYID }}
+          ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGN_PASSWORD }}
+        run: ./gradlew ciPublishGithubPackages
+      - name: Confirm both registries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 .github/scripts/release.py publications complete
+
+  release:
+    name: Publish GitHub Release
+    needs: [verify, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ needs.verify.outputs.version }}
+          generate_release_notes: true
+          prerelease: ${{ contains(needs.verify.outputs.version, '-rc') }}

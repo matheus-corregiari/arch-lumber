@@ -1,0 +1,219 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, ready_for_review]
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  policy:
+    name: Release Policy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      runner: ${{ steps.policy.outputs.runner }}
+      version: ${{ steps.policy.outputs.version }}
+      branch: ${{ steps.policy.outputs.branch }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Test release policy
+        run: python -m unittest discover -s .github/scripts -p 'test_*.py'
+      - name: Validate release policy
+        id: policy
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/release.py prepare
+
+  coverage:
+    name: Coverage Gate
+    needs: policy
+    runs-on: ${{ needs.policy.outputs.runner }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle
+      - name: Set candidate version
+        if: needs.policy.outputs.version != ''
+        uses: ./.github/actions/version-name
+        with:
+          version: ${{ needs.policy.outputs.version }}
+      - name: Build, test and verify coverage
+        uses: ./.github/actions/run-gradle
+        with:
+          tasks: ciBuild ciCoverage
+      - name: Save test and coverage reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-and-coverage-reports
+          path: |
+            **/build/reports/tests/
+            **/build/test-results/
+            **/build/reports/kover/
+          if-no-files-found: error
+      - name: Report coverage to Codecov
+        if: success() && github.event_name == 'push'
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: build/reports/kover/report.xml
+          fail_ci_if_error: false
+
+  static:
+    name: Static Analysis
+    needs: policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle
+      - name: Static analysis
+        run: ./gradlew ciLint
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: static-analysis-reports
+          path: |
+            **/build/reports/detekt/
+            **/build/reports/ktlint/
+            **/build/reports/lint-results*
+          if-no-files-found: warn
+
+  docs:
+    name: Docs Gate
+    needs: policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Set candidate documentation version
+        if: needs.policy.outputs.version != ''
+        uses: ./.github/actions/version-name
+        with:
+          version: ${{ needs.policy.outputs.version }}
+      - name: Generate API documentation
+        run: ./gradlew ciDocs
+      - name: Validate documentation
+        run: |
+          python -m pip install -r .github/requirements-docs.txt
+          python -m mkdocs build --strict
+      - uses: actions/upload-pages-artifact@v5
+        if: github.event_name == 'push'
+        with:
+          path: site
+
+  codeql:
+    name: CodeQL
+    needs: policy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: ./.github/actions/setup-gradle
+        with:
+          cache-disabled: 'true'
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Select analysis compiler
+        run: python .github/scripts/release.py codeql
+      - uses: github/codeql-action/init@v4
+        with:
+          # Mixed-language jobs use the traced build below, without the single-language build-mode input.
+          languages: java-kotlin,actions,python
+      - name: Compile analysis targets
+        run: ./gradlew ciCodeql --no-build-cache --no-daemon
+      - uses: github/codeql-action/analyze@v4
+        with:
+          wait-for-processing: true
+      - name: Reject blocking alerts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python .github/scripts/release.py security
+
+  gate:
+    name: CI Gate
+    if: always()
+    needs: [policy, coverage, static, docs, codeql]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require every gate to succeed
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 -c 'import json,os; results=json.loads(os.environ["RESULTS"]); assert all(job["result"] == "success" for job in results.values()), results'
+
+  tag:
+    name: Create Release Tag
+    if: github.event_name == 'push'
+    needs: [policy, gate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    concurrency:
+      group: release-tag
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - uses: actions/create-github-app-token@v2
+        id: app
+        with:
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+      - name: Create annotated tag after all gates
+        env:
+          GH_TOKEN: ${{ steps.app.outputs.token }}
+          CI_READ_TOKEN: ${{ github.token }}
+          RELEASE_BRANCH: ${{ needs.policy.outputs.branch }}
+        run: |
+          gh auth setup-git
+          python .github/scripts/release.py create-tag "$RELEASE_BRANCH"
+
+  pages:
+    name: Deploy Docs
+    if: github.event_name == 'push'
+    needs: gate
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/deploy-pages@v5
+        id: deployment

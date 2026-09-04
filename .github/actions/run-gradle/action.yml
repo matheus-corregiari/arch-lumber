@@ -1,0 +1,19 @@
+name: Run Gradle with a display when needed
+description: Identical commands across Linux and macOS runners
+inputs:
+  tasks:
+    description: Space-separated task names supplied by the workflow
+    required: true
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        GRADLE_TASKS: ${{ inputs.tasks }}
+      run: |
+        read -ra tasks <<< "$GRADLE_TASKS"
+        if [[ "$RUNNER_OS" == Linux ]]; then
+          xvfb-run -a ./gradlew "${tasks[@]}"
+        else
+          ./gradlew "${tasks[@]}"
+        fi

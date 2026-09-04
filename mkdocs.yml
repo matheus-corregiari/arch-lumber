@@ -40,12 +40,15 @@ nav:
   - API Reference: https://matheus-corregiari.github.io/arch-lumber/api/
   - Changelog:
       - Overview: changelog/index.md
-      - 1.3.0: changelog/1.3.0.md
-      - 1.2.1: changelog/1.2.1.md
-      - 1.2.0: changelog/1.2.0.md
-      - 1.1.0: changelog/1.1.0.md
-      - 1.0.3: changelog/1.0.3.md
-      - 1.0.2: changelog/1.0.2.md
-      - 1.0.1: changelog/1.0.1.md
-      - 1.0.0: changelog/1.0.0.md
+      - "1.4.0": changelog/1.4.0.md
+      - "1.3.1": changelog/1.3.1.md
+      - "1.3.0": changelog/1.3.0.md
+      - "1.2.1": changelog/1.2.1.md
+      - "1.2.0": changelog/1.2.0.md
+      - "1.1.0": changelog/1.1.0.md
+      - "1.0.3": changelog/1.0.3.md
+      - "1.0.2": changelog/1.0.2.md
+      - "1.0.1": changelog/1.0.1.md
+      - "1.0.0": changelog/1.0.0.md
+  - CI and Releases: ci.md
   - Contributing: contributing.md

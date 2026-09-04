@@ -155,6 +155,6 @@ limitations under the License.
 
 [badge-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber/graph/badge.svg?token=P977R4GMUO
 
-[badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/lint.yml/badge.svg
+[badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/ci.yml/badge.svg
 
-[badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/coverage.yml/badge.svg
+[badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/ci.yml/badge.svg

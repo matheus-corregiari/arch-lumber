@@ -104,8 +104,20 @@ jobs:
     permissions:
       contents: write
     steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.verify.outputs.version }}
+          persist-credentials: false
+      - name: Select curated release notes
+        id: notes
+        shell: bash
+        run: |
+          if [ -f RELEASE_NOTES.md ]; then
+            echo 'path=RELEASE_NOTES.md' >> "$GITHUB_OUTPUT"
+          fi
       - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.verify.outputs.version }}
+          body_path: ${{ steps.notes.outputs.path }}
           generate_release_notes: true
           prerelease: ${{ contains(needs.verify.outputs.version, '-rc') }}

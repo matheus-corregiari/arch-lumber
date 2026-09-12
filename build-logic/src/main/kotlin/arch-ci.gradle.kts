@@ -1,5 +1,6 @@
 /** Common CI contract. Target selection remains in the module conventions. */
 import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
+import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 
 plugins {
     id("org.jetbrains.kotlinx.kover")
@@ -7,6 +8,22 @@ plugins {
 
 dependencies {
     subprojects.filter { it.name != "test" }.forEach { add("kover", project(it.path)) }
+}
+
+// One filter for module reports, the merged XML/HTML and verification, including Codecov's input.
+allprojects {
+    plugins.withId("org.jetbrains.kotlinx.kover") {
+        extensions.configure<KoverProjectExtension> {
+            reports {
+                filters {
+                    excludes {
+                        // Android-generated constants/resources contain no handwritten behavior.
+                        classes("*.BuildConfig", "*.R", "*.R$*")
+                    }
+                }
+            }
+        }
+    }
 }
 
 val coverageLines = providers.gradleProperty("ci.coverage.lines").get().toInt()

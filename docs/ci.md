@@ -88,3 +88,41 @@ python -m mkdocs build --strict
 
 Use JDK 21 and the project wrapper. Publication also has `ciPublicationManifest` for verifying the
 complete list of Maven coordinates, without uploading packages.
+
+## Coverage and Codecov
+
+`build-logic/src/main/kotlin/arch-coverage.gradle.kts` is the single source of report exclusions. It applies the same Kover filter
+to every covered module and the root report. Only Android-generated `*.BuildConfig`, `*.R`
+and `*.R$*` are excluded: they contain generated constants/resources, not application behavior.
+Do not exclude DTOs, state classes, Compose functions or entire packages just to raise coverage.
+
+```sh
+./gradlew ciCoverage
+# Root report only (automatically runs the required JVM/Android host tests):
+./gradlew :koverXmlReport :koverHtmlReport :koverVerify
+```
+
+Open `build/reports/kover/html/index.html` locally. Codecov receives only
+`build/reports/kover/report.xml`, with `disable_search: true`; automatic discovery would also find
+module or older reports and could merge excluded classes back into the result.
+There is deliberately no second `ignore` list in `codecov.yml`: Codecov consumes the already-filtered
+XML. Its `ignore` patterns describe source paths, while Kover filters describe JVM class names.
+An IDE coverage run or another coverage tool must use this Gradle report to share these exclusions.
+
+Compare the same commit and line metric. Codecov's treatment of partially covered lines can differ
+from Kover, so equal file scope does not promise identical percentages. Existing Gradle verification
+rules remain authoritative; Codecov provides visibility rather than an additional threshold.
+JVM/Android host execution supplies the coverage counters. Apple, JS and Wasm tests still run in
+the platform test suite but do not add Kover coverage. On pushes to `master`, coverage is uploaded after the coverage job successfully builds and
+verifies the reports. Other CI gates run independently; all must pass before a release tag is created.
+
+References: [Kover report filtering](https://kotlin.github.io/kotlinx-kover/gradle-plugin/#filtering-reports),
+[Codecov file search](https://docs.codecov.com/docs/file-search) and
+[Codecov path ignores](https://docs.codecov.com/docs/ignoring-paths).
+
+Release notes use `docs/changelog/<version>.md` from the verified tag checkout, with generated
+GitHub notes as a fallback for historical tags without a page.
+
+Keep `kotlin-js-store/yarn.lock` versioned and update it through Gradle when dependencies change.
+It makes the Kotlin/JS npm dependency tree reproducible locally and in CI.
+See [Kotlin/JS version locking](https://kotlinlang.org/docs/js-project-setup.html#version-locking-via-kotlin-js-store).

@@ -111,9 +111,12 @@ jobs:
       - name: Select curated release notes
         id: notes
         shell: bash
+        env:
+          RELEASE_VERSION: ${{ needs.verify.outputs.version }}
         run: |
-          if [ -f RELEASE_NOTES.md ]; then
-            echo 'path=RELEASE_NOTES.md' >> "$GITHUB_OUTPUT"
+          notes="docs/changelog/$RELEASE_VERSION.md"
+          if [ -f "$notes" ]; then
+            echo "path=$notes" >> "$GITHUB_OUTPUT"
           fi
       - uses: softprops/action-gh-release@v3
         with:

@@ -1,45 +1,11 @@
 /** Common CI contract. Target selection remains in the module conventions. */
-import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
-import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 
 plugins {
-    id("org.jetbrains.kotlinx.kover")
+    id("arch-coverage")
 }
 
 dependencies {
     subprojects.filter { it.name != "test" }.forEach { add("kover", project(it.path)) }
-}
-
-// One filter for module reports, the merged XML/HTML and verification, including Codecov's input.
-allprojects {
-    plugins.withId("org.jetbrains.kotlinx.kover") {
-        extensions.configure<KoverProjectExtension> {
-            reports {
-                filters {
-                    excludes {
-                        // Android-generated constants/resources contain no handwritten behavior.
-                        classes("*.BuildConfig", "*.R", "*.R$*")
-                    }
-                }
-            }
-        }
-    }
-}
-
-val coverageLines = providers.gradleProperty("ci.coverage.lines").get().toInt()
-val coverageInstructions = providers.gradleProperty("ci.coverage.instructions").get().toInt()
-val coverageBranches = providers.gradleProperty("ci.coverage.branches").get().toInt()
-
-kover {
-    reports {
-        total {
-            verify {
-                rule("Minimum line coverage") { minBound(coverageLines, CoverageUnit.LINE) }
-                rule("Minimum instruction coverage") { minBound(coverageInstructions, CoverageUnit.INSTRUCTION) }
-                rule("Minimum branch coverage") { minBound(coverageBranches, CoverageUnit.BRANCH) }
-            }
-        }
-    }
 }
 
 val syncContributingDocs = tasks.register("syncContributingDocs", Copy::class) {

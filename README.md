@@ -161,5 +161,5 @@ limitations under the License.
 
 ## Next release: 1.4.2
 
-See [release notes](RELEASE_NOTES.md), [dependency versions](docs/dependencies.md) and
+See [release notes](docs/changelog/1.4.2.md), [dependency versions](docs/dependencies.md) and
 [coverage configuration](docs/ci.md#coverage-and-codecov). This release is a candidate until tagged and published.

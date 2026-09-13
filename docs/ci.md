@@ -113,8 +113,8 @@ Compare the same commit and line metric. Codecov's treatment of partially covere
 from Kover, so equal file scope does not promise identical percentages. Existing Gradle verification
 rules remain authoritative; Codecov provides visibility rather than an additional threshold.
 JVM/Android host execution supplies the coverage counters. Apple, JS and Wasm tests still run in
-the platform test suite but do not add Kover coverage. Coverage uploads occur only after successful
-master validation (release validation for Toolkit).
+the platform test suite but do not add Kover coverage. On pushes to `master`, coverage is uploaded after the coverage job successfully builds and
+verifies the reports. Other CI gates run independently; all must pass before a release tag is created.
 
 References: [Kover report filtering](https://kotlin.github.io/kotlinx-kover/gradle-plugin/#filtering-reports),
 [Codecov file search](https://docs.codecov.com/docs/file-search) and

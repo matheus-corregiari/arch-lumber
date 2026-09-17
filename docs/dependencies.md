@@ -1,6 +1,6 @@
 # Dependencies
 
-Audited against Maven Central, Google Maven and the Gradle Plugin Portal on 2026-09-12 for `1.4.2`.
+Audited against Maven Central, Google Maven and the Gradle Plugin Portal on 2026-09-16 for `1.4.2`.
 Runtime dependencies and AGP use stable releases. Detekt retains its existing alpha line.
 Gradle **9.7.1**, JDK **21**, Kover **0.9.9**, MkDocs Material **9.7.7**.
 
@@ -24,3 +24,6 @@ The patches in sibling repositories can be adopted after their artifacts are pub
 - [Gradle current release](https://services.gradle.org/versions/current)
 - [MkDocs Material](https://pypi.org/project/mkdocs-material/)
 - [JaCoCo](https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.core/maven-metadata.xml)
+
+Android SDK setup uses [`android-actions/setup-android@v4`](https://github.com/android-actions/setup-android/releases/tag/v4.0.1)
+with Node 24 and command-line tools 20.0.

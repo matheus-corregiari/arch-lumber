@@ -15,3 +15,6 @@ runs:
       with:
         cache-disabled: ${{ inputs.cache-disabled }}
     - uses: android-actions/setup-android@v4
+      with:
+        # Command-line tools are installed by the action; the old tools package is unavailable.
+        packages: platform-tools

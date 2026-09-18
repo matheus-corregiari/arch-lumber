@@ -2,7 +2,7 @@
 [versions]
 ## --- Plugins and more general stuff --- ##
 #noinspection UnusedVersionCatalogEntry
-jacoco = "0.8.14"
+jacoco = "0.8.15"
 detekt = "2.0.0-alpha.6"
 
 ## --- Build Config and SDK --- ##
@@ -11,7 +11,7 @@ build-sdk-compile = "37"
 build-tools = "37.0.0"
 
 ## JetBrains
-jetbrains-kotlin = "2.4.10"
+jetbrains-kotlin = "2.4.20"
 jetbrains-atomic = "0.33.0"
 jetbrains-dokka = "2.2.0"
 jetbrains-kover = "0.9.9"

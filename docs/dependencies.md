@@ -25,5 +25,5 @@ The patches in sibling repositories can be adopted after their artifacts are pub
 - [MkDocs Material](https://pypi.org/project/mkdocs-material/)
 - [JaCoCo](https://repo.maven.apache.org/maven2/org/jacoco/org.jacoco.core/maven-metadata.xml)
 
-Android SDK setup uses [`android-actions/setup-android@v4`](https://github.com/android-actions/setup-android/releases/tag/v4.0.1)
-with Node 24 and command-line tools 20.0.
+Android SDK setup uses [`android-actions/setup-android@v4`](https://github.com/android-actions/setup-android/tree/v4)
+with Node 24 and the maintained command-line tools provided by the action.

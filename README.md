@@ -13,7 +13,7 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 ## Requirements
 
 - Kotlin `2.4.20`
-- Gradle wrapper `9.7.1`
+- Gradle wrapper `9.8.0`
 - JDK `21` via the Gradle toolchain and Foojay resolver
 - Android `minSdk 20` and `compileSdk 37`
 - Use the project wrapper instead of a local Gradle install
@@ -103,7 +103,7 @@ Lumber.plant(AnalyticsOak())
 | Area              | Current value                   |
 |-------------------|---------------------------------|
 | Kotlin            | `2.4.20`                        |
-| Gradle wrapper    | `9.7.1`                         |
+| Gradle wrapper    | `9.8.0`                         |
 | JDK toolchain     | `21`                            |
 | Android           | `minSdk 20`, `compileSdk 37`    |
 | Published targets | Android, JVM, Apple, JS, WasmJS |

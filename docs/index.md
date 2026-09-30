@@ -12,7 +12,7 @@ It is designed around three ideas:
 
 - Kotlin `2.4.20`
 - Android `minSdk 20`, `compileSdk 37`
-- Gradle wrapper `9.7.1`
+- Gradle wrapper `9.8.0`
 - JDK toolchain `21` resolved through Foojay
 
 ## Why it exists

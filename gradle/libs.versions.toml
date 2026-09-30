@@ -8,6 +8,7 @@ detekt = "2.0.0-alpha.6"
 ## --- Build Config and SDK --- ##
 build-sdk-min = "20"
 build-sdk-compile = "37"
+build-sdk-minor = "2"
 build-tools = "37.0.0"
 
 ## JetBrains

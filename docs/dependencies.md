@@ -2,6 +2,7 @@
 
 Audited against Maven Central, Google Maven and the Gradle Plugin Portal on 2026-09-29 for `1.4.2`.
 Runtime dependencies and AGP use stable releases. Detekt retains its existing alpha line.
+Android compile SDK **37.2**, minimum SDK **20**, Build Tools **37.0.0**.
 Gradle **9.8.0**, JDK **21**, Kover **0.9.11**, MkDocs Material **9.7.7**.
 
 A Git tag does not guarantee Maven availability: Arch Lumber currently resolves to **1.4.0** in Maven Central.
@@ -28,3 +29,15 @@ The `1.4.2` hotfix remains a release candidate until its artifacts are published
 
 Android SDK setup uses [`android-actions/setup-android@v4`](https://github.com/android-actions/setup-android/tree/v4)
 with Node 24 and the maintained command-line tools provided by the action.
+
+## Android SDK audit
+
+The [official SDK repository](https://dl.google.com/android/repository/repository2-3.xml)
+provides `platforms;android-37.2` on the stable channel without a preview codename.
+Compile SDK uses major API 37 and minor API 2 through the
+[expanded DSL](https://developer.android.com/build#module-level), rather than a decimal integer.
+Build Tools 37.0.0 is the latest stable package. CI installs the latest stable `platform-tools`
+(currently 37.0.1). Minimum SDK remains 20; increasing the compilation SDK does not require
+increasing the minimum supported Android version. This library has no application `targetSdk`.
+
+The finalized compilation SDK package is independent of the Android 17 QPR2 device beta rollout.

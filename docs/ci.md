@@ -99,6 +99,9 @@ complete list of Maven coordinates, without uploading packages.
 `build-logic/src/main/kotlin/arch-coverage.gradle.kts` is the single source of report exclusions. It applies the same Kover filter
 to every covered module and the root report. Only Android-generated `*.BuildConfig`, `*.R`
 and `*.R$*` are excluded: they contain generated constants/resources, not application behavior.
+The Lumber module applies `arch-coverage` explicitly. The root project applies it through `arch-ci`
+to aggregate module reports. `arch-documentation` only configures Dokka; Kover, JaCoCo and coverage
+thresholds belong to the coverage convention.
 Do not exclude DTOs, state classes, Compose functions or entire packages just to raise coverage.
 
 ```sh

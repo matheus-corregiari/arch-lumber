@@ -2,6 +2,7 @@ plugins {
     id("arch-multi-library")
     id("arch-lint")
     id("arch-documentation")
+    id("arch-coverage")
     id("arch-optimize")
     id("arch-publish")
     alias(libs.plugins.jetbrains.atomic)

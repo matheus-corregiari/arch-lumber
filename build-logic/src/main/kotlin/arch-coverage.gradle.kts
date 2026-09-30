@@ -3,6 +3,11 @@ import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
 
 plugins {
     id("org.jetbrains.kotlinx.kover")
+    jacoco
+}
+
+extensions.configure(JacocoPluginExtension::class) {
+    toolVersion = libraries.version("jacoco")
 }
 
 kover {

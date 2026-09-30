@@ -3,6 +3,8 @@
 Audited against Maven Central, Google Maven and the Gradle Plugin Portal on 2026-09-29 for `1.4.2`.
 Runtime dependencies and AGP use stable releases. Detekt retains its existing alpha line.
 Android compile SDK **37.2**, minimum SDK **20**, Build Tools **37.0.0**.
+These platform defaults are defined in `build-logic/src/main/kotlin/arch-multi-library.gradle.kts`;
+the version catalog contains dependency and plugin versions.
 Gradle **9.8.0**, JDK **21**, Kover **0.9.11**, MkDocs Material **9.7.7**.
 
 A Git tag does not guarantee Maven availability: Arch Lumber currently resolves to **1.4.0** in Maven Central.

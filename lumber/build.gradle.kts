@@ -8,16 +8,6 @@ plugins {
 }
 
 kotlin {
-    android {
-        compileSdk {
-            version = release(versionInt(libs.versions.build.sdk.compile)) {
-                minorApiLevel = versionInt(libs.versions.build.sdk.minor)
-            }
-        }
-        minSdk = versionInt(libs.versions.build.sdk.min)
-        buildToolsVersion = versionString(libs.versions.build.tools)
-    }
-
     // Libraries
     sourceSets {
         // Common Setup

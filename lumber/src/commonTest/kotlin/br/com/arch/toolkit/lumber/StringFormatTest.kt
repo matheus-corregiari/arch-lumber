@@ -6,6 +6,19 @@ import kotlin.test.assertFails
 
 class StringFormatTest {
     @Test
+    fun `placeholders in argument values remain literal`() {
+        assertEquals("%s tail", "%s %s".format("%s", "tail"))
+        assertEquals("%d 42", "%s %d".format("%d", 42))
+        assertEquals("%s", "%s".format("%s", "ignored"))
+    }
+
+    @Test
+    fun `many placeholders do not require recursion`() {
+        val count = 2000
+        assertEquals("x".repeat(count), "%s".repeat(count).format(*Array(count) { "x" }))
+    }
+
+    @Test
     fun `zero format - zero args - should return same string`() {
         val formatted = "normal text with no arguments".format()
         val expected = "normal text with no arguments"

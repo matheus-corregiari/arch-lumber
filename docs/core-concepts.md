@@ -18,10 +18,11 @@ class ConsoleOak : Lumber.Oak() {
 
     override fun log(level: Lumber.Level, tag: String?, message: String, error: Throwable?) {
         println("[$level] ${tag ?: "-"} $message")
-        error?.printStackTrace()
     }
 }
 ```
+
+The `message` already includes the throwable stack trace when an error is provided.
 
 ## DebugOak
 
@@ -60,4 +61,15 @@ That behavior keeps temporary logging options local and predictable.
 ```kotlin
 Lumber.plant(DebugOak())
 Lumber.uprootAll()
+```
+
+## Message formatting
+
+Messages support `%s` and `%d` placeholders. Arguments are inserted once; placeholder-like text
+inside an argument remains literal. Extra arguments are ignored. With no arguments, the template
+is unchanged; otherwise, too few arguments throw `IllegalStateException`. `%d` accepts `Number`
+values and renders `null` for other values.
+
+```kotlin
+Lumber.info("value=%s, count=%d", "%s", 2) // value=%s, count=2
 ```

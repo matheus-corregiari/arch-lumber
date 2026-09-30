@@ -1,6 +1,6 @@
 # CI and releases
 
-The CI workflows and commands are identical in Arch Lumber, Arch Android and Arch Event Observer.
+The repository uses shared convention plugins to select build, test and publication tasks.
 The convention plugins select module tasks; `build-logic/ci.json` selects the runner and the isolated
 CodeQL compiler. Coverage floors live in `gradle.properties` and must only increase as tests improve.
 
@@ -37,7 +37,9 @@ macOS for build/tests/publication; Android uses Linux. The same build job owns a
 so JVM/Android/browser tests are not repeated on a second host. Windows local validation does not
 prove Apple binaries; the macOS CI run does.
 
-CodeQL has a separate checkout and compiler configuration. Its outputs are never published. Coverage
+CodeQL has a separate checkout and compiler configuration. Its outputs are never published.
+The weekly CodeQL workflow uses the same explicit `ciCodeql` build, JDK 21 and analysis compiler
+selection as PR CI, instead of autobuild. It also supports manual dispatch. Coverage
 reports are uploaded as artifacts; Codecov receives master reports for visibility, while Gradle
 enforces the actual gate. The Codecov upload is not the coverage threshold.
 
@@ -75,6 +77,9 @@ Required secrets: `RELEASE_APP_ID`, `RELEASE_APP_PRIVATE_KEY`, `MAVEN_CENTRAL_US
 `MAVEN_CENTRAL_PASSWORD`, `SIGN_KEY`, `SIGN_KEYID`, `SIGN_PASSWORD`; `CODECOV_TOKEN` is used for
 reporting. The release App must be allowed to create tags by the tag ruleset. PR validation does not
 use publication or signing secrets.
+
+Detekt explicitly scans Kotlin files under every module's `src` directory, including KMP source
+sets; its default `src/main` layout would leave the aggregate task without sources.
 
 ## Local commands
 

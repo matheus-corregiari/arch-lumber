@@ -60,6 +60,11 @@ Central and then to GitHub Packages, from a single host. It confirms publication
 creating the GitHub Release. No additional test/lint/coverage suite runs for the tag; native publication
 tasks may compile/package their dependencies, reusing available Gradle outputs.
 
+Release verification checks the exact CodeQL matrix job names (`CodeQL (actions)`,
+`CodeQL (java-kotlin)` and `CodeQL (python)`) and `CodeQL Policy`, alongside the other
+required gates and tag creation. Keep these names synchronized with `ci.yml` when changing
+the matrix. Missing or pending gates cannot approve publication; Pages is not a release gate.
+
 Tags and publication are serialized without canceling active releases. GitHub may replace a pending
 run if several releases arrive together; resume the affected run explicitly and revalidate the version.
 Queue order is not a version reservation. Never move, overwrite or delete an existing release tag to

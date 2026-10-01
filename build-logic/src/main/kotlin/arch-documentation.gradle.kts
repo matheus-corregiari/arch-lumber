@@ -1,21 +1,13 @@
 /**
- * Configures documentation and coverage tooling for publishable modules.
+ * Configures API documentation for publishable modules.
  *
- * The plugin enables Dokka, Kover, Jacoco, and coverage thresholds so CI can generate API reference
- * material and enforce coverage consistently.
+ * The plugin enables Dokka so CI can generate API reference material.
  */
-import kotlinx.kover.gradle.plugin.dsl.CoverageUnit
-import kotlinx.kover.gradle.plugin.dsl.KoverProjectExtension
 import org.gradle.internal.extensions.stdlib.capitalized
 import org.jetbrains.dokka.gradle.DokkaExtension
 
 plugins {
     id("org.jetbrains.dokka")
-    id("org.jetbrains.kotlinx.kover")
-    jacoco
-}
-extensions.configure(JacocoPluginExtension::class) {
-    toolVersion = libraries.version("jacoco")
 }
 
 extensions.configure(DokkaExtension::class) {
@@ -32,23 +24,5 @@ extensions.configure(DokkaExtension::class) {
         enableAndroidDocumentationLink.set(true)
         enableJdkDocumentationLink.set(true)
         enableKotlinStdLibDocumentationLink.set(true)
-    }
-}
-
-extensions.configure(KoverProjectExtension::class) {
-    reports {
-        total {
-            verify {
-                rule("Minimum line coverage") {
-                    minBound(65, CoverageUnit.LINE)
-                }
-                rule("Minimum instruction coverage") {
-                    minBound(65, CoverageUnit.INSTRUCTION)
-                }
-                rule("Minimum branch coverage") {
-                    minBound(65, CoverageUnit.BRANCH)
-                }
-            }
-        }
     }
 }

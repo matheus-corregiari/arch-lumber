@@ -33,6 +33,11 @@ extensions.configure<KotlinMultiplatformExtension> {
     }
 
     android {
+        compileSdk {
+            version = release(37) { minorApiLevel = 2 }
+        }
+        minSdk = 20
+        buildToolsVersion = "37.0.0"
         namespace = "br.com.arch.toolkit.${project.name}"
         testNamespace = "test.$namespace"
         androidResources { enable = false }

@@ -73,6 +73,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: build/reports/kover/report.xml
+          disable_search: true
           fail_ci_if_error: false
 
   static:
@@ -223,7 +224,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@v3
         id: app
         with:
           app-id: ${{ secrets.RELEASE_APP_ID }}

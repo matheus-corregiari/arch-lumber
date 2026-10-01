@@ -3,9 +3,9 @@
 ## Requirements
 
 - JDK `21` from the project toolchain
-- Gradle wrapper `9.7.1`
-- Kotlin `2.4.10`
-- Android `minSdk 20` and `compileSdk 37` for Android consumers
+- Gradle wrapper `9.8.0`
+- Kotlin `2.4.20`
+- Android `minSdk 20` and `compileSdk 37.2` for Android consumers
 
 ## Add the dependency
 

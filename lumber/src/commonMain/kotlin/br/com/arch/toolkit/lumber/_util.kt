@@ -18,42 +18,37 @@ internal val fqcnIgnore = setOf(
  * A simple platform-agnostic string formatter.
  *
  * It supports basic `%s` (string) and `%d` (integer) placeholders.
+ * Placeholders inside argument values remain literal; extra arguments are ignored.
+ * With no arguments, the template is returned unchanged.
  *
  * @receiver The template string containing placeholders.
  * @param args The arguments to inject into the template.
  * @return The formatted string.
- * @throws IllegalStateException if there are fewer arguments than placeholders.
+ * @throws IllegalStateException if nonempty arguments are fewer than placeholders.
  */
-@Suppress("ReturnCount")
 internal fun String.format(vararg args: Any?): String {
     // Ignore in case of no arguments, there is nothing to do
     if (args.isEmpty()) return this
 
     // Find all matches and verify if the number of matches is enough to format properly
     val matches = Regex("%[sd]").findAll(this).toList()
-    val match = matches.firstOrNull() ?: return this
     if (matches.size > args.size) {
         error("Wrong number of arguments, expected ${matches.size}, actual ${args.size}")
     }
 
-    // Get the argument and format it
-    val argument = args.firstOrNull()
-    val formatted =
-        when (match.value) {
-            "%s" -> argument.toString()
-            "%d" -> (argument as? Number).toString()
-            else -> match.value
+    // Match only the template: placeholders inside argument values are literal text.
+    return buildString {
+        var offset = 0
+        matches.forEachIndexed { index, match ->
+            append(this@format, offset, match.range.first)
+            val argument = args[index]
+            val formatted =
+                if (match.value == "%d") (argument as? Number).toString() else argument.toString()
+            append(formatted)
+            offset = match.range.last + 1
         }
-
-    // Replace the match and format the string
-    val replaced =
-        replaceRange(
-            range = match.range,
-            replacement = formatted
-        )
-
-    // Recursively format the rest of the string
-    return replaced.format(args = args.drop(1).toTypedArray())
+        append(this@format, offset, this@format.length)
+    }
 }
 
 /**

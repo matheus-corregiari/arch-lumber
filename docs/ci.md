@@ -1,6 +1,6 @@
 # CI and releases
 
-The CI workflows and commands are identical in Arch Lumber, Arch Android and Arch Event Observer.
+The repository uses shared convention plugins to select build, test and publication tasks.
 The convention plugins select module tasks; `build-logic/ci.json` selects the runner and the isolated
 CodeQL compiler. Coverage floors live in `gradle.properties` and must only increase as tests improve.
 
@@ -37,7 +37,9 @@ macOS for build/tests/publication; Android uses Linux. The same build job owns a
 so JVM/Android/browser tests are not repeated on a second host. Windows local validation does not
 prove Apple binaries; the macOS CI run does.
 
-CodeQL has a separate checkout and compiler configuration. Its outputs are never published. Coverage
+CodeQL has a separate checkout and compiler configuration. Its outputs are never published.
+The weekly CodeQL workflow uses the same explicit `ciCodeql` build, JDK 21 and analysis compiler
+selection as PR CI, instead of autobuild. It also supports manual dispatch. Coverage
 reports are uploaded as artifacts; Codecov receives master reports for visibility, while Gradle
 enforces the actual gate. The Codecov upload is not the coverage threshold.
 
@@ -76,6 +78,9 @@ Required secrets: `RELEASE_APP_ID`, `RELEASE_APP_PRIVATE_KEY`, `MAVEN_CENTRAL_US
 reporting. The release App must be allowed to create tags by the tag ruleset. PR validation does not
 use publication or signing secrets.
 
+Detekt explicitly scans Kotlin files under every module's `src` directory, including KMP source
+sets; its default `src/main` layout would leave the aggregate task without sources.
+
 ## Local commands
 
 ```sh
@@ -88,3 +93,44 @@ python -m mkdocs build --strict
 
 Use JDK 21 and the project wrapper. Publication also has `ciPublicationManifest` for verifying the
 complete list of Maven coordinates, without uploading packages.
+
+## Coverage and Codecov
+
+`build-logic/src/main/kotlin/arch-coverage.gradle.kts` is the single source of report exclusions. It applies the same Kover filter
+to every covered module and the root report. Only Android-generated `*.BuildConfig`, `*.R`
+and `*.R$*` are excluded: they contain generated constants/resources, not application behavior.
+The Lumber module applies `arch-coverage` explicitly. The root project applies it through `arch-ci`
+to aggregate module reports. `arch-documentation` only configures Dokka; Kover, JaCoCo and coverage
+thresholds belong to the coverage convention.
+Do not exclude DTOs, state classes, Compose functions or entire packages just to raise coverage.
+
+```sh
+./gradlew ciCoverage
+# Root report only (automatically runs the required JVM/Android host tests):
+./gradlew :koverXmlReport :koverHtmlReport :koverVerify
+```
+
+Open `build/reports/kover/html/index.html` locally. Codecov receives only
+`build/reports/kover/report.xml`, with `disable_search: true`; automatic discovery would also find
+module or older reports and could merge excluded classes back into the result.
+There is deliberately no second `ignore` list in `codecov.yml`: Codecov consumes the already-filtered
+XML. Its `ignore` patterns describe source paths, while Kover filters describe JVM class names.
+An IDE coverage run or another coverage tool must use this Gradle report to share these exclusions.
+
+Compare the same commit and line metric. Codecov's treatment of partially covered lines can differ
+from Kover, so equal file scope does not promise identical percentages. Existing Gradle verification
+rules remain authoritative; Codecov provides visibility rather than an additional threshold.
+JVM/Android host execution supplies the coverage counters. Apple, JS and Wasm tests still run in
+the platform test suite but do not add Kover coverage. On pushes to `master`, coverage is uploaded after the coverage job successfully builds and
+verifies the reports. Other CI gates run independently; all must pass before a release tag is created.
+
+References: [Kover report filtering](https://kotlin.github.io/kotlinx-kover/gradle-plugin/#filtering-reports),
+[Codecov file search](https://docs.codecov.com/docs/file-search) and
+[Codecov path ignores](https://docs.codecov.com/docs/ignoring-paths).
+
+Release notes use `docs/changelog/<version>.md` from the verified tag checkout, with generated
+GitHub notes as a fallback for historical tags without a page.
+
+Keep `kotlin-js-store/yarn.lock` versioned and update it through Gradle when dependencies change.
+It makes the Kotlin/JS npm dependency tree reproducible locally and in CI.
+See [Kotlin/JS version locking](https://kotlinlang.org/docs/js-project-setup.html#version-locking-via-kotlin-js-store).

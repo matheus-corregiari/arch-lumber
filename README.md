@@ -12,10 +12,10 @@ Arch Lumber is a Kotlin Multiplatform logging library with a small public API an
 
 ## Requirements
 
-- Kotlin `2.4.10`
-- Gradle wrapper `9.7.1`
+- Kotlin `2.4.20`
+- Gradle wrapper `9.8.0`
 - JDK `21` via the Gradle toolchain and Foojay resolver
-- Android `minSdk 20` and `compileSdk 37`
+- Android `minSdk 20` and `compileSdk 37.2`
 - Use the project wrapper instead of a local Gradle install
 
 ## What it does
@@ -102,10 +102,10 @@ Lumber.plant(AnalyticsOak())
 
 | Area              | Current value                   |
 |-------------------|---------------------------------|
-| Kotlin            | `2.4.10`                        |
-| Gradle wrapper    | `9.7.1`                         |
+| Kotlin            | `2.4.20`                        |
+| Gradle wrapper    | `9.8.0`                         |
 | JDK toolchain     | `21`                            |
-| Android           | `minSdk 20`, `compileSdk 37`    |
+| Android           | `minSdk 20`, `compileSdk 37.2`    |
 | Published targets | Android, JVM, Apple, JS, WasmJS |
 
 ## Docs
@@ -147,7 +147,7 @@ limitations under the License.
 
 [link-coverage]: https://codecov.io/gh/matheus-corregiari/arch-lumber
 
-[badge-kotlin]: https://img.shields.io/badge/kotlin-2.4.10-blue.svg?logo=kotlin
+[badge-kotlin]: https://img.shields.io/badge/kotlin-2.4.20-blue.svg?logo=kotlin
 
 [badge-maven]: https://img.shields.io/maven-central/v/io.github.matheus-corregiari/arch-lumber.svg
 
@@ -158,3 +158,8 @@ limitations under the License.
 [badge-lint]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/ci.yml/badge.svg
 
 [badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/ci.yml/badge.svg
+
+## Next release: 1.4.2
+
+See [release notes](docs/changelog/1.4.2.md), [dependency versions](docs/dependencies.md) and
+[coverage configuration](docs/ci.md#coverage-and-codecov). This release is a candidate until tagged and published.

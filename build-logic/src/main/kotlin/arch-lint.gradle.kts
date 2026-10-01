@@ -20,6 +20,8 @@ extensions.configure<DetektExtension> {
     parallel = true
     buildUponDefaultConfig = true
     allRules = false
+    // Detekt's default src/main paths do not cover Multiplatform source sets.
+    source.setFrom(fileTree("src") { include("**/*.kt") })
     config.setFrom("$rootDir/tools/detekt-config.yml")
     baseline = file("$rootDir/tools/detekt-baseline.xml")
     basePath.set(rootDir)

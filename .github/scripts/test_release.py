@@ -1,5 +1,6 @@
 """Run with python -m unittest discover -s .github/scripts -p 'test_*.py'."""
 
+import re
 import unittest
 from unittest.mock import patch
 
@@ -67,7 +68,8 @@ class ReleasePolicyTest(unittest.TestCase):
     def test_publication_ignores_non_gate_job_failure(self):
         run = {"id": 1, "head_branch": "master", "status": "in_progress", "conclusion": None}
         required = {"Release Policy", "Coverage Gate", "Static Analysis", "Docs Gate",
-                    "CodeQL", "CI Gate", "Create Release Tag"}
+                    "CodeQL (actions)", "CodeQL (java-kotlin)", "CodeQL (python)",
+                    "CodeQL Policy", "CI Gate", "Create Release Tag"}
         jobs = [{"name": name, "conclusion": "success"} for name in required]
         jobs.append({"name": "Deploy Docs", "conclusion": "failure"})
         with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
@@ -79,11 +81,42 @@ class ReleasePolicyTest(unittest.TestCase):
         run = {"id": 1, "head_branch": "master", "status": "in_progress", "conclusion": None}
         with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
                 patch("release.api", return_value={"workflow_runs": [run]}), \
-                patch("release.pages", return_value=[{"name": "CodeQL", "conclusion": "failure"}]), \
+                patch("release.pages", return_value=[{"name": "CodeQL (java-kotlin)", "conclusion": "failure"}]), \
                 patch("release.time.sleep") as sleep:
             with self.assertRaisesRegex(ValueError, "CodeQL"):
                 release.approved("sha")
             sleep.assert_not_called()
+
+    def test_publication_waits_for_every_codeql_gate(self):
+        run = {"id": 1, "head_branch": "master"}
+        names = {"Release Policy", "Coverage Gate", "Static Analysis", "Docs Gate",
+                 "CodeQL (actions)", "CodeQL (java-kotlin)", "CodeQL (python)",
+                 "CodeQL Policy", "CI Gate", "Create Release Tag"}
+        complete = [{"name": name, "conclusion": "success"} for name in names]
+        for gate in ("CodeQL (actions)", "CodeQL (java-kotlin)", "CodeQL (python)", "CodeQL Policy"):
+            for conclusion in (None, "missing"):
+                pending = [dict(job, conclusion=None) if job["name"] == gate else job
+                           for job in complete if conclusion != "missing" or job["name"] != gate]
+                with self.subTest(gate=gate, conclusion=conclusion), \
+                        patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
+                        patch("release.api", return_value={"workflow_runs": [run]}), \
+                        patch("release.pages", side_effect=[pending, complete]), \
+                        patch("release.time.sleep") as sleep:
+                    release.approved("sha")
+                    sleep.assert_called_once_with(10)
+
+    def test_publication_rejects_unsuccessful_codeql_gates(self):
+        run = {"id": 1, "head_branch": "master"}
+        for gate in ("CodeQL (actions)", "CodeQL (java-kotlin)", "CodeQL (python)", "CodeQL Policy"):
+            for conclusion in ("failure", "cancelled", "timed_out", "action_required", "skipped"):
+                with self.subTest(gate=gate, conclusion=conclusion), \
+                        patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \
+                        patch("release.api", return_value={"workflow_runs": [run]}), \
+                        patch("release.pages", return_value=[{"name": gate, "conclusion": conclusion}]), \
+                        patch("release.time.sleep") as sleep:
+                    with self.assertRaisesRegex(ValueError, re.escape(gate)):
+                        release.approved("sha")
+                    sleep.assert_not_called()
 
     def test_release_requires_unique_merged_pr(self):
         with patch.dict("os.environ", {"GITHUB_REPOSITORY": "owner/repo"}), \

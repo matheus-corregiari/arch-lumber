@@ -1,7 +1,9 @@
 """Run with python -m unittest discover -s .github/scripts -p 'test_*.py'."""
 
+import base64
 import re
 import unittest
+from urllib.error import HTTPError
 from unittest.mock import patch
 
 import release
@@ -123,6 +125,78 @@ class ReleasePolicyTest(unittest.TestCase):
                 patch("release.pages", return_value=[]):
             with self.assertRaises(ValueError):
                 release.merged_pr("sha")
+
+
+class RecoveryPublicationTest(unittest.TestCase):
+    def setUp(self):
+        environment = patch.dict("os.environ", {
+            "GITHUB_REPOSITORY": "owner/repo", "GITHUB_ACTOR": "publisher", "GH_TOKEN": "test-token",
+        })
+        environment.start()
+        self.addCleanup(environment.stop)
+        manifest = patch("release.Path.read_text", return_value="io.example\tlibrary\t1.4.4\nio.example\tlibrary-jvm\t1.4.4")
+        self.manifest = manifest.start()
+        self.addCleanup(manifest.stop)
+        http = patch("urllib.request.urlopen")
+        self.http = http.start()
+        self.addCleanup(http.stop)
+
+    def test_both_does_not_probe_destinations_that_will_be_uploaded(self):
+        release.publications("both")
+        self.http.assert_not_called()
+
+    def test_recovery_checks_every_coordinate_only_in_omitted_destinations(self):
+        central = "https://repo.maven.apache.org/maven2/"
+        github = "https://maven.pkg.github.com/owner/repo/"
+        paths = ["io/example/library/1.4.4/library-1.4.4.pom",
+                 "io/example/library-jvm/1.4.4/library-jvm-1.4.4.pom"]
+        for destination, registries in (("central", [github]), ("github", [central]),
+                                        ("release-only", [central, github])):
+            with self.subTest(destination=destination):
+                self.http.reset_mock()
+                release.publications(destination)
+                requests = [call.args[0] for call in self.http.call_args_list]
+                self.assertEqual([registry + path for registry in registries for path in paths],
+                                 [request.full_url for request in requests])
+                for request in requests:
+                    if request.full_url.startswith(github):
+                        expected = "Basic " + base64.b64encode(b"publisher:test-token").decode()
+                        self.assertEqual(expected, request.get_header("Authorization"))
+                    else:
+                        self.assertIsNone(request.get_header("Authorization"))
+
+    def test_missing_or_forbidden_publication_blocks_recovery_without_polling(self):
+        for code in (404, 403):
+            with self.subTest(code=code), patch("release.time.sleep") as sleep:
+                self.http.reset_mock()
+                self.http.side_effect = HTTPError("https://example.invalid", code, "unavailable", {}, None)
+                with self.assertRaisesRegex(ValueError, "central io.example:library:1.4.4"):
+                    release.publications("release-only")
+                self.assertEqual(1, self.http.call_count)
+                sleep.assert_not_called()
+
+    def test_missing_github_publication_blocks_central_only_recovery(self):
+        self.http.side_effect = HTTPError("https://example.invalid", 404, "missing", {}, None)
+        with self.assertRaisesRegex(ValueError, "github io.example:library:1.4.4"):
+            release.publications("central")
+
+    def test_recovery_rejects_empty_manifest(self):
+        self.manifest.return_value = ""
+        with self.assertRaisesRegex(ValueError, "Empty publication manifest"):
+            release.publications("release-only")
+        self.http.assert_not_called()
+
+    def test_recovery_rejects_invalid_version_before_requesting_a_pom(self):
+        self.manifest.return_value = "io.example\tlibrary\tinvalid"
+        with self.assertRaisesRegex(ValueError, "Invalid version"):
+            release.publications("release-only")
+        self.http.assert_not_called()
+
+    def test_unknown_destination_and_removed_polling_mode_are_rejected(self):
+        for destination in ("complete", "invalid", None):
+            with self.subTest(destination=destination), self.assertRaisesRegex(ValueError, "Unknown recovery destination"):
+                release.publications(destination)
+        self.http.assert_not_called()
 
 
 if __name__ == "__main__":

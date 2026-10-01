@@ -56,8 +56,12 @@ GitHub App sends the tag so its push triggers `release.yml`. Pages deploys the a
 
 The tag workflow requires the annotated remote tag, a matching merged PR, master ancestry and a
 successful master CI run for the exact SHA. It publishes using the tag's exact version, first to Maven
-Central and then to GitHub Packages, from a single host. It confirms publication coordinates before
-creating the GitHub Release. No additional test/lint/coverage suite runs for the tag; native publication
+Central and then to GitHub Packages, from a single host. Vanniktech explicitly uses
+`DeploymentValidation.VALIDATED`: the Central deployment must pass validation, but the workflow
+does not wait for public download availability or search indexing. Successful publication tasks
+in both destinations allow the GitHub Release to be created immediately with its versioned notes.
+Artifacts may become downloadable from Central after the GitHub Release is visible.
+No additional test/lint/coverage suite runs for the tag; native publication
 tasks may compile/package their dependencies, reusing available Gradle outputs.
 
 Release verification checks the exact CodeQL matrix job names (`CodeQL (actions)`,
@@ -74,7 +78,9 @@ recover a publication failure.
 
 Use the Release workflow's manual dispatch with the existing tag and destination `central`, `github`,
 `both`, or `release-only`. Skipped destinations must already contain every publication's POM; the
-workflow verifies this before proceeding and checks both registries before creating the GitHub Release.
+workflow verifies this before proceeding. These HTTP checks apply only to destinations omitted
+during manual recovery; there is no HTTP confirmation after successful publication tasks.
+`release-only` checks both existing destinations, skips both upload tasks and creates the GitHub Release.
 If Central is still processing a deployment, wait for that deployment rather than uploading it again.
 Selecting `both` is only appropriate when neither destination has accepted the release.
 

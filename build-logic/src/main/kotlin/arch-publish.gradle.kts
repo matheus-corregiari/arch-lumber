@@ -4,6 +4,7 @@
  * The plugin wires Maven Central, GitHub Packages, local publication, POM metadata, source jars,
  * and Dokka-backed javadocs used by release workflows.
  */
+import com.vanniktech.maven.publish.DeploymentValidation
 import com.vanniktech.maven.publish.JavadocJar
 import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
@@ -50,7 +51,10 @@ extensions.configure(PublishingExtension::class) {
 
 extensions.configure(MavenPublishBaseExtension::class) {
     signAllPublications()
-    publishToMavenCentral(true)
+    publishToMavenCentral(
+        automaticRelease = true,
+        validateDeployment = DeploymentValidation.VALIDATED,
+    )
     configure(
         KotlinMultiplatform(
             javadocJar = JavadocJar.Dokka("dokkaGenerate"),

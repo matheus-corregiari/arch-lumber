@@ -67,6 +67,7 @@ jobs:
         with:
           version: ${{ needs.verify.outputs.version }}
       - name: List publication coordinates
+        if: github.event_name == 'workflow_dispatch'
         run: ./gradlew ciPublicationManifest
       - name: Verify destinations omitted during recovery
         if: github.event_name == 'workflow_dispatch'
@@ -92,10 +93,6 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.SIGN_KEYID }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGN_PASSWORD }}
         run: ./gradlew ciPublishGithubPackages
-      - name: Confirm both registries
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: python3 .github/scripts/release.py publications complete
 
   release:
     name: Publish GitHub Release

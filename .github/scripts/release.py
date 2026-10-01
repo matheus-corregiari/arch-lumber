@@ -193,13 +193,16 @@ def security():
 
 
 def publications(destination):
-    """Prove skipped destinations exist, or confirm completion of both registries."""
+    """Prove destinations omitted during manual recovery already contain every POM."""
     import base64
     from urllib.error import HTTPError
     from urllib.request import Request, urlopen
 
-    selected = {"both": [], "central": ["github"], "github": ["central"],
-                "release-only": ["central", "github"], "complete": ["central", "github"]}[destination]
+    destinations = {"both": [], "central": ["github"], "github": ["central"],
+                    "release-only": ["central", "github"]}
+    if destination not in destinations:
+        raise ValueError(f"Unknown recovery destination: {destination}")
+    selected = destinations[destination]
     coordinates = [line.split("\t") for line in Path("build/ci/publications.tsv").read_text().splitlines()]
     if not coordinates:
         raise ValueError("Empty publication manifest")
@@ -214,16 +217,11 @@ def publications(destination):
                 url = f"https://maven.pkg.github.com/{os.environ['GITHUB_REPOSITORY']}/{path}"
                 auth = f"{os.environ['GITHUB_ACTOR']}:{os.environ['GH_TOKEN']}".encode()
                 headers = {"Authorization": "Basic " + base64.b64encode(auth).decode()}
-            attempts = 60 if destination == "complete" else 1
-            for attempt in range(attempts):
-                try:
-                    with urlopen(Request(url, headers=headers), timeout=30) as response:
-                        response.read(1)
-                    break
-                except HTTPError as error:
-                    if error.code != 404 or attempt == attempts - 1:
-                        raise ValueError(f"Publication not confirmed: {registry} {group}:{artifact}:{value}") from error
-                    time.sleep(15)
+            try:
+                with urlopen(Request(url, headers=headers), timeout=30) as response:
+                    response.read(1)
+            except HTTPError as error:
+                raise ValueError(f"Publication not confirmed: {registry} {group}:{artifact}:{value}") from error
             print(f"Confirmed {registry}: {group}:{artifact}:{value}")
 
 

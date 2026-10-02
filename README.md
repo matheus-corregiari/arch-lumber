@@ -159,7 +159,8 @@ limitations under the License.
 
 [badge-test]: https://github.com/matheus-corregiari/arch-lumber/actions/workflows/ci.yml/badge.svg
 
-## Next release: 1.4.4
+## Next release: 1.5.0
 
-See [release notes](docs/changelog/1.4.4.md), [dependency versions](docs/dependencies.md) and
-[coverage configuration](docs/ci.md#coverage-and-codecov). This release is a candidate until tagged and published.
+See [release notes](docs/changelog/1.5.0.md) and [binary compatibility](docs/binary-compatibility.md).
+This release restores the tested legacy JVM logging contract and adds ABI and published-consumer gates.
+It is a candidate until tagged and published.

@@ -26,7 +26,7 @@ at `release/1.0.0`.
 | Check | Command or responsibility |
 |---|---|
 | Release Policy | Python policy unit tests and validation against remote tags |
-| Coverage Gate | `./gradlew ciBuild ciCoverage`: assemble, tests, merged coverage verification |
+| Coverage Gate | `./gradlew ciBuild ciCoverage :lumber:checkKotlinAbi :lumber:compatibilityCheck`: assemble, tests, coverage, ABI and published consumers |
 | Static Analysis | `./gradlew ciLint`: Detekt, ktlint and available Android lint tasks |
 | Docs Gate | `./gradlew ciDocs`, then `python -m mkdocs build --strict` |
 | CodeQL | `./gradlew ciCodeql`: JVM/Android compilation; also analyzes Actions and Python |

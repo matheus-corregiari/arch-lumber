@@ -66,13 +66,37 @@ class Lumber private constructor() {
      * Extend [Oak] to send log entries to a console, file, analytics backend, or any other sink.
      * Implement [isLoggable] for filtering and [log] for the final write step.
      *
-     * An [Oak] is only a logging destination. Use [OakWood] for one-shot options and tagged
-     * logging facades.
+     * Use [tag] and one-shot options for direct destination logging, or [OakWood] to dispatch
+     * to the planted forest.
      *
      * @see OakWood
      * @see DebugOak
      */
     abstract class Oak {
+        private val localOptions = atomic<LogOptions?>(null)
+
+        /** Returns a tagged facade for this destination. */
+        open fun tag(tag: String): Oak = TaggedLumber(tag.trim(), consumeLocalOptions(), this)
+
+        /** Suppresses the next message on this destination. */
+        open fun quiet(quiet: Boolean): Oak = apply {
+            localOptions.update { (it ?: LogOptions()).copy(quiet = quiet) }
+        }
+
+        /** Sets the maximum length of the next message on this destination. */
+        open fun maxLogLength(length: Int): Oak = apply {
+            require(length > 0) { "length must be positive" }
+            localOptions.update { (it ?: LogOptions()).copy(maxLogLength = length) }
+        }
+
+        /** Sets the maximum tag length for the next message on this destination. */
+        open fun maxTagLength(length: Int): Oak = apply {
+            require(length > 0) { "length must be positive" }
+            localOptions.update { (it ?: LogOptions()).copy(maxTagLength = length) }
+        }
+
+        private fun consumeLocalOptions(): LogOptions = localOptions.getAndSet(null) ?: LogOptions()
+
         //region Verbose
 
         /** Logs a [Verbose] message. */
@@ -180,7 +204,7 @@ class Lumber private constructor() {
             error = error,
             message = message,
             tag = null,
-            options = LogOptions(),
+            options = consumeLocalOptions(),
             args = args
         )
         //endregion
@@ -257,37 +281,51 @@ class Lumber private constructor() {
      */
     class TaggedLumber internal constructor(
         private val tag: String,
-        initialOptions: LogOptions?
+        initialOptions: LogOptions?,
+        private val destination: Oak? = null
     ) : Oak() {
         private val optionsRef = atomic(initialOptions)
+
+        /** Returns a facade with a new tag for the same destination or forest. */
+        override fun tag(tag: String): TaggedLumber = TaggedLumber(
+            tag = tag.trim(),
+            initialOptions = consumeOptions(),
+            destination = destination
+        )
 
         override fun log(level: Level, tag: String?, message: String, error: Throwable?) =
             kotlin.error("TaggedLumber does not implement direct logging; it is a facade.")
 
-        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
+        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) {
+            val options = consumeOptions()
+            if (destination != null) {
+                destination.prepareLog(level, error, message, tag, options, *args)
+                return
+            }
             OakWood.dispatchLog(
                 level = level,
                 error = error,
                 message = message,
                 args = args,
                 tag = tag,
-                options = consumeOptions()
+                options = options
             )
+        }
 
         override fun isLoggable(tag: String?, level: Level) =
-            OakWood.isLoggable(tag ?: this.tag, level)
+            (destination ?: OakWood).isLoggable(tag ?: this.tag, level)
 
         /**
          * Suppresses the next log message for this tagged facade.
          */
-        fun quiet(quiet: Boolean): TaggedLumber = apply {
+        override fun quiet(quiet: Boolean): TaggedLumber = apply {
             updateOptions { it.copy(quiet = quiet) }
         }
 
         /**
          * Sets a one-time maximum length for the next log message on this tagged facade.
          */
-        fun maxLogLength(length: Int): TaggedLumber = apply {
+        override fun maxLogLength(length: Int): TaggedLumber = apply {
             require(length > 0) { "length must be positive" }
             updateOptions { it.copy(maxLogLength = length) }
         }
@@ -295,7 +333,7 @@ class Lumber private constructor() {
         /**
          * Sets a one-time maximum length for the tag on the next log message on this facade.
          */
-        fun maxTagLength(length: Int): TaggedLumber = apply {
+        override fun maxTagLength(length: Int): TaggedLumber = apply {
             require(length > 0) { "length must be positive" }
             updateOptions { it.copy(maxTagLength = length) }
         }
@@ -346,7 +384,7 @@ class Lumber private constructor() {
          * The returned facade keeps the tag for every log call. One-shot options configured before
          * [tag] are transferred to the returned facade and consumed by its next log call.
          */
-        fun tag(tag: String): TaggedLumber = TaggedLumber(
+        override fun tag(tag: String): TaggedLumber = TaggedLumber(
             tag = tag.trim(),
             initialOptions = consumeOptions()
         )
@@ -354,14 +392,14 @@ class Lumber private constructor() {
         /**
          * Suppresses the next log message emitted through [Lumber].
          */
-        fun quiet(quiet: Boolean): OakWood = apply {
+        override fun quiet(quiet: Boolean): OakWood = apply {
             updateOptions { it.copy(quiet = quiet) }
         }
 
         /**
          * Sets a one-time maximum length for the next log message emitted through [Lumber].
          */
-        fun maxLogLength(length: Int): OakWood = apply {
+        override fun maxLogLength(length: Int): OakWood = apply {
             require(length > 0) { "length must be positive" }
             updateOptions { it.copy(maxLogLength = length) }
         }
@@ -369,7 +407,7 @@ class Lumber private constructor() {
         /**
          * Sets a one-time maximum length for the next tag emitted through [Lumber].
          */
-        fun maxTagLength(length: Int): OakWood = apply {
+        override fun maxTagLength(length: Int): OakWood = apply {
             require(length > 0) { "length must be positive" }
             updateOptions { it.copy(maxTagLength = length) }
         }

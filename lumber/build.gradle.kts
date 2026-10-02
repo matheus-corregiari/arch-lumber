@@ -8,7 +8,14 @@ plugins {
     alias(libs.plugins.jetbrains.atomic)
 }
 
+apply(from = rootProject.file("gradle/compatibility.gradle.kts"))
+
 kotlin {
+    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
+    abiValidation {
+        keepLocallyUnsupportedTargets.set(false)
+    }
+
     // Libraries
     sourceSets {
         // Common Setup

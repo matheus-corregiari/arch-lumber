@@ -56,7 +56,7 @@ jobs:
       - name: Build, test and verify coverage
         uses: ./.github/actions/run-gradle
         with:
-          tasks: ciBuild ciCoverage
+          tasks: ciBuild ciCoverage :lumber:checkKotlinAbi :lumber:compatibilityCheck
       - name: Save test and coverage reports
         if: always()
         uses: actions/upload-artifact@v7

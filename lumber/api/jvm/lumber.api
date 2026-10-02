@@ -1,0 +1,86 @@
+public class br/com/arch/toolkit/lumber/DebugOak : br/com/arch/toolkit/lumber/Lumber$Oak {
+	public fun <init> ()V
+	public fun isLoggable (Ljava/lang/String;Lbr/com/arch/toolkit/lumber/Lumber$Level;)Z
+	protected fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+}
+
+public final class br/com/arch/toolkit/lumber/Lumber {
+	public static final field OakWood Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+}
+
+public final class br/com/arch/toolkit/lumber/Lumber$Level : java/lang/Enum {
+	public static final field Assert Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static final field Debug Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static final field Error Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static final field Info Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static final field Verbose Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static final field Warn Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lbr/com/arch/toolkit/lumber/Lumber$Level;
+	public static fun values ()[Lbr/com/arch/toolkit/lumber/Lumber$Level;
+}
+
+public abstract class br/com/arch/toolkit/lumber/Lumber$Oak {
+	public fun <init> ()V
+	public fun debug (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun debug (Ljava/lang/Throwable;)V
+	public fun debug (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun error (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun error (Ljava/lang/Throwable;)V
+	public fun error (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun info (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun info (Ljava/lang/Throwable;)V
+	public fun info (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public abstract fun isLoggable (Ljava/lang/String;Lbr/com/arch/toolkit/lumber/Lumber$Level;)Z
+	protected abstract fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/Throwable;)V
+	public fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun maxLogLength (I)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun maxTagLength (I)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun quiet (Z)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun tag (Ljava/lang/String;)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun verbose (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun verbose (Ljava/lang/Throwable;)V
+	public fun verbose (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun warn (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun warn (Ljava/lang/Throwable;)V
+	public fun warn (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun wtf (Ljava/lang/String;[Ljava/lang/Object;)V
+	public fun wtf (Ljava/lang/Throwable;)V
+	public fun wtf (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+}
+
+public final class br/com/arch/toolkit/lumber/Lumber$OakWood : br/com/arch/toolkit/lumber/Lumber$Oak {
+	public final fun forest ()Ljava/util/List;
+	public final fun getTreeCount ()I
+	public fun isLoggable (Ljava/lang/String;Lbr/com/arch/toolkit/lumber/Lumber$Level;)Z
+	public synthetic fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public synthetic fun maxLogLength (I)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun maxLogLength (I)Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+	public synthetic fun maxTagLength (I)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun maxTagLength (I)Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+	public final fun plant (Lbr/com/arch/toolkit/lumber/Lumber$Oak;[Lbr/com/arch/toolkit/lumber/Lumber$Oak;)Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+	public synthetic fun quiet (Z)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun quiet (Z)Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+	public synthetic fun tag (Ljava/lang/String;)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun tag (Ljava/lang/String;)Lbr/com/arch/toolkit/lumber/Lumber$TaggedLumber;
+	public final fun uproot (Lbr/com/arch/toolkit/lumber/Lumber$Oak;)Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+	public final fun uprootAll ()Lbr/com/arch/toolkit/lumber/Lumber$OakWood;
+}
+
+public final class br/com/arch/toolkit/lumber/Lumber$TaggedLumber : br/com/arch/toolkit/lumber/Lumber$Oak {
+	public fun isLoggable (Ljava/lang/String;Lbr/com/arch/toolkit/lumber/Lumber$Level;)Z
+	public synthetic fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
+	public fun log (Lbr/com/arch/toolkit/lumber/Lumber$Level;Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	public synthetic fun maxLogLength (I)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun maxLogLength (I)Lbr/com/arch/toolkit/lumber/Lumber$TaggedLumber;
+	public synthetic fun maxTagLength (I)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun maxTagLength (I)Lbr/com/arch/toolkit/lumber/Lumber$TaggedLumber;
+	public synthetic fun quiet (Z)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun quiet (Z)Lbr/com/arch/toolkit/lumber/Lumber$TaggedLumber;
+	public synthetic fun tag (Ljava/lang/String;)Lbr/com/arch/toolkit/lumber/Lumber$Oak;
+	public fun tag (Ljava/lang/String;)Lbr/com/arch/toolkit/lumber/Lumber$TaggedLumber;
+}
+

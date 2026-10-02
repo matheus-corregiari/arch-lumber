@@ -68,7 +68,8 @@ tasks.withType<Sign>().configureEach {
         val localPublish = gradle.taskGraph.allTasks.any {
             it.name == "ciPublishLocal" ||
                 it.name == "publishToMavenLocal" ||
-                it.name.endsWith("ToMavenLocal")
+                it.name.endsWith("ToMavenLocal") ||
+                it.name.endsWith("ToLocalPathRepository")
         }
         !localPublish
     }

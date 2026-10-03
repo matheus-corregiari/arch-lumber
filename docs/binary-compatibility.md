@@ -7,6 +7,10 @@ are reviewed in source control. CI runs
 published iOS targets. Changes to the dumps require review; regenerating a dump is not evidence
 that a removed signature is compatible.
 
+The isolated CodeQL checkout translates the unsupported-target ABI setting to the older DSL
+when selecting its pre-2.4 analysis compiler. The release build and Coverage Gate use the normal
+compiler and current DSL. CodeQL still compiles and analyzes the JVM and Android sources.
+
 ```bash
 ./gradlew :lumber:checkKotlinAbi :lumber:compatibilityCheck
 ```
@@ -58,3 +62,7 @@ and native test execution were skipped by the toolchain. Those remain macOS CI r
 Both generations of released consumers passed on the candidate JVM and Android publications,
 and the negative control reproduced the failure on 1.4.4. These results cover the tested logging
 contract; no execution compatibility claim is made for old JS/Wasm/iOS KLIB consumers.
+
+The initial macOS CI run also linked release frameworks for all three iOS targets, passed
+`iosSimulatorArm64Test`, and passed ABI and consumer checks. `iosX64Test` was skipped on the
+Apple Silicon runner; its framework and KLIB were built, but its tests were not executed.

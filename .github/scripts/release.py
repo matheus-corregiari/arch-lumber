@@ -178,6 +178,13 @@ def codeql():
     if compiler := config.get("codeql_kotlin"):
         path = Path("gradle/libs.versions.toml")
         path.write_text(re.sub(r'jetbrains-kotlin = "[^"]+"', f'jetbrains-kotlin = "{compiler}"', path.read_text()))
+        if version(compiler)[:3] < (2, 4, 0):
+            # Translate the ABI DSL only in this isolated analysis checkout.
+            build = Path("lumber/build.gradle.kts")
+            build.write_text(build.read_text().replace(
+                "keepLocallyUnsupportedTargets.set(false)",
+                "klib { keepUnsupportedTargets.set(false) }",
+            ))
 
 
 def security():

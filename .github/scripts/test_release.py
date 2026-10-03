@@ -2,7 +2,9 @@
 
 import base64
 import re
+import tempfile
 import unittest
+from pathlib import Path
 from urllib.error import HTTPError
 from unittest.mock import patch
 
@@ -197,6 +199,29 @@ class RecoveryPublicationTest(unittest.TestCase):
             with self.subTest(destination=destination), self.assertRaisesRegex(ValueError, "Unknown recovery destination"):
                 release.publications(destination)
         self.http.assert_not_called()
+
+
+class CodeqlCompilerTest(unittest.TestCase):
+    def test_analysis_checkout_translates_abi_only_for_older_compiler(self):
+        for compiler in ("2.3.21", "2.4.20"):
+            with self.subTest(compiler=compiler), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                (root / "build-logic").mkdir()
+                (root / "gradle").mkdir()
+                (root / "lumber").mkdir()
+                (root / "build-logic/ci.json").write_text(
+                    '{"codeql_kotlin": "' + compiler + '"}'
+                )
+                catalog = root / "gradle/libs.versions.toml"
+                catalog.write_text('jetbrains-kotlin = "2.4.20"\n')
+                build = root / "lumber/build.gradle.kts"
+                build.write_text("abiValidation { keepLocallyUnsupportedTargets.set(false) }\n")
+                with patch("release.Path", side_effect=lambda value: root / value):
+                    release.codeql()
+                self.assertIn(f'jetbrains-kotlin = "{compiler}"', catalog.read_text())
+                setting = ("klib { keepUnsupportedTargets.set(false) }" if compiler == "2.3.21"
+                           else "keepLocallyUnsupportedTargets.set(false)")
+                self.assertEqual(f"abiValidation {{ {setting} }}\n", build.read_text())
 
 
 if __name__ == "__main__":

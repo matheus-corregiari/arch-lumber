@@ -50,4 +50,30 @@ class OakCompatibilityTest {
             Lumber.uprootAll()
         }
     }
+
+    @Test
+    fun taggedDestinationKeepsItsTagAndConsumesTransferredOptionsOnce() {
+        val sink = Sink()
+        val tagged = sink.quiet(true).maxLogLength(3).maxTagLength(2).tag("Direct")
+        tagged.debug("filtered options")
+        tagged.debug("abcdef")
+        val retagged = tagged.maxLogLength(3).tag("Other")
+        retagged.debug("abcdef")
+        tagged.debug("unchanged")
+        assertEquals(
+            listOf("Direct:abcdef", "Other #0:abc", "Other #1:def", "Direct:unchanged"),
+            sink.entries
+        )
+    }
+
+    @Test
+    fun taggableOakCanBeExtendedWithoutDuplicatingOptionHandling() {
+        val sink = Sink()
+        val tagged = object : TaggableOak("Fixed", sink) {
+            override val tag = "Override"
+        }
+        tagged.maxTagLength(2).debug("first")
+        tagged.debug("second")
+        assertEquals(listOf("Ov:first", "Override:second"), sink.entries)
+    }
 }

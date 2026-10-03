@@ -50,9 +50,9 @@ public final class Consumer {
         require(sink.entries.get(sink.entries.size() - 1).equals("Oa:abc"), "Oak chain");
         Lumber.OakWood.uprootAll();
         AccessorSink accessors = new AccessorSink();
-        require(accessors.tag(" Legacy ") == accessors, "direct Oak identity");
-        require("Legacy".equals(accessors.getTag()), "protected tag/super getter");
-        require(accessors.getTag() == null, "tag consumed");
+        require(accessors.getTag() == null, "protected tag/super getter");
+        Lumber.Oak direct = accessors.tag(" Legacy ");
+        direct.debug("fixed tag facade");
         accessors.quiet(true).maxLogLength(7).maxTagLength(5);
         require(accessors.getQuiet(), "protected quiet/super getter");
         require(!accessors.getQuiet(), "quiet consumed");

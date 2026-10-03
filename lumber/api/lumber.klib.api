@@ -63,8 +63,9 @@ final class br.com.arch.toolkit.lumber/Lumber { // br.com.arch.toolkit.lumber/Lu
         open fun wtf(kotlin/Throwable, kotlin/String, kotlin/Array<out kotlin/Any?>...) // br.com.arch.toolkit.lumber/Lumber.Oak.wtf|wtf(kotlin.Throwable;kotlin.String;kotlin.Array<out|kotlin.Any?>...){}[0]
     }
 
-    final class TaggedLumber : br.com.arch.toolkit.lumber/Lumber.Oak { // br.com.arch.toolkit.lumber/Lumber.TaggedLumber|null[0]
+    final class TaggedLumber : br.com.arch.toolkit.lumber/TaggableOak { // br.com.arch.toolkit.lumber/Lumber.TaggedLumber|null[0]
         final fun isLoggable(kotlin/String?, br.com.arch.toolkit.lumber/Lumber.Level): kotlin/Boolean // br.com.arch.toolkit.lumber/Lumber.TaggedLumber.isLoggable|isLoggable(kotlin.String?;br.com.arch.toolkit.lumber.Lumber.Level){}[0]
+        final fun log(br.com.arch.toolkit.lumber/Lumber.Level, kotlin/String?, kotlin/String, kotlin/Throwable?) // br.com.arch.toolkit.lumber/Lumber.TaggedLumber.log|log(br.com.arch.toolkit.lumber.Lumber.Level;kotlin.String?;kotlin.String;kotlin.Throwable?){}[0]
         final fun log(br.com.arch.toolkit.lumber/Lumber.Level, kotlin/Throwable?, kotlin/String?, kotlin/Array<out kotlin/Any?>...) // br.com.arch.toolkit.lumber/Lumber.TaggedLumber.log|log(br.com.arch.toolkit.lumber.Lumber.Level;kotlin.Throwable?;kotlin.String?;kotlin.Array<out|kotlin.Any?>...){}[0]
         final fun maxLogLength(kotlin/Int): br.com.arch.toolkit.lumber/Lumber.TaggedLumber // br.com.arch.toolkit.lumber/Lumber.TaggedLumber.maxLogLength|maxLogLength(kotlin.Int){}[0]
         final fun maxTagLength(kotlin/Int): br.com.arch.toolkit.lumber/Lumber.TaggedLumber // br.com.arch.toolkit.lumber/Lumber.TaggedLumber.maxTagLength|maxTagLength(kotlin.Int){}[0]
@@ -94,4 +95,14 @@ open class br.com.arch.toolkit.lumber/DebugOak : br.com.arch.toolkit.lumber/Lumb
 
     open fun isLoggable(kotlin/String?, br.com.arch.toolkit.lumber/Lumber.Level): kotlin/Boolean // br.com.arch.toolkit.lumber/DebugOak.isLoggable|isLoggable(kotlin.String?;br.com.arch.toolkit.lumber.Lumber.Level){}[0]
     open fun log(br.com.arch.toolkit.lumber/Lumber.Level, kotlin/String?, kotlin/String, kotlin/Throwable?) // br.com.arch.toolkit.lumber/DebugOak.log|log(br.com.arch.toolkit.lumber.Lumber.Level;kotlin.String?;kotlin.String;kotlin.Throwable?){}[0]
+}
+
+open class br.com.arch.toolkit.lumber/TaggableOak : br.com.arch.toolkit.lumber/Lumber.Oak { // br.com.arch.toolkit.lumber/TaggableOak|null[0]
+    constructor <init>(kotlin/String, br.com.arch.toolkit.lumber/Lumber.Oak) // br.com.arch.toolkit.lumber/TaggableOak.<init>|<init>(kotlin.String;br.com.arch.toolkit.lumber.Lumber.Oak){}[0]
+
+    open val tag // br.com.arch.toolkit.lumber/TaggableOak.tag|{}tag[0]
+        open fun <get-tag>(): kotlin/String // br.com.arch.toolkit.lumber/TaggableOak.tag.<get-tag>|<get-tag>(){}[0]
+
+    open fun isLoggable(kotlin/String?, br.com.arch.toolkit.lumber/Lumber.Level): kotlin/Boolean // br.com.arch.toolkit.lumber/TaggableOak.isLoggable|isLoggable(kotlin.String?;br.com.arch.toolkit.lumber.Lumber.Level){}[0]
+    open fun log(br.com.arch.toolkit.lumber/Lumber.Level, kotlin/String?, kotlin/String, kotlin/Throwable?) // br.com.arch.toolkit.lumber/TaggableOak.log|log(br.com.arch.toolkit.lumber.Lumber.Level;kotlin.String?;kotlin.String;kotlin.Throwable?){}[0]
 }

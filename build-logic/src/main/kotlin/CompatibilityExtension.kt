@@ -1,5 +1,5 @@
-/** A consumer source compiled against one released Maven publication. */
-data class PublishedConsumer(val version: String, val mainClass: String)
+/** A consumer compiled against the latest release tag within its API generation. */
+data class PublishedConsumer(val mainClass: String, val beforeVersion: String? = null)
 
 /** Per-library inputs for the shared published-consumer convention. */
 open class CompatibilityExtension {

@@ -11,8 +11,8 @@ plugins {
 
 configure<CompatibilityExtension> {
     consumers = listOf(
-        PublishedConsumer("1.1.0", "Consumer"),
-        PublishedConsumer("1.4.4", "CurrentConsumer")
+        PublishedConsumer("Consumer", beforeVersion = "1.2.0"),
+        PublishedConsumer("CurrentConsumer")
     )
     brokenVersion = "1.4.4"
 }

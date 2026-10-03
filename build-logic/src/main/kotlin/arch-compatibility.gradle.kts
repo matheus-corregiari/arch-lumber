@@ -42,8 +42,25 @@ val androidClasses = tasks.register<Sync>("extractCompatibilityAndroidClasses") 
 afterEvaluate {
     val publication = publishing.publications.getByName("jvm") as MavenPublication
     val releasedModule = "${publication.groupId}:${publication.artifactId}"
+    val tagOutput = providers.exec {
+        workingDir(rootProject.projectDir)
+        commandLine("git", "tag", "--list")
+    }.standardOutput.asText.get()
+    val releaseVersion = Regex("v?\\d+\\.\\d+\\.\\d+")
+    val releaseTags = tagOutput.lineSequence().map(String::trim)
+        .filter { it.matches(releaseVersion) }
+        .toList()
+    fun versionParts(version: String) = version.removePrefix("v").split('.').map(String::toInt)
+    val versionOrder = Comparator<String> { first, second ->
+        versionParts(first).zip(versionParts(second))
+            .map { (left, right) -> left.compareTo(right) }.firstOrNull { it != 0 } ?: 0
+    }
     compatibility.consumers.forEachIndexed { index, consumer ->
-        val releasedVersion = consumer.version
+        val releasedVersion = releaseTags.filter {
+            (!publication.version.matches(releaseVersion) || versionOrder.compare(it, publication.version) < 0) &&
+                (consumer.beforeVersion == null || versionOrder.compare(it, consumer.beforeVersion) < 0)
+        }.maxWithOrNull(versionOrder)?.removePrefix("v")
+            ?: error("No release tag found for ${consumer.mainClass}; fetch the repository tags first.")
         val suffix = releasedVersion.replace(".", "_")
         val released = configurations.create("consumerCompile$suffix")
         dependencies.add(released.name, "$releasedModule:$releasedVersion")

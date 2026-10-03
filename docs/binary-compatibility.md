@@ -29,8 +29,12 @@ The cached published Lumber JVM JARs for 1.0.3 and 1.1.0 have identical SHA-1
 1.5.0 restores the base methods and uses covariant overrides to retain both old and current
 JVM return descriptors. Current Kotlin callers still receive `TaggedLumber` from `Lumber.tag`.
 The legacy protected option getters are restored, including their consume-on-read behavior and
-support for subclass overrides. Direct `Oak.tag` returns the destination itself and configures a
-one-shot tag, avoiding a second facade implementation for individual destinations.
+support for subclass overrides. `Oak.tag` now creates a `TaggableOak` with an immutable tag and
+the original logging destination. Its tag persists across calls. One-shot options are stored in
+`Oak`'s single `atomicOptions` state, transferred when creating a facade, and consumed by its
+next log attempt, including a filtered or suppressed attempt. The public, open `TaggableOak`
+lives in its own file and inherits the fluent option methods. The nested `TaggedLumber` remains
+only as a compatibility adapter for its published JVM name and method return types.
 Forest facades retain the current persistent tag and one-shot option semantics. This restores
 linkage for the tested calls; it does not reproduce the old one-shot tag implementation.
 
@@ -38,7 +42,8 @@ linkage for the tested calls; it does not reproduce the old one-shot tag impleme
 
 `lumber/src/compatibility/java/Consumer.java` is compiled against published Lumber JVM 1.1.0.
 It covers navigation logging calls, restored option methods, calls through an `Oak` reference,
-and subclass overrides that invoke all four protected superclass getters and verify consumption.
+and subclass overrides that invoke all four protected superclass getters. It verifies consumption
+of the one-shot quiet and length options; a direct tagged facade now keeps its tag instead.
 `CurrentConsumer.java` is compiled against published 1.4.4 to protect the current facade
 descriptors. Each compiled class runs against both the candidate JVM JAR and the `classes.jar`
 inside the candidate Android AAR published to the build-directory Maven repository. Neither
@@ -60,16 +65,28 @@ that supports all published targets. Do not accept a dump update to conceal remo
 
 `arch-compatibility` owns ABI validation and JVM/optional Android published-consumer checks.
 It derives Maven coordinates from the library's publication. Each library configures its released
-versions and consumer main classes through `CompatibilityExtension`; the fixture directory and
+consumer main classes and API generation boundaries through `CompatibilityExtension`; the fixture directory and
 Java toolchain version are configurable. It uses the shared `LocalPath` publication repository.
 Fixtures belong in the library's `src/compatibility/java`, outside its published source sets.
 `ciCompatibility` aggregates module checks, and `ciCoverage` includes it automatically. Neither
 the shared workflow nor the contributor commands need library-specific task paths.
 
+Release versions come from stable Git tags (`X.Y.Z`, optionally prefixed by `v`), ordered
+numerically. In this library's Gitflow, a release tag identifies a released version. The legacy
+fixture uses the latest tag before the 1.2.0 API change; the current fixture uses the latest
+release tag before the candidate version. CI checks out the tags; local clones must fetch them.
+The 1.4.4 negative control stays fixed because it reproduces a specific known regression.
+
+For example, EasyNavigation's already compiled bytecode asks for `OakWood.tag(String): Oak`.
+Recompiling application sources with a return type of `TaggedLumber` does not rewrite that
+dependency. The consumer check compiles against the selected old release and runs that exact
+bytecode with the candidate. ABI dumps separately detect signature changes relative to the
+reviewed baseline; updating a baseline alone does not prove that old bytecode still works.
+
 ## Local release evidence
 
 On Windows, the release work validated JVM, Android host, JS browser and Wasm browser tests:
-201 tests on each target, 804 total, with no failures. Coverage verification passed.
+203 tests on each target, 812 total, with no failures. Coverage verification passed.
 `ciBuild` assembled available targets and compiled the three iOS KLIBs; Apple framework linking
 and native test execution were skipped by the toolchain. Those remain macOS CI responsibilities.
 Both generations of released consumers passed on the candidate JVM and Android publications,

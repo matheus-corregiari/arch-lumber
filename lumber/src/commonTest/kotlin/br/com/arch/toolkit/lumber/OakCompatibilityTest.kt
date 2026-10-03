@@ -23,10 +23,9 @@ class OakCompatibilityTest {
             Lumber.plant(forestSink)
             sink.quiet(true).debug("hidden")
             sink.tag("Direct").debug("visible")
-            val tagged = sink.tag("Original")
-            tagged.quiet(true).debug("hidden")
-            tagged.maxLogLength(3).maxTagLength(2).debug("abcdef")
-            tagged.tag("Retagged").debug("visible")
+            sink.tag("Original").quiet(true).debug("hidden")
+            sink.tag("Original").maxLogLength(3).maxTagLength(2).debug("abcdef")
+            sink.tag("Retagged").debug("visible")
             assertEquals(
                 listOf("Direct:visible", "Or #0:abc", "Or #1:def", "Retagged:visible"),
                 sink.entries

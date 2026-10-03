@@ -28,6 +28,10 @@ public abstract class br/com/arch/toolkit/lumber/Lumber$Oak {
 	public fun error (Ljava/lang/String;[Ljava/lang/Object;)V
 	public fun error (Ljava/lang/Throwable;)V
 	public fun error (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V
+	protected fun getMaxLogLength ()Ljava/lang/Integer;
+	protected fun getMaxTagLength ()Ljava/lang/Integer;
+	protected fun getQuiet ()Z
+	protected fun getTag ()Ljava/lang/String;
 	public fun info (Ljava/lang/String;[Ljava/lang/Object;)V
 	public fun info (Ljava/lang/Throwable;)V
 	public fun info (Ljava/lang/Throwable;Ljava/lang/String;[Ljava/lang/Object;)V

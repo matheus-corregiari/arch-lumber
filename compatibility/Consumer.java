@@ -13,6 +13,15 @@ public final class Consumer {
         }
     }
 
+    private static final class AccessorSink extends Lumber.Oak {
+        @Override protected String getTag() { return super.getTag(); }
+        @Override protected boolean getQuiet() { return super.getQuiet(); }
+        @Override protected Integer getMaxLogLength() { return super.getMaxLogLength(); }
+        @Override protected Integer getMaxTagLength() { return super.getMaxTagLength(); }
+        @Override public boolean isLoggable(String tag, Lumber.Level level) { return true; }
+        @Override protected void log(Lumber.Level level, String tag, String message, Throwable error) { }
+    }
+
     private static void require(boolean condition, String message) {
         if (!condition) throw new AssertionError(message);
     }
@@ -40,6 +49,17 @@ public final class Consumer {
         oak.tag("Oak").maxLogLength(3).maxTagLength(2).debug("abc");
         require(sink.entries.get(sink.entries.size() - 1).equals("Oa:abc"), "Oak chain");
         Lumber.OakWood.uprootAll();
+        AccessorSink accessors = new AccessorSink();
+        require(accessors.tag(" Legacy ") == accessors, "direct Oak identity");
+        require("Legacy".equals(accessors.getTag()), "protected tag/super getter");
+        require(accessors.getTag() == null, "tag consumed");
+        accessors.quiet(true).maxLogLength(7).maxTagLength(5);
+        require(accessors.getQuiet(), "protected quiet/super getter");
+        require(!accessors.getQuiet(), "quiet consumed");
+        require(Integer.valueOf(7).equals(accessors.getMaxLogLength()), "protected maxLogLength");
+        require(accessors.getMaxLogLength() == null, "maxLogLength consumed");
+        require(Integer.valueOf(5).equals(accessors.getMaxTagLength()), "protected maxTagLength");
+        require(accessors.getMaxTagLength() == null, "maxTagLength consumed");
         System.out.println("Released consumer passed against candidate publication.");
     }
 }

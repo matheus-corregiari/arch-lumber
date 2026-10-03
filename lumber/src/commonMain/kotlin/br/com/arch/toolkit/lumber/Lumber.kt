@@ -73,29 +73,46 @@ class Lumber private constructor() {
      * @see DebugOak
      */
     abstract class Oak {
-        private val localOptions = atomic<LogOptions?>(null)
+        private val explicitTag = atomic<String?>(null)
+        private val explicitQuiet = atomic<Boolean?>(null)
+        private val explicitMaxLogLength = atomic<Int?>(null)
+        private val explicitMaxTagLength = atomic<Int?>(null)
 
-        /** Returns a tagged facade for this destination. */
-        open fun tag(tag: String): Oak = TaggedLumber(tag.trim(), consumeLocalOptions(), this)
+        /** Consumes the one-time tag for this destination. */
+        protected open val tag: String?
+            get() = explicitTag.getAndSet(null)?.takeIf { it.isNotBlank() }
+
+        /** Consumes the one-time suppression flag for this destination. */
+        protected open val quiet: Boolean
+            get() = explicitQuiet.getAndSet(null) == true
+
+        /** Consumes the one-time maximum message length, or returns null when unset. */
+        protected open val maxLogLength: Int?
+            get() = explicitMaxLogLength.getAndSet(null)
+
+        /** Consumes the one-time maximum tag length, or returns null when unset. */
+        protected open val maxTagLength: Int?
+            get() = explicitMaxTagLength.getAndSet(null)
+
+        /** Sets a one-time tag for this destination and returns the destination. */
+        open fun tag(tag: String): Oak = apply { explicitTag.value = tag.trim() }
 
         /** Suppresses the next message on this destination. */
         open fun quiet(quiet: Boolean): Oak = apply {
-            localOptions.update { (it ?: LogOptions()).copy(quiet = quiet) }
+            explicitQuiet.value = quiet
         }
 
         /** Sets the maximum length of the next message on this destination. */
         open fun maxLogLength(length: Int): Oak = apply {
             require(length > 0) { "length must be positive" }
-            localOptions.update { (it ?: LogOptions()).copy(maxLogLength = length) }
+            explicitMaxLogLength.value = length
         }
 
         /** Sets the maximum tag length for the next message on this destination. */
         open fun maxTagLength(length: Int): Oak = apply {
             require(length > 0) { "length must be positive" }
-            localOptions.update { (it ?: LogOptions()).copy(maxTagLength = length) }
+            explicitMaxTagLength.value = length
         }
-
-        private fun consumeLocalOptions(): LogOptions = localOptions.getAndSet(null) ?: LogOptions()
 
         //region Verbose
 
@@ -203,8 +220,12 @@ class Lumber private constructor() {
             level = level,
             error = error,
             message = message,
-            tag = null,
-            options = consumeLocalOptions(),
+            tag = tag,
+            options = LogOptions(
+                quiet = quiet,
+                maxLogLength = maxLogLength ?: MAX_LOG_LENGTH,
+                maxTagLength = maxTagLength ?: MAX_TAG_LENGTH
+            ),
             args = args
         )
         //endregion
@@ -280,40 +301,33 @@ class Lumber private constructor() {
      * on this facade are consumed by the next log call, even when that call is filtered.
      */
     class TaggedLumber internal constructor(
-        private val tag: String,
-        initialOptions: LogOptions?,
-        private val destination: Oak? = null
+        tag: String,
+        initialOptions: LogOptions?
     ) : Oak() {
+        private val persistentTag = tag
         private val optionsRef = atomic(initialOptions)
 
-        /** Returns a facade with a new tag for the same destination or forest. */
+        /** Returns a facade with a new tag for the forest. */
         override fun tag(tag: String): TaggedLumber = TaggedLumber(
             tag = tag.trim(),
-            initialOptions = consumeOptions(),
-            destination = destination
+            initialOptions = consumeOptions()
         )
 
         override fun log(level: Level, tag: String?, message: String, error: Throwable?) =
             kotlin.error("TaggedLumber does not implement direct logging; it is a facade.")
 
-        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) {
-            val options = consumeOptions()
-            if (destination != null) {
-                destination.prepareLog(level, error, message, tag, options, *args)
-                return
-            }
+        override fun log(level: Level, error: Throwable?, message: String?, vararg args: Any?) =
             OakWood.dispatchLog(
                 level = level,
                 error = error,
                 message = message,
                 args = args,
-                tag = tag,
-                options = options
+                tag = persistentTag,
+                options = consumeOptions()
             )
-        }
 
         override fun isLoggable(tag: String?, level: Level) =
-            (destination ?: OakWood).isLoggable(tag ?: this.tag, level)
+            OakWood.isLoggable(tag ?: persistentTag, level)
 
         /**
          * Suppresses the next log message for this tagged facade.

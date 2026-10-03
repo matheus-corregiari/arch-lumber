@@ -75,6 +75,8 @@ Release versions come from stable Git tags (`X.Y.Z`, optionally prefixed by `v`)
 numerically. In this library's Gitflow, a release tag identifies a released version. The legacy
 fixture uses the latest tag before the 1.2.0 API change; the current fixture uses the latest
 release tag before the candidate version. CI checks out the tags; local clones must fetch them.
+Missing tags fail the compatibility task, while unrelated tasks such as `help` still work in
+shallow clones used by automatic dependency submission.
 The 1.4.4 negative control stays fixed because it reproduces a specific known regression.
 
 For example, EasyNavigation's already compiled bytecode asks for `OakWood.tag(String): Oak`.

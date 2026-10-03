@@ -60,7 +60,15 @@ afterEvaluate {
             (!publication.version.matches(releaseVersion) || versionOrder.compare(it, publication.version) < 0) &&
                 (consumer.beforeVersion == null || versionOrder.compare(it, consumer.beforeVersion) < 0)
         }.maxWithOrNull(versionOrder)?.removePrefix("v")
-            ?: error("No release tag found for ${consumer.mainClass}; fetch the repository tags first.")
+        if (releasedVersion == null) {
+            // Unrelated tasks work in shallow clones; compatibility still requires release tags.
+            compatibilityCheck.configure {
+                doFirst {
+                    error("No release tag found for ${consumer.mainClass}; fetch the repository tags first.")
+                }
+            }
+            return@forEachIndexed
+        }
         val suffix = releasedVersion.replace(".", "_")
         val released = configurations.create("consumerCompile$suffix")
         dependencies.add(released.name, "$releasedModule:$releasedVersion")

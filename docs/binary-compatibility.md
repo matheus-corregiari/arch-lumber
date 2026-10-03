@@ -3,16 +3,16 @@
 Starting with 1.5.0, public ABI dumps from the
 [Kotlin ABI validator](https://kotlinlang.org/docs/gradle-binary-compatibility-validation.html)
 are reviewed in source control. CI runs
-`:lumber:checkKotlinAbi` on the macOS release runner for JVM, Android, JS, Wasm JS and the
+`ciCompatibility` on the macOS release runner for JVM, Android, JS, Wasm JS and the
 published iOS targets. Changes to the dumps require review; regenerating a dump is not evidence
 that a removed signature is compatible.
 
-The isolated CodeQL checkout translates the unsupported-target ABI setting to the older DSL
-when selecting its pre-2.4 analysis compiler. The release build and Coverage Gate use the normal
-compiler and current DSL. CodeQL still compiles and analyzes the JVM and Android sources.
+The isolated CodeQL build uses `-PcodeqlAnalysis=true` to omit ABI configuration that its older
+runtime cannot load. The release build and Coverage Gate always validate ABI with the normal
+compiler. CodeQL still compiles and analyzes JVM and Android sources without rewriting ABI DSL.
 
 ```bash
-./gradlew :lumber:checkKotlinAbi :lumber:compatibilityCheck
+./gradlew ciCompatibility
 ```
 
 ## Published contract regression
@@ -28,14 +28,17 @@ The cached published Lumber JVM JARs for 1.0.3 and 1.1.0 have identical SHA-1
 
 1.5.0 restores the base methods and uses covariant overrides to retain both old and current
 JVM return descriptors. Current Kotlin callers still receive `TaggedLumber` from `Lumber.tag`.
-Direct `Oak` options affect that destination; tagged direct logging also stays on that destination.
+The legacy protected option getters are restored, including their consume-on-read behavior and
+support for subclass overrides. Direct `Oak.tag` returns the destination itself and configures a
+one-shot tag, avoiding a second facade implementation for individual destinations.
 Forest facades retain the current persistent tag and one-shot option semantics. This restores
 linkage for the tested calls; it does not reproduce the old one-shot tag implementation.
 
 ## Consumer validation
 
-`compatibility/Consumer.java` is compiled against published Lumber JVM 1.1.0. It covers the
-navigation logging calls, all restored option methods and calls through an `Oak` reference.
+`lumber/src/compatibility/java/Consumer.java` is compiled against published Lumber JVM 1.1.0.
+It covers navigation logging calls, restored option methods, calls through an `Oak` reference,
+and subclass overrides that invoke all four protected superclass getters and verify consumption.
 `CurrentConsumer.java` is compiled against published 1.4.4 to protect the current facade
 descriptors. Each compiled class runs against both the candidate JVM JAR and the `classes.jar`
 inside the candidate Android AAR published to the build-directory Maven repository. Neither
@@ -50,8 +53,18 @@ Windows cannot execute iOS tests or link the Apple frameworks. Unsupported-targe
 is disabled; validation must fail when a complete dump cannot be generated. The macOS CI gate
 must also build the frameworks and run the available native tests.
 
-For an intentional API addition, review the change and run `:lumber:updateKotlinAbi` on a host
+For an intentional API addition, review the change and run `ciUpdateAbi` on a host
 that supports all published targets. Do not accept a dump update to conceal removed API.
+
+## Shared build convention
+
+`arch-compatibility` owns ABI validation and JVM/optional Android published-consumer checks.
+It derives Maven coordinates from the library's publication. Each library configures its released
+versions and consumer main classes through `CompatibilityExtension`; the fixture directory and
+Java toolchain version are configurable. It uses the shared `LocalPath` publication repository.
+Fixtures belong in the library's `src/compatibility/java`, outside its published source sets.
+`ciCompatibility` aggregates module checks, and `ciCoverage` includes it automatically. Neither
+the shared workflow nor the contributor commands need library-specific task paths.
 
 ## Local release evidence
 

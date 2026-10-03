@@ -26,13 +26,14 @@ at `release/1.0.0`.
 | Check | Command or responsibility |
 |---|---|
 | Release Policy | Python policy unit tests and validation against remote tags |
-| Coverage Gate | `./gradlew ciBuild ciCoverage :lumber:checkKotlinAbi :lumber:compatibilityCheck`: assemble, tests, coverage, ABI and published consumers |
+| Coverage Gate | `./gradlew ciBuild ciCoverage`: assemble, tests, coverage, ABI and published consumers |
 | Static Analysis | `./gradlew ciLint`: Detekt, ktlint and available Android lint tasks |
 | Docs Gate | `./gradlew ciDocs`, then `python -m mkdocs build --strict` |
 | CodeQL | `./gradlew ciCodeql`: JVM/Android compilation; also analyzes Actions and Python |
 | CI Gate | Requires successful completion of every gate, including policy |
 
-`ciCoverage` already includes `ciTest`. There is no second test job. Projects with Apple targets use
+`ciCoverage` includes `ciTest` and `ciCompatibility` (ABI and released consumers). `ciUpdateAbi`
+regenerates reference dumps for review. There is no second test job. Projects with Apple targets use
 macOS for build/tests/publication; Android uses Linux. The same build job owns all supported targets,
 so JVM/Android/browser tests are not repeated on a second host. Windows local validation does not
 prove Apple binaries; the macOS CI run does.

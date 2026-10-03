@@ -41,7 +41,6 @@ See the [CI and release guide](ci.md) for required checks, runner conventions an
 ```bash
 ./gradlew ciBuild ciCoverage
 ./gradlew ciLint ciDocs
-./gradlew :lumber:checkKotlinAbi :lumber:compatibilityCheck
 python -m pip install -r .github/requirements-docs.txt
 python -m mkdocs build --strict
 ```

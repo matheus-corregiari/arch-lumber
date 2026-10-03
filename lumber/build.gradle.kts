@@ -5,17 +5,19 @@ plugins {
     id("arch-coverage")
     id("arch-optimize")
     id("arch-publish")
+    id("arch-compatibility")
     alias(libs.plugins.jetbrains.atomic)
 }
 
-apply(from = rootProject.file("gradle/compatibility.gradle.kts"))
+configure<CompatibilityExtension> {
+    consumers = listOf(
+        PublishedConsumer("1.1.0", "Consumer"),
+        PublishedConsumer("1.4.4", "CurrentConsumer")
+    )
+    brokenVersion = "1.4.4"
+}
 
 kotlin {
-    @OptIn(org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation::class)
-    abiValidation {
-        keepLocallyUnsupportedTargets.set(false)
-    }
-
     // Libraries
     sourceSets {
         // Common Setup

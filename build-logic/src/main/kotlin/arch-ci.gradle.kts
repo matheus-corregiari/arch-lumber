@@ -19,7 +19,9 @@ val ciLint = tasks.register("ciLint") { group = "CI" }
 val ciDocs = tasks.register("ciDocs") { group = "CI"; dependsOn(syncContributingDocs) }
 val ciBuild = tasks.register("ciBuild") { group = "CI" }
 val ciTest = tasks.register("ciTest") { group = "CI" }
-val ciCoverage = tasks.register("ciCoverage") { group = "CI"; dependsOn(ciTest) }
+val ciCompatibility = tasks.register("ciCompatibility") { group = "CI" }
+val ciUpdateAbi = tasks.register("ciUpdateAbi") { group = "CI" }
+val ciCoverage = tasks.register("ciCoverage") { group = "CI"; dependsOn(ciTest, ciCompatibility) }
 val ciCodeql = tasks.register("ciCodeql") { group = "CI" }
 val ciPublishMavenCentral = tasks.register("ciPublishMavenCentral") { group = "CI" }
 val ciPublishGithubPackages = tasks.register("ciPublishGithubPackages") { group = "CI" }
@@ -54,6 +56,10 @@ gradle.projectsEvaluated {
     ciDocs.configure { dependsOn(publishable.paths("dokkaGenerate")) }
     ciBuild.configure { dependsOn(publishable.paths("assemble")) }
     ciTest.configure { dependsOn(libraries.paths("allTests")) }
+    ciCompatibility.configure {
+        dependsOn(libraries.paths("checkKotlinAbi"), libraries.paths("compatibilityCheck"))
+    }
+    ciUpdateAbi.configure { dependsOn(libraries.paths("updateKotlinAbi")) }
     ciCoverage.configure {
         dependsOn("koverXmlReport", "koverHtmlReport", "koverVerify")
         dependsOn(publishable.paths("koverVerify"))
